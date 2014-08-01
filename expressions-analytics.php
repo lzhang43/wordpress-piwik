@@ -6,6 +6,29 @@ Author: Expressions Team, Alexander O'Mara
 Version: 1.0
 */
 
+/**
+ * The site id for global tracking.
+ * 
+ * Define as non-integer to disable.
+ */
+if ( ! defined( 'EXPANL_PIWIK_GLOBAL_TRACKING_ID' ) ) {
+	define( 'EXPANL_PIWIK_GLOBAL_TRACKING_ID', 1 );
+}
+
+/**
+ * Define the number of seconds to wait for remote API requests.
+ */
+if ( ! defined( 'EXPANL_EXTERNAL_API_TIMEOUT' ) ) {
+	define( 'EXPANL_EXTERNAL_API_TIMEOUT', 30 );
+}
+
+/**
+ * Define as true to disable remote API SSL verification.
+ */
+if ( ! defined( 'EXPANL_EXTERNAL_API_DISABLE_SSL_VERIFICATION' ) ) {
+	define( 'EXPANL_EXTERNAL_API_DISABLE_SSL_VERIFICATION', false );
+}
+
 //Check if inside WordPress.
 if ( ! defined( 'ABSPATH' ) ) { exit(); }
 
@@ -16,10 +39,10 @@ class ExpressionsAnalytics {
 	 * 
 	 * The following variables are substituted into the string.
 	 * - %1$s = The top domain to track.
-	 * - %2$s = The domain for the Piwik tracker.
+	 * - %2$s = The REST API base for the Piwik tracker.
 	 * - %3$u = The unique site id.
 	 */
-	const PIWIK_TRACKING_CODE = <<<'EOS'
+	const TRACKING_CODE_PIWIK = <<<'EOS'
 <!-- Piwik -->
 <script type="text/javascript">
 var _paq = _paq || [];
@@ -41,7 +64,7 @@ g.src=u+"piwik.js";
 s.parentNode.insertBefore(g,s);
 })(document,"script");
 </script>
-<noscript><img src="http://%2$s/piwik.php?idsite=%3$u&rec=1" style="border:0" alt="" /></noscript>
+<noscript><img src="//%2$s/piwik.php?idsite=%3$u&rec=1" style="border:0" alt="" /></noscript>
 <!-- End Piwik Code -->
 EOS;
 	
@@ -50,19 +73,216 @@ EOS;
 	 * 
 	 * TODO
 	 */
-	const GOOGLE_TRACKING_CODE = <<<'EOS'
+	const TRACKING_CODE_GOOGLE = <<<'EOS'
 TODO
 EOS;
-
+	
+	private $settings_name = null;
+	private $settings = null;
+	
 	public function __construct() {
+		$this->add_actions();
+		//header('Content-Type: text/plain');
+		//var_dump($this->query_piwik_api(array('method'=>'SitesManager.getSitesIdFromSiteUrl')));
+		//exit();
+	}
+	
+	public function tracking_code_piwik($track_domain, $rest_api, $site_id) {
+		return sprintf(self::PIWIK_TRACKING_CODE, $track_domain, $rest_api, $site_id);
+	}
+	
+	public function tracking_code_google($track_domain, $rest_api, $site_id) {
+		return self::TRACKING_CODE_GOOGLE;
+	}
+	
+	public function add_actions() {
 		add_action( 'init', array($this, 'action_init') );
+		add_action( 'wp_footer', array($this, 'action_print_tracking_code'), 99999 );
 	}
 	
 	public function action_init() {
-		//header('Content-Type: text/plain');
-		//'its-suwi-dev.syr.edu', '*.localhost.syr.edu', 153
-		//printf(ExpressionsAnalytics::PIWIK_TRACKING_CODE, '*.localhost.syr.edu', 'localhost', 1);
-		//exit();
+		
+	}
+	
+	public function action_print_tracking_code() {
+		echo '<!--test-->';
+	}
+	
+	/**
+	 * Get all saved settings, or a specified one, optionally defaulting to a default.
+	 * 
+	 * @param string $setting The setting to fetch.
+	 * @param mixed $default The default value to return.
+	 * 
+	 * @return mixed The settings or the specified setting.
+	 */
+	public function settings_get( $setting = null, $default = null ) {
+		//Lazy pull the settings, defaulting to an empty array.
+		if ( ! is_array( $this->settings ) ) {
+			$this->settings = get_option( $this->settings_name, null );
+			if ( ! is_array( $this->settings ) ) {
+				$this->settings = array();
+			}
+		}
+		//Check if for a specific setting.
+		if ( $setting !== null ) {
+			//Return default if the property does not exist.
+			return property_exists( $this->settings, $setting ) ? $this->settings[$setting] : $default;
+		}
+		//Return all the settings.
+		return ( empty( $this->settings ) && $default !== null ) ? $default : $this->settings;
+	}
+	
+	/**
+	 * Update settings.
+	 * 
+	 * @param mixed $settings An associative array of setting to save.
+	 * @param bool $replace_all If true, replaces all settings with the new settings, else merges the settings..
+	 */
+	public function settings_set( $settings, $replace_all = false ) {
+		//Check that settings are an array.
+		if ( is_array( $settings ) ) {
+			$changed = false;
+			//Check if should overwrite all settings or simple merge them.
+			if ( $replace_all ) {
+				$this->settings = $settings;
+				$changed = true;
+			} else {
+				foreach ( $settings as $k=>&$v ) {
+					if ( $this->settings[$k] !== $v ) {
+						$this->settings[$k] = $v;
+						$changed = true;
+					}
+				}
+				unset( $v );
+			}
+			//If the settings have changed, save them to the database.
+			if ( $changed ) {
+				update_option( $this->settings_name, $this->settings );
+			}
+		}
+	}
+	
+	/**
+	 * Delete the specified setting or delete all settings if none are specified.
+	 * 
+	 * @param string $setting A specific setting to delete.
+	 */
+	public function settings_delete( $setting = null ) {
+		//Check if deleting a specific setting.
+		if ( $setting !== null ) {
+			//If there to delete, remove it and save.
+			if ( property_exists( $this->settings, $setting ) ) {
+				unset( $this->settings[$setting] );
+				update_option( $this->settings_name, $this->settings );
+			}
+		}
+		//If deleting all, then remove the option completely.
+		delete_option( $this->settings_name );
+	}
+	
+	/**
+	 * Query the configured Piwik API with the specified parameters and return the contents in an associative array.
+	 * 
+	 * @param array $query An associative array of query parameters.
+	 * 
+	 * @return array The associative array.
+	 */
+	public function query_piwik_api( $query ) {
+		$api_path = TMP_PIWIKAPI;//TODO
+		$query_args = wp_parse_args( $query, array(
+			'module'     => 'API',
+			'format'     => 'JSON',
+			'url'        => get_site_url(),
+			'token_auth' => TMP_AUTHTOKEN//TODO
+		) );
+		$url = rtrim( $api_path, '/' ) . '/?' . http_build_query( $query_args );
+		return $this->remote_request( $url );
+	}
+	
+	/**
+	 * Fetch an external URL and return the contents and success in an associative array.
+	 * 
+	 * @param string $url The URL to fetch.
+	 * 
+	 * @return array The associative array.
+	 */
+	public function remote_request( $url ) {
+		if ( filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
+			return array(
+				'result'  => 'error',
+				'content' => 'Invalid URL'
+			);
+		}
+		if ( function_exists( 'curl_init' ) ) {
+			//Init CURL.
+			$ctx = curl_init( $url );
+			//Check success.
+			if ( ! $ctx ) {
+				return array(
+					'result'  => 'error',
+					'content' => 'Failed to initalize CURL'
+				);
+			}
+			//Return string.
+			curl_setopt( $ctx, CURLOPT_RETURNTRANSFER, true );
+			//Suppress headers.
+			curl_setopt( $ctx, CURLOPT_HEADER, false );
+			//Verify SSL certificates.
+			curl_setopt( $ctx, CURLOPT_SSL_VERIFYPEER, EXPANL_EXTERNAL_API_DISABLE_SSL_VERIFICATION !== true );
+			//Set user agent if readable, else rely on the default.
+			$php_user_agent = @ini_get( 'user_agent' );
+			if ( ! empty( $php_user_agent ) ) {
+				curl_setopt( $ctx, CURLOPT_USERAGENT, $php_user_agent );
+			}
+			//Set timeout.
+			curl_setopt( $ctx, CURLOPT_TIMEOUT, EXPANL_EXTERNAL_API_TIMEOUT );
+			//Send request.
+			$response = curl_exec( $ctx );
+			//Grab any error message.
+			$curl_error = curl_error( $ctx );
+			//Close connection.
+			curl_close( $ctx );
+			//Check response.
+			if ( is_string( $response ) ) {
+				return array(
+					'result'  => 'success',
+					'content' => $response
+				);
+			} else {
+				return array(
+					'result'  => 'error',
+					'content' => $curl_error
+				);
+			}
+		}
+		elseif ( @ini_get( 'allow_url_fopen' ) && function_exists( 'stream_context_create' ) ) {
+			//Create stream.
+			$ctx = stream_context_create( array(
+				'http' => array(
+					'timeout' => EXPANL_EXTERNAL_API_TIMEOUT
+				)
+			) );
+			//Send request.
+			$response = @file_get_contents( $url, false, $ctx );
+			//Check response.
+			if ( is_string( $response ) ) {
+				return array(
+					'result'  => 'success',
+					'content' => $response
+				);
+			} else {
+				return array(
+					'result'  => 'error',
+					'content' => 'Remote fopen request failed'
+				);
+			}
+		}
+		//Return failure.
+		return array(
+			'result'  => 'error',
+			'content' => 'CURL and remote fopen are disabled'
+		);
 	}
 }
 new ExpressionsAnalytics();
