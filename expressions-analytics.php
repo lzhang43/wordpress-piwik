@@ -11,22 +11,22 @@ Version: 1.0
  * 
  * Define as non-integer to disable.
  */
-if ( ! defined( 'EXPANL_PIWIK_GLOBAL_TRACKING_ID' ) ) {
-	define( 'EXPANL_PIWIK_GLOBAL_TRACKING_ID', 1 );
+if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_ID' ) ) {
+	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_ID', 1 );
 }
 
 /**
  * Define the number of seconds to wait for remote API requests.
  */
-if ( ! defined( 'EXPANL_EXTERNAL_API_TIMEOUT' ) ) {
-	define( 'EXPANL_EXTERNAL_API_TIMEOUT', 30 );
+if ( ! defined( 'EXPANA_EXTERNAL_API_TIMEOUT' ) ) {
+	define( 'EXPANA_EXTERNAL_API_TIMEOUT', 30 );
 }
 
 /**
  * Define as true to disable remote API SSL verification.
  */
-if ( ! defined( 'EXPANL_EXTERNAL_API_DISABLE_SSL_VERIFICATION' ) ) {
-	define( 'EXPANL_EXTERNAL_API_DISABLE_SSL_VERIFICATION', false );
+if ( ! defined( 'EXPANA_EXTERNAL_API_DISABLE_SSL_VERIFICATION' ) ) {
+	define( 'EXPANA_EXTERNAL_API_DISABLE_SSL_VERIFICATION', false );
 }
 
 //Check if inside WordPress.
@@ -87,14 +87,32 @@ EOS;
 		//exit();
 	}
 	
+	/**
+	 * Generate the Piwik tracking code.
+	 * 
+	 * @param string $track_domain The domain to track.
+	 * @param string $rest_api The rest API url.
+	 * @param string $site_id The unique site id assigned by Piwik.
+	 * 
+	 * @return string The Piwik tracking code.
+	 */
 	public function tracking_code_piwik($track_domain, $rest_api, $site_id) {
 		return sprintf(self::PIWIK_TRACKING_CODE, $track_domain, $rest_api, $site_id);
 	}
 	
-	public function tracking_code_google($track_domain, $rest_api, $site_id) {
+	/**
+	 * Generate the Google tracking code.
+	 * 
+	 * @return string The Google tracking code.
+	 */
+	public function tracking_code_google() {
+		//TODO: Arguments.
 		return self::TRACKING_CODE_GOOGLE;
 	}
 	
+	/**
+	 * Initialize the action hooks.
+	 */
 	public function add_actions() {
 		add_action( 'init', array($this, 'action_init') );
 		add_action( 'wp_footer', array($this, 'action_print_tracking_code'), 99999 );
@@ -104,6 +122,9 @@ EOS;
 		
 	}
 	
+	/**
+	 * Action callback to print all the tracking code.
+	 */
 	public function action_print_tracking_code() {
 		echo '<!--test-->';
 	}
@@ -127,7 +148,7 @@ EOS;
 		//Check if for a specific setting.
 		if ( $setting !== null ) {
 			//Return default if the property does not exist.
-			return property_exists( $this->settings, $setting ) ? $this->settings[$setting] : $default;
+			return array_key_exists( $this->settings, $setting ) ? $this->settings[$setting] : $default;
 		}
 		//Return all the settings.
 		return ( empty( $this->settings ) && $default !== null ) ? $default : $this->settings;
@@ -149,8 +170,9 @@ EOS;
 				$changed = true;
 			} else {
 				foreach ( $settings as $k=>&$v ) {
-					if ( $this->settings[$k] !== $v ) {
-						$this->settings[$k] = $v;
+					if ( array_key_exists( $this->settings, $k ) && $this->settings[$k] !== $v ) {
+						//Set the key value, without using the reference.
+						$this->settings[$k] = $settings[$k];
 						$changed = true;
 					}
 				}
@@ -229,14 +251,14 @@ EOS;
 			//Suppress headers.
 			curl_setopt( $ctx, CURLOPT_HEADER, false );
 			//Verify SSL certificates.
-			curl_setopt( $ctx, CURLOPT_SSL_VERIFYPEER, EXPANL_EXTERNAL_API_DISABLE_SSL_VERIFICATION !== true );
+			curl_setopt( $ctx, CURLOPT_SSL_VERIFYPEER, EXPANA_EXTERNAL_API_DISABLE_SSL_VERIFICATION !== true );
 			//Set user agent if readable, else rely on the default.
 			$php_user_agent = @ini_get( 'user_agent' );
 			if ( ! empty( $php_user_agent ) ) {
 				curl_setopt( $ctx, CURLOPT_USERAGENT, $php_user_agent );
 			}
 			//Set timeout.
-			curl_setopt( $ctx, CURLOPT_TIMEOUT, EXPANL_EXTERNAL_API_TIMEOUT );
+			curl_setopt( $ctx, CURLOPT_TIMEOUT, EXPANA_EXTERNAL_API_TIMEOUT );
 			//Send request.
 			$response = curl_exec( $ctx );
 			//Grab any error message.
@@ -260,7 +282,7 @@ EOS;
 			//Create stream.
 			$ctx = stream_context_create( array(
 				'http' => array(
-					'timeout' => EXPANL_EXTERNAL_API_TIMEOUT
+					'timeout' => EXPANA_EXTERNAL_API_TIMEOUT
 				)
 			) );
 			//Send request.
