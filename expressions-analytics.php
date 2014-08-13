@@ -7,12 +7,30 @@ Version: 1.0
 */
 
 /**
- * The site id for global tracking.
+ * The site id for global tracking in Piwik.
  * 
  * Define as non-integer to disable.
  */
 if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_ID' ) ) {
 	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_ID', 1 );
+}
+
+/**
+ * The domain for global tracking in Piwik.
+ *
+ * Define as non-string to disable.
+ */
+if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN' ) ) {
+	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN', '*.syr.edu' );
+}
+
+/**
+ * The rest API url for global tracking in Piwik, minus the protocol.
+ *
+ * Define as non-string to disable.
+ */
+if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API' ) ) {
+	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API', null );//TODO
 }
 
 /**
@@ -91,13 +109,13 @@ EOS;
 	 * Generate the Piwik tracking code.
 	 * 
 	 * @param string $track_domain The domain to track.
-	 * @param string $rest_api The rest API url.
+	 * @param string $rest_api The rest API url, minus the protocol.
 	 * @param string $site_id The unique site id assigned by Piwik.
 	 * 
 	 * @return string The Piwik tracking code.
 	 */
 	public function tracking_code_piwik($track_domain, $rest_api, $site_id) {
-		return sprintf(self::PIWIK_TRACKING_CODE, $track_domain, $rest_api, $site_id);
+		return sprintf( self::TRACKING_CODE_PIWIK, $track_domain, $rest_api, $site_id );
 	}
 	
 	/**
@@ -126,11 +144,14 @@ EOS;
 	 * Action callback to print all the tracking code.
 	 */
 	public function action_print_tracking_code() {
-		echo '<!--test-->';
+		//Global tracking Piwik.
+		if ( is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) && is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && is_int( EXPANA_PIWIK_GLOBAL_TRACKING_ID ) ) {
+			echo $this->tracking_code_piwik( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN, EXPANA_PIWIK_GLOBAL_TRACKING_REST_API, EXPANA_PIWIK_GLOBAL_TRACKING_ID );
+		}
 	}
 	
 	/**
-	 * Get all saved settings, or a specified one, optionally defaulting to a default.
+	 * Get all saved settings, or a specified one, optionally defaulting to a provided default.
 	 * 
 	 * @param string $setting The setting to fetch.
 	 * @param mixed $default The default value to return.
@@ -211,7 +232,7 @@ EOS;
 	 * @return array The associative array.
 	 */
 	public function query_piwik_api( $query ) {
-		$api_path = TMP_PIWIKAPI;//TODO
+		$api_path = 'http://' . TMP_PIWIKAPI;//TODO
 		$query_args = wp_parse_args( $query, array(
 			'module'     => 'API',
 			'format'     => 'JSON',
