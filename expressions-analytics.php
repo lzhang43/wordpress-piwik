@@ -25,7 +25,7 @@ if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN' ) ) {
 }
 
 /**
- * The rest API url for global tracking in Piwik, minus the protocol.
+ * The rest API URL for global tracking in Piwik, minus the protocol.
  *
  * Define as non-string to disable.
  */
@@ -95,6 +95,11 @@ EOS;
 TODO
 EOS;
 	
+	private $admin_panel_menu_label = 'Analytics';
+	private $admin_panel_page_title = 'Expressions Analytics';
+	private $admin_panel_page_slug = 'expressions-analytics';
+	private $admin_panel_settings_capability = 'manage_options';
+	
 	private $settings_name = null;
 	private $settings = null;
 	
@@ -109,7 +114,7 @@ EOS;
 	 * Generate the Piwik tracking code.
 	 * 
 	 * @param string $track_domain The domain to track.
-	 * @param string $rest_api The rest API url, minus the protocol.
+	 * @param string $rest_api The rest API URL, minus the protocol.
 	 * @param string $site_id The unique site id assigned by Piwik.
 	 * 
 	 * @return string The Piwik tracking code.
@@ -132,8 +137,10 @@ EOS;
 	 * Initialize the action hooks.
 	 */
 	public function add_actions() {
-		add_action( 'init', array($this, 'action_init') );
-		add_action( 'wp_footer', array($this, 'action_print_tracking_code'), 99999 );
+		add_action( 'init',                  array( $this, 'action_init'                  )        );
+		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' )        );
+		add_action( 'admin_menu',            array( $this, 'action_admin_menu'            )        );
+		add_action( 'wp_footer',             array( $this, 'action_print_tracking_code'   ), 99999 );
 	}
 	
 	public function action_init() {
@@ -141,12 +148,53 @@ EOS;
 	}
 	
 	/**
+	 * Initialize the action hooks.
+	 * 
+	 * @param string $hook The WordPress unique page slug.
+	 */
+	public function action_admin_enqueue_scripts( $hook ) {
+		if ( $hook === 'settings_page_' . $this->admin_panel_page_slug ) {
+			
+		}
+	}
+	
+	/**
+	 * Add to admin panel menu.
+	 */
+	public function action_admin_menu() {
+		add_options_page(
+			__( $this->admin_panel_page_title, 'expana' ),
+			__( $this->admin_panel_menu_label, 'expana' ),
+			$this->admin_panel_settings_capability,
+			$this->admin_panel_page_slug,
+			array( $this, 'callback_settings_page' )
+		);
+	}
+	
+	/**
+	 * Admin panel settings page callback.
+	 */
+	public function callback_settings_page() {
+		?><div class="wrap">
+			<h1><?php echo __( $this->admin_panel_page_title, 'expana' ); ?></h1>
+		</div><?php
+	}
+	
+	/**
 	 * Action callback to print all the tracking code.
 	 */
 	public function action_print_tracking_code() {
 		//Global tracking Piwik.
-		if ( is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) && is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && is_int( EXPANA_PIWIK_GLOBAL_TRACKING_ID ) ) {
-			echo $this->tracking_code_piwik( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN, EXPANA_PIWIK_GLOBAL_TRACKING_REST_API, EXPANA_PIWIK_GLOBAL_TRACKING_ID );
+		if (
+			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) &&
+			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) &&
+			is_int( EXPANA_PIWIK_GLOBAL_TRACKING_ID )
+		) {
+			echo $this->tracking_code_piwik(
+				EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN,
+				EXPANA_PIWIK_GLOBAL_TRACKING_REST_API,
+				EXPANA_PIWIK_GLOBAL_TRACKING_ID
+			);
 		}
 	}
 	
@@ -179,7 +227,7 @@ EOS;
 	 * Update settings.
 	 * 
 	 * @param mixed $settings An associative array of setting to save.
-	 * @param bool $replace_all If true, replaces all settings with the new settings, else merges the settings..
+	 * @param bool $replace_all If true, replaces all settings with the new settings, else merges the settings.
 	 */
 	public function settings_set( $settings, $replace_all = false ) {
 		//Check that settings are an array.
@@ -232,7 +280,7 @@ EOS;
 	 * @return array The associative array.
 	 */
 	public function query_piwik_api( $query ) {
-		$api_path = 'http://' . TMP_PIWIKAPI;//TODO
+		$api_path = 'http://' . EXPANA_PIWIK_GLOBAL_TRACKING_REST_API;//TODO
 		$query_args = wp_parse_args( $query, array(
 			'module'     => 'API',
 			'format'     => 'JSON',
@@ -264,7 +312,7 @@ EOS;
 			if ( ! $ctx ) {
 				return array(
 					'result'  => 'error',
-					'content' => 'Failed to initalize CURL'
+					'content' => 'Failed to initialize CURL'
 				);
 			}
 			//Return string.
