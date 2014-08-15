@@ -98,9 +98,10 @@ EOS;
 	private $admin_panel_menu_label = 'Analytics';
 	private $admin_panel_page_title = 'Expressions Analytics';
 	private $admin_panel_page_slug = 'expressions-analytics';
+	private $admin_panel_settings_field_slug = 'expressions-analytics-settings';
 	private $admin_panel_settings_capability = 'manage_options';
 	
-	private $settings_name = null;
+	private $settings_name = 'expressions_analytics_settings';
 	private $settings = null;
 	
 	public function __construct() {
@@ -138,6 +139,7 @@ EOS;
 	 */
 	public function add_actions() {
 		add_action( 'init',                  array( $this, 'action_init'                  )        );
+		add_action( 'admin_init',            array( $this, 'action_admin_init'            )        );
 		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' )        );
 		add_action( 'admin_menu',            array( $this, 'action_admin_menu'            )        );
 		add_action( 'wp_footer',             array( $this, 'action_print_tracking_code'   ), 99999 );
@@ -147,8 +149,66 @@ EOS;
 		
 	}
 	
+	public function action_admin_init() {
+		//Register the plugin settings.
+		register_setting(
+			$this->admin_panel_settings_field_slug,
+			$this->settings_name,
+			array( $this, 'callback_settings_sanitize' )
+		);
+		//Add a section to the settings.
+		//Piwik group.
+		add_settings_section(
+			$this->admin_panel_settings_field_slug . '-piwik',
+			__( 'Piwik Settings', 'expana' ),
+			array( $this, 'callback_settings_section_main' ),
+			$this->admin_panel_settings_field_slug
+		);
+		//Add a field to the section.
+		//Piwik inputs.
+		add_settings_field(
+			'piwik',//A unique slug for this settings field, otherwise apparently unused.
+			__( 'Rest API URL' ),
+			array( $this, 'callback_settings_section_field' ),
+			$this->admin_panel_settings_field_slug,
+			$this->admin_panel_settings_field_slug . '-piwik',
+			array(
+				'label_for' => 'piwik_rest_api',//Internal variable used for adding label elements to inputs.
+				'input_type' => 'text',
+				'input_class' => 'regular-text code'
+			)
+		);
+	}
+	
+	public function callback_settings_sanitize() {
+		//TODO
+	}
+	
 	/**
-	 * Initialize the action hooks.
+	 * Admin panel settings input callback.
+	 * 
+	 * @param array $args Data from add_settings_field.
+	 */
+	public function callback_settings_section_field( $args ) {
+		//TODO: Be sure to use label_for for the input element ID.
+		$args = wp_parse_args( $args, array(
+			'label_for' => '',
+			'input_type' => '',
+			'input_class' => ''
+		) );
+		switch ( $args['input_type'] ) {
+			case 'text':
+				?><input id="<?php echo $args['label_for']; ?>" class="<?php echo $args['input_class']; ?>" type="text" /><?php
+			break;
+		}
+	}
+	
+	public function callback_settings_section_main() {
+		?><p><?php echo __( 'TODO Piwik settings description.', 'expana' ); ?></p><?php
+	}
+	
+	/**
+	 * Admin panel script enqueue callback.
 	 * 
 	 * @param string $hook The WordPress unique page slug.
 	 */
@@ -175,8 +235,17 @@ EOS;
 	 * Admin panel settings page callback.
 	 */
 	public function callback_settings_page() {
+		if ( ! current_user_can( $this->admin_panel_settings_capability ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		}
 		?><div class="wrap">
-			<h1><?php echo __( $this->admin_panel_page_title, 'expana' ); ?></h1>
+			<h2><?php echo __( $this->admin_panel_page_title, 'expana' ); ?></h2>
+			<form action="options.php" method="post">
+				<?php
+				settings_fields( $this->admin_panel_settings_field_slug );
+				do_settings_sections( $this->admin_panel_settings_field_slug );
+				?>
+			</form>
 		</div><?php
 	}
 	
