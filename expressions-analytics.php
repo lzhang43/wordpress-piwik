@@ -63,14 +63,14 @@ class ExpressionsAnalytics {
 	const TRACKING_CODE_PIWIK = <<<'EOS'
 <!-- Piwik -->
 <script type="text/javascript">
-var _paq = _paq || [];
+var _paq=_paq||[];
 _paq.push(["setDocumentTitle",document.domain+"/"+document.title]);
 _paq.push(["setCookieDomain","%1$s"]);
 _paq.push(["setDomains",["%1$s"]]);
 _paq.push(["trackPageView"]);
 _paq.push(["enableLinkTracking"]);
 (function(d,t,u,g,s) {
-u=(("https:"==d.location.protocol)?"https":"http")+"://%2$s/";
+u=("https:"==d.location.protocol?"https":"http")+"://%2$s/";
 _paq.push(["setTrackerUrl",u+"piwik.php"]);
 _paq.push(["setSiteId",%3$u]);
 g=d.createElement(t);
