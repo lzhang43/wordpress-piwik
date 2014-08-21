@@ -84,15 +84,39 @@ s.parentNode.insertBefore(g,s);
 </script>
 <noscript><img src="//%2$s/piwik.php?idsite=%3$u&rec=1" style="border:0" alt="" /></noscript>
 <!-- End Piwik Code -->
+
 EOS;
 	
 	/**
 	 * Google tracking code format.
 	 * 
-	 * TODO
+	 * The following variables are substituted into the string.
+	 * - %1$s = The tracking settings code.
 	 */
 	const TRACKING_CODE_GOOGLE = <<<'EOS'
-TODO
+<script type="text/javascript">
+var _gaq=_gaq||[];
+%1$s(function() {
+var ga=document.createElement('script');
+ga.type='text/javascript';
+ga.async=true;
+ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';
+var s=document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(ga,s);
+})();
+</script>
+
+EOS;
+	
+	/**
+	 * Google tracking API call.
+	 * 
+	 * The following variables are substituted into the string.
+	 * - %1$s = The API call arguments.
+	 */
+	const TRACKING_CODE_GOOGLE_API_CALL = <<<'EOS'
+_gaq.push(%1$s);
+
 EOS;
 	
 	private $admin_panel_menu_label = 'Analytics';
@@ -120,18 +144,39 @@ EOS;
 	 * 
 	 * @return string The Piwik tracking code.
 	 */
-	public function tracking_code_piwik($track_domain, $rest_api, $site_id) {
+	public function tracking_code_piwik( $track_domain, $rest_api, $site_id ) {
 		return sprintf( self::TRACKING_CODE_PIWIK, $track_domain, $rest_api, $site_id );
 	}
 	
 	/**
 	 * Generate the Google tracking code.
 	 * 
+	 * @param array $accounts The accounts to track.
+	 * 
 	 * @return string The Google tracking code.
 	 */
-	public function tracking_code_google() {
-		//TODO: Arguments.
-		return self::TRACKING_CODE_GOOGLE;
+	public function tracking_code_google( $accounts ) {
+		$api_calls_str = '';
+		if ( is_array( $accounts ) ) {
+			foreach ( $accounts as $account=>&$tracking ) {
+				$ns = isset( $tracking['namespace'] ) && is_string( $tracking['namespace'] ) ? $tracking['namespace'] . '.' : '';
+				$api_calls_str .= $this->tracking_code_google_api_call( array( $ns . '_setAccount', $account ) );
+				$api_calls_str .= $this->tracking_code_google_api_call( array( $ns . '_trackPageview' ) );
+			}
+			unset( $tracking );
+		}
+		return empty( $api_calls_str ) ? '' : sprintf( self::TRACKING_CODE_GOOGLE, $api_calls_str );
+	}
+	
+	/**
+	 * Generate the Google API call.
+	 * 
+	 * @param mixed $call The API call parameter.
+	 * 
+	 * @return string The API call JS string.
+	 */
+	public function tracking_code_google_api_call( $call ) {
+		return sprintf( self::TRACKING_CODE_GOOGLE_API_CALL, json_encode( $call ) );
 	}
 	
 	/**
@@ -265,6 +310,11 @@ EOS;
 				EXPANA_PIWIK_GLOBAL_TRACKING_ID
 			);
 		}
+		$ga_accounts = array();
+		$ga_accounts['account'] = array(
+			'namespace' => 'ns'
+		);
+		echo $this->tracking_code_google( $ga_accounts );
 	}
 	
 	/**
