@@ -48,7 +48,7 @@ if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN' ) ) {
  * Define as non-string or empty to disable.
  */
 if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API' ) ) {
-	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API', null );//TODO
+	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API', null );
 }
 
 /**
