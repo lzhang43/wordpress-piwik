@@ -7,6 +7,24 @@ Version: 1.0
 */
 
 /**
+ * The site id for global tracking in Google.
+ *
+ * Define as non-string or empty to disable.
+ */
+if ( ! defined( 'EXPANA_GOOGLE_GLOBAL_TRACKING_ID' ) ) {
+	define( 'EXPANA_GOOGLE_GLOBAL_TRACKING_ID', null );
+}
+
+/**
+ * The namespace for global tracking in Google.
+ *
+ * Define as non-string or empty to disable.
+ */
+if ( ! defined( 'EXPANA_GOOGLE_GLOBAL_TRACKING_NAMESPACE' ) ) {
+	define( 'EXPANA_GOOGLE_GLOBAL_TRACKING_NAMESPACE', null );
+}
+
+/**
  * The site id for global tracking in Piwik.
  * 
  * Define as non-integer to disable.
@@ -18,7 +36,7 @@ if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_ID' ) ) {
 /**
  * The domain for global tracking in Piwik.
  *
- * Define as non-string to disable.
+ * Define as non-string or empty to disable.
  */
 if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN' ) ) {
 	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN', '*.syr.edu' );
@@ -27,7 +45,7 @@ if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN' ) ) {
 /**
  * The rest API URL for global tracking in Piwik, minus the protocol.
  *
- * Define as non-string to disable.
+ * Define as non-string or empty to disable.
  */
 if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API' ) ) {
 	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API', null );//TODO
@@ -159,7 +177,7 @@ EOS;
 		$api_calls_str = '';
 		if ( is_array( $accounts ) ) {
 			foreach ( $accounts as $account=>&$tracking ) {
-				$ns = isset( $tracking['namespace'] ) && is_string( $tracking['namespace'] ) ? $tracking['namespace'] . '.' : '';
+				$ns = isset( $tracking['namespace'] ) && is_string( $tracking['namespace'] ) && ! empty( $tracking['namespace'] ) ? $tracking['namespace'] . '.' : '';
 				$api_calls_str .= $this->tracking_code_google_api_call( array( $ns . '_setAccount', $account ) );
 				$api_calls_str .= $this->tracking_code_google_api_call( array( $ns . '_trackPageview' ) );
 			}
@@ -206,7 +224,9 @@ EOS;
 		add_settings_section(
 			$this->admin_panel_settings_field_slug . '-piwik',
 			__( 'Piwik Settings', 'expana' ),
-			array( $this, 'callback_settings_section_main' ),
+			function(){
+				?><p><?php echo __( 'TODO Piwik settings description.', 'expana' ); ?></p><?php
+			},
 			$this->admin_panel_settings_field_slug
 		);
 		//Add a field to the section.
@@ -218,7 +238,31 @@ EOS;
 			$this->admin_panel_settings_field_slug,
 			$this->admin_panel_settings_field_slug . '-piwik',
 			array(
-				'label_for' => 'piwik_rest_api',//Internal variable used for adding label elements to inputs.
+				'label_for' => 'piwik_rest_api',
+				'input_type' => 'text',
+				'input_class' => 'regular-text code'
+			)
+		);
+		//Add a section to the settings.
+		//Google group.
+		add_settings_section(
+			$this->admin_panel_settings_field_slug . '-google',
+			__( 'Google Settings', 'expana' ),
+			function(){
+				?><p><?php echo __( 'TODO Google settings description.', 'expana' ); ?></p><?php
+			},
+			$this->admin_panel_settings_field_slug
+		);
+		//Add a field to the section.
+		//Google inputs.
+		add_settings_field(
+			'piwik',//A unique slug for this settings field, otherwise apparently unused.
+			__( 'Web Property ID' ),
+			array( $this, 'callback_settings_section_field' ),
+			$this->admin_panel_settings_field_slug,
+			$this->admin_panel_settings_field_slug . '-google',
+			array(
+				'label_for' => 'google_id',
 				'input_type' => 'text',
 				'input_class' => 'regular-text code'
 			)
@@ -246,10 +290,6 @@ EOS;
 				?><input id="<?php echo $args['label_for']; ?>" class="<?php echo $args['input_class']; ?>" type="text" /><?php
 			break;
 		}
-	}
-	
-	public function callback_settings_section_main() {
-		?><p><?php echo __( 'TODO Piwik settings description.', 'expana' ); ?></p><?php
 	}
 	
 	/**
@@ -300,8 +340,8 @@ EOS;
 	public function action_print_tracking_code() {
 		//Global tracking Piwik.
 		if (
-			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) &&
-			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) &&
+			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) &&
+			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) &&
 			is_int( EXPANA_PIWIK_GLOBAL_TRACKING_ID )
 		) {
 			echo $this->tracking_code_piwik(
@@ -310,9 +350,19 @@ EOS;
 				EXPANA_PIWIK_GLOBAL_TRACKING_ID
 			);
 		}
+		
+		//TODO: User defined Piwik.
 		$ga_accounts = array();
-		$ga_accounts['account'] = array(
-			'namespace' => 'ns'
+		//Add global tracking to the list.
+		if ( is_string( EXPANA_GOOGLE_GLOBAL_TRACKING_ID ) && ! empty( EXPANA_GOOGLE_GLOBAL_TRACKING_ID ) ) {
+			$ga_accounts[EXPANA_GOOGLE_GLOBAL_TRACKING_ID] = array(
+				'namespace' => EXPANA_GOOGLE_GLOBAL_TRACKING_NAMESPACE
+			);
+		}
+		
+		//TODO: Add site tracking to the list.
+		$ga_accounts['TEST-USER'] = array(
+			'namespace' => ''
 		);
 		echo $this->tracking_code_google( $ga_accounts );
 	}
