@@ -139,18 +139,20 @@ EOS;
 	
 	private $admin_panel_menu_label = 'Analytics';
 	private $admin_panel_page_title = 'Expressions Analytics';
-	private $admin_panel_page_slug = 'expressions-analytics';
-	private $admin_panel_settings_field_slug = 'expressions-analytics-settings';
+	private $admin_panel_page_slug = 'expana';
+	private $admin_panel_settings_field_slug = 'expana-settings';
 	private $admin_panel_settings_capability = 'manage_options';
 	
-	private $settings_name = 'expressions_analytics_settings';
-	private $settings = null;
+	private $settings_name = 'expana_settings';
+	private $settings_data = null;
+	private $settings_default = array(
+		'piwik_auth_token'       => '',
+		'piwik_site_id'          => null,
+		'google_web_property_id' => ''
+	);
 	
 	public function __construct() {
 		$this->add_actions();
-		//header('Content-Type: text/plain');
-		//var_dump($this->query_piwik_api(array('method'=>'SitesManager.getSitesIdFromSiteUrl')));
-		//exit();
 	}
 	
 	/**
@@ -203,7 +205,7 @@ EOS;
 	public function add_actions() {
 		add_action( 'init',                  array( $this, 'action_init'                  )        );
 		add_action( 'admin_init',            array( $this, 'action_admin_init'            )        );
-		add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' )        );
+		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' )        );
 		add_action( 'admin_menu',            array( $this, 'action_admin_menu'            )        );
 		add_action( 'wp_footer',             array( $this, 'action_print_tracking_code'   ), 99999 );
 	}
@@ -212,7 +214,16 @@ EOS;
 		
 	}
 	
+	public function settings_get() {
+		if ( ! is_array( $this->settings_data ) ) {
+			$this->settings_data = wp_parse_args( (array)get_option( $this->settings_name, array() ), $this->settings_default );
+		}
+		return $this->settings_data;
+	}
+	
 	public function action_admin_init() {
+		$setting = $this->settings_get();
+		
 		//Register the plugin settings.
 		register_setting(
 			$this->admin_panel_settings_field_slug,
@@ -223,9 +234,9 @@ EOS;
 		//Piwik group.
 		add_settings_section(
 			$this->admin_panel_settings_field_slug . '-piwik',
-			__( 'Piwik Settings', 'expana' ),
+			__( 'Piwik Analytics', 'expana' ),
 			function(){
-				?><p><?php echo __( 'TODO Piwik settings description.', 'expana' ); ?></p><?php
+				?><p><?php echo __( 'Enter your Piwik Auto Token below to enable tracking.', 'expana' ); ?></p><?php
 			},
 			$this->admin_panel_settings_field_slug
 		);
@@ -233,23 +244,24 @@ EOS;
 		//Piwik inputs.
 		add_settings_field(
 			'piwik',//A unique slug for this settings field, otherwise apparently unused.
-			__( 'Rest API URL' ),
+			__( 'Auth Token' ),
 			array( $this, 'callback_settings_section_field' ),
 			$this->admin_panel_settings_field_slug,
 			$this->admin_panel_settings_field_slug . '-piwik',
 			array(
-				'label_for' => 'piwik_rest_api',
-				'input_type' => 'text',
-				'input_class' => 'regular-text code'
+				'label_for'   => 'piwik_auth_token',
+				'input_type'  => 'text',
+				'input_class' => 'regular-text code',
+				'input_value' => $setting['piwik_auth_token']
 			)
 		);
 		//Add a section to the settings.
 		//Google group.
 		add_settings_section(
 			$this->admin_panel_settings_field_slug . '-google',
-			__( 'Google Settings', 'expana' ),
+			__( 'Google Analytics', 'expana' ),
 			function(){
-				?><p><?php echo __( 'TODO Google settings description.', 'expana' ); ?></p><?php
+				?><p><?php echo __( 'Enter your Google Web Property ID below to enable tracking.', 'expana' ); ?></p><?php
 			},
 			$this->admin_panel_settings_field_slug
 		);
@@ -262,15 +274,100 @@ EOS;
 			$this->admin_panel_settings_field_slug,
 			$this->admin_panel_settings_field_slug . '-google',
 			array(
-				'label_for' => 'google_id',
-				'input_type' => 'text',
-				'input_class' => 'regular-text code'
+				'label_for'   => 'google_web_property_id',
+				'input_type'  => 'text',
+				'input_class' => 'regular-text code',
+				'input_value' => $setting['google_web_property_id']
 			)
 		);
 	}
 	
-	public function callback_settings_sanitize() {
-		//TODO
+	/**
+	 * Query the Piwik API for the site id associated with the URL and return the contents and success in an associative array.
+	 * 
+	 * @param string $resturl The URL to the REST API.
+	 * @param array $restauth The Piwik auth token.
+	 * 
+	 * @return array The associative array.
+	 */
+	public function piwik_api_get_site_id_from_site_url( $resturl, $restauth ) {
+		$siteid = null;
+		$error = null;
+		//Query the REST API.
+		$req = $this->query_piwik_api(
+			$resturl,
+			array(
+				'token_auth' => $restauth,
+				'method'     => 'SitesManager.getSitesIdFromSiteUrl',
+				'url'        => get_site_url()
+			)
+		);
+		//Check success.
+		if ( $req['result'] === 'success' && ! empty( $req['content'] ) ) {
+			//Decode the JSON content.
+			$content = @json_decode( $req['content'], true );
+			if ( is_array( $content ) ) {
+				//If JSON result is not error.
+				if ( ! ( isset( $content['result'] ) && $content['result'] === 'error' ) ) {
+					//Loop over the sites.
+					foreach ( $content as &$site ) {
+						//Check the ID.
+						if ( isset( $site['idsite'] ) ) {
+							$idsite = (int)$site['idsite'];
+							//Make sure the ID is not the global one.
+							if ( $idsite !== EXPANA_PIWIK_GLOBAL_TRACKING_ID ) {
+								$siteid = $idsite;
+								break;
+							}
+						}
+					}
+					unset( $site );
+					if ( $siteid === null ) {
+						$error = __( 'No site associated with this URL', 'expana' );
+					}
+				} else {
+					$error = __( 'Piwik API error', 'expana' );
+				}
+			} else {
+				$error = __( 'Piwik API returned an invalid response', 'expana' );
+			}
+		} else {
+			$error = __( 'Failed to connect to the Piwik API', 'expana' );
+		}
+		return $siteid === null ? array( 'result' => 'error', 'content' => $error ) : array( 'result' => 'success', 'content' => $siteid );
+	}
+	
+	/**
+	 * Sanitize the input.
+	 * 
+	 * @param array $input The updated settings.
+	 * 
+	 * @return string The sanitized settings.
+	 */
+	public function callback_settings_sanitize( $input = null ) {
+		//Get current settings.
+		$settings = $this->settings_get();
+		if ( is_array( $input ) ) {
+			//Parse the input
+			$input = wp_parse_args( $input, $this->settings_default );
+			
+			//If the Piwik Auth Token has changed, re-pull the site ID to track.
+			if (
+				$settings['piwik_auth_token'] !== $input['piwik_auth_token'] || 
+				( ! is_int( $settings['piwik_site_id'] ) && trim( $input['piwik_auth_token'] ) )
+			) {
+				//Get the ID if possible.
+				if ( is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) ) {
+					//var_dump( $this->piwik_api_get_site_id_from_site_url( 'http://' . EXPANA_PIWIK_GLOBAL_TRACKING_REST_API, $input['piwik_auth_token'] ) );
+					//exit;
+				} else {
+					//ERROR
+				}
+			}
+			$settings['piwik_auth_token']       = trim( $input['piwik_auth_token'] );
+			$settings['google_web_property_id'] = trim( $input['google_web_property_id'] );
+		}
+		return $settings;
 	}
 	
 	/**
@@ -279,15 +376,21 @@ EOS;
 	 * @param array $args Data from add_settings_field.
 	 */
 	public function callback_settings_section_field( $args ) {
-		//TODO: Be sure to use label_for for the input element ID.
 		$args = wp_parse_args( $args, array(
-			'label_for' => '',
-			'input_type' => '',
-			'input_class' => ''
+			'label_for'   => '',
+			'input_type'  => '',
+			'input_class' => '',
+			'input_value' => ''
 		) );
 		switch ( $args['input_type'] ) {
 			case 'text':
-				?><input id="<?php echo $args['label_for']; ?>" class="<?php echo $args['input_class']; ?>" type="text" /><?php
+				?><input <?php
+					?>type="text" <?php
+					?>id="<?php echo $args['label_for']; ?>" <?php
+					?>class="<?php echo $args['input_class']; ?>" <?php
+					?>name="<?php echo $this->settings_name; ?>[<?php echo $args['label_for']; ?>]" <?php
+					?>value="<?php echo $args['input_value']; ?>" <?php
+				?>/><?php
 			break;
 		}
 	}
@@ -330,6 +433,9 @@ EOS;
 				settings_fields( $this->admin_panel_settings_field_slug );
 				do_settings_sections( $this->admin_panel_settings_field_slug );
 				?>
+				<p class="submit">
+					<input type="submit" value="<?php esc_attr_e('Save Changes'); ?>" class="button button-primary" id="submit" name="submit" />
+				</p>
 			</form>
 		</div><?php
 	}
@@ -368,62 +474,6 @@ EOS;
 	}
 	
 	/**
-	 * Get all saved settings, or a specified one, optionally defaulting to a provided default.
-	 * 
-	 * @param string $setting The setting to fetch.
-	 * @param mixed $default The default value to return.
-	 * 
-	 * @return mixed The settings or the specified setting.
-	 */
-	public function settings_get( $setting = null, $default = null ) {
-		//Lazy pull the settings, defaulting to an empty array.
-		if ( ! is_array( $this->settings ) ) {
-			$this->settings = get_option( $this->settings_name, null );
-			if ( ! is_array( $this->settings ) ) {
-				$this->settings = array();
-			}
-		}
-		//Check if for a specific setting.
-		if ( $setting !== null ) {
-			//Return default if the property does not exist.
-			return array_key_exists( $this->settings, $setting ) ? $this->settings[$setting] : $default;
-		}
-		//Return all the settings.
-		return ( empty( $this->settings ) && $default !== null ) ? $default : $this->settings;
-	}
-	
-	/**
-	 * Update settings.
-	 * 
-	 * @param mixed $settings An associative array of setting to save.
-	 * @param bool $replace_all If true, replaces all settings with the new settings, else merges the settings.
-	 */
-	public function settings_set( $settings, $replace_all = false ) {
-		//Check that settings are an array.
-		if ( is_array( $settings ) ) {
-			$changed = false;
-			//Check if should overwrite all settings or simple merge them.
-			if ( $replace_all ) {
-				$this->settings = $settings;
-				$changed = true;
-			} else {
-				foreach ( $settings as $k=>&$v ) {
-					if ( array_key_exists( $this->settings, $k ) && $this->settings[$k] !== $v ) {
-						//Set the key value, without using the reference.
-						$this->settings[$k] = $settings[$k];
-						$changed = true;
-					}
-				}
-				unset( $v );
-			}
-			//If the settings have changed, save them to the database.
-			if ( $changed ) {
-				update_option( $this->settings_name, $this->settings );
-			}
-		}
-	}
-	
-	/**
 	 * Delete the specified setting or delete all settings if none are specified.
 	 * 
 	 * @param string $setting A specific setting to delete.
@@ -442,22 +492,18 @@ EOS;
 	}
 	
 	/**
-	 * Query the configured Piwik API with the specified parameters and return the contents in an associative array.
+	 * Query the Piwik API with the specified parameters and return the contents in an associative array.
 	 * 
+	 * @param string $restapi The URL to the REST API.
 	 * @param array $query An associative array of query parameters.
 	 * 
 	 * @return array The associative array.
 	 */
-	public function query_piwik_api( $query ) {
-		$api_path = 'http://' . EXPANA_PIWIK_GLOBAL_TRACKING_REST_API;//TODO
-		$query_args = wp_parse_args( $query, array(
+	public function query_piwik_api( $restapi, $query ) {
+		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
 			'module'     => 'API',
-			'format'     => 'JSON',
-			'url'        => get_site_url(),
-			'token_auth' => TMP_AUTHTOKEN//TODO
-		) );
-		$url = rtrim( $api_path, '/' ) . '/?' . http_build_query( $query_args );
-		return $this->remote_request( $url );
+			'format'     => 'JSON'
+		) ) ) );
 	}
 	
 	/**
@@ -471,7 +517,7 @@ EOS;
 		if ( filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
 			return array(
 				'result'  => 'error',
-				'content' => 'Invalid URL'
+				'content' => __( 'Invalid URL', 'expana' )
 			);
 		}
 		if ( function_exists( 'curl_init' ) ) {
@@ -481,7 +527,7 @@ EOS;
 			if ( ! $ctx ) {
 				return array(
 					'result'  => 'error',
-					'content' => 'Failed to initialize CURL'
+					'content' => __( 'Failed to initialize CURL', 'expana' )
 				);
 			}
 			//Return string.
@@ -534,14 +580,14 @@ EOS;
 			} else {
 				return array(
 					'result'  => 'error',
-					'content' => 'Remote fopen request failed'
+					'content' => __( 'Remote fopen request failed', 'expana' )
 				);
 			}
 		}
 		//Return failure.
 		return array(
 			'result'  => 'error',
-			'content' => 'CURL and remote fopen are disabled'
+			'content' => __( 'CURL and remote fopen are disabled', 'expana' )
 		);
 	}
 }
