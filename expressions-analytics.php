@@ -146,8 +146,10 @@ EOS;
 	private $settings_name = 'expana_settings';
 	private $settings_data = null;
 	private $settings_default = array(
-		'piwik_auth_token'       => '',
-		'piwik_site_id'          => null,
+		'piwik_auth_token_prod'  => '',
+		'piwik_site_id_prod'     => null,
+		'piwik_auth_token_dev'   => '',
+		'piwik_site_id_dev'      => null,
 		'google_web_property_id' => ''
 	);
 	
@@ -203,7 +205,7 @@ EOS;
 	 * Initialize the action hooks.
 	 */
 	public function add_actions() {
-		add_action( 'init',                  array( $this, 'action_init'                  )        );
+		//add_action( 'init',                  array( $this, 'action_init'                  )        );
 		add_action( 'admin_init',            array( $this, 'action_admin_init'            )        );
 		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' )        );
 		add_action( 'admin_menu',            array( $this, 'action_admin_menu'            )        );
@@ -243,16 +245,29 @@ EOS;
 		//Add a field to the section.
 		//Piwik inputs.
 		add_settings_field(
-			'piwik',//A unique slug for this settings field, otherwise apparently unused.
-			__( 'Auth Token' ),
+			'piwik_auth_token_prod',//Unique slug for field.
+			__( 'Auth Token PROD' ),
 			array( $this, 'callback_settings_section_field' ),
 			$this->admin_panel_settings_field_slug,
 			$this->admin_panel_settings_field_slug . '-piwik',
 			array(
-				'label_for'   => 'piwik_auth_token',
+				'label_for'   => 'piwik_auth_token_prod',
 				'input_type'  => 'text',
 				'input_class' => 'regular-text code',
-				'input_value' => $setting['piwik_auth_token']
+				'input_value' => $setting['piwik_auth_token_prod']
+			)
+		);
+		add_settings_field(
+			'piwik_auth_token_dev',//Unique slug for field.
+			__( 'Auth Token DEV' ),
+			array( $this, 'callback_settings_section_field' ),
+			$this->admin_panel_settings_field_slug,
+			$this->admin_panel_settings_field_slug . '-piwik',
+			array(
+				'label_for'   => 'piwik_auth_token_dev',
+				'input_type'  => 'text',
+				'input_class' => 'regular-text code',
+				'input_value' => $setting['piwik_auth_token_dev']
 			)
 		);
 		//Add a section to the settings.
@@ -268,7 +283,7 @@ EOS;
 		//Add a field to the section.
 		//Google inputs.
 		add_settings_field(
-			'piwik',//A unique slug for this settings field, otherwise apparently unused.
+			'google_web_property_id',//Unique slug for field.
 			__( 'Web Property ID' ),
 			array( $this, 'callback_settings_section_field' ),
 			$this->admin_panel_settings_field_slug,
@@ -309,21 +324,23 @@ EOS;
 			if ( is_array( $content ) ) {
 				//If JSON result is not error.
 				if ( ! ( isset( $content['result'] ) && $content['result'] === 'error' ) ) {
-					//Loop over the sites.
-					foreach ( $content as &$site ) {
-						//Check the ID.
-						if ( isset( $site['idsite'] ) ) {
-							$idsite = (int)$site['idsite'];
-							//Make sure the ID is not the global one.
-							if ( $idsite !== EXPANA_PIWIK_GLOBAL_TRACKING_ID ) {
-								$siteid = $idsite;
-								break;
+					if ( ! empty( $content ) ) {
+						//Loop over the sites.
+						foreach ( $content as &$site ) {
+							//Check the ID.
+							if ( isset( $site['idsite'] ) ) {
+								$idsite = (int)$site['idsite'];
+								//Make sure the ID is not the global one.
+								if ( $idsite !== EXPANA_PIWIK_GLOBAL_TRACKING_ID ) {
+									$siteid = $idsite;
+									break;
+								}
 							}
 						}
+						unset( $site );
 					}
-					unset( $site );
 					if ( $siteid === null ) {
-						$error = __( 'No site associated with this URL', 'expana' );
+						$error = __( 'No site associated with this URL under this auth token', 'expana' );
 					}
 				} else {
 					$error = __( 'Piwik API error', 'expana' );
@@ -351,20 +368,47 @@ EOS;
 			//Parse the input
 			$input = wp_parse_args( $input, $this->settings_default );
 			
-			//If the Piwik Auth Token has changed, re-pull the site ID to track.
-			if (
-				$settings['piwik_auth_token'] !== $input['piwik_auth_token'] || 
-				( ! is_int( $settings['piwik_site_id'] ) && trim( $input['piwik_auth_token'] ) )
-			) {
-				//Get the ID if possible.
-				if ( is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) ) {
-					//var_dump( $this->piwik_api_get_site_id_from_site_url( 'http://' . EXPANA_PIWIK_GLOBAL_TRACKING_REST_API, $input['piwik_auth_token'] ) );
-					//exit;
+			//Variable that are used a lot.
+			$input_piwik_auth_token_prod = trim( $input['piwik_auth_token_prod'] );
+			$input_piwik_auth_token_dev  = trim( $input['piwik_auth_token_dev'] );
+			
+			//Check if the API is configured.
+			if ( is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) ) {
+				$rest_api_url = 'http://' . EXPANA_PIWIK_GLOBAL_TRACKING_REST_API;
+				if ( $input_piwik_auth_token_prod ) {
+					//Check for changes or currently unset.
+					if ( $settings['piwik_auth_token_prod'] !== $input_piwik_auth_token_prod || ! is_int( $settings['piwik_site_id_prod'] ) ) {
+						//TODO: UPDATE IT OR NULL IT
+						$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_prod );
+						//var_dump( $res );
+					}
 				} else {
-					//ERROR
+					$settings['piwik_site_id_prod'] = null;
+				}
+				if ( $input_piwik_auth_token_dev ) {
+					//Check for changes or currently unset.
+					if ( $settings['piwik_auth_token_dev'] !== $input_piwik_auth_token_dev || ! is_int( $settings['piwik_site_id_dev'] ) ) {
+						//TODO: UPDATE IT OR NULL IT
+						$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_dev );
+						//var_dump( $res );
+					}
+				} else {
+					$settings['piwik_site_id_dev'] = null;
+				}
+				//TODO: Error handling.
+				//exit();
+				if ( true ) {
+					add_settings_error(
+						$this->admin_panel_settings_field_slug . '-settings-error',
+						$this->admin_panel_settings_field_slug,
+						__( '', 'expana' ),
+						'error' 
+					);
 				}
 			}
-			$settings['piwik_auth_token']       = trim( $input['piwik_auth_token'] );
+			
+			$settings['piwik_auth_token_prod']  = $input_piwik_auth_token_prod;
+			$settings['piwik_auth_token_dev']   = $input_piwik_auth_token_dev;
 			$settings['google_web_property_id'] = trim( $input['google_web_property_id'] );
 		}
 		return $settings;
