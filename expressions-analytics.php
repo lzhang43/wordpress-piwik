@@ -778,6 +778,44 @@ EOS;
 	}
 
 	/**
+	* Get token_auth
+	*/
+	function getTokenAuth() {
+		$settings = $this->settings_get();
+
+		$piwik_token_auth = null;
+		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
+			case 'prod':
+				$piwik_token_auth = $settings['piwik_auth_token_prod'];
+			break;
+			case 'dev':
+				$piwik_token_auth = $settings['piwik_auth_token_dev'];
+			break;
+		}
+
+		return $piwik_token_auth;
+	}
+
+	/**
+	* Get idSite
+	*/
+	function getIdSite() {
+		$settings = $this->settings_get();
+
+		$piwik_site_id = null;
+		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
+			case 'prod':
+				$piwik_site_id = $settings['piwik_site_id_prod'];
+			break;
+			case 'dev':
+				$piwik_site_id = $settings['piwik_site_id_dev'];
+			break;
+		}
+
+		return $piwik_site_id;
+	}
+
+	/**
 	 * Build dashboard page
 	 */
 	function buildDashboard() {
@@ -795,17 +833,16 @@ EOS;
 	/**
 	 * Generate Piwik REST API url
 	 */
-	public function generatePiwikApiUrl( $module, $method, $siteId )
+	public function generatePiwikApiUrl( $module = 'API', $method, $period = 'day', $format = 'original' )
 	{
 		$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
 
 		if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) ) {
-			$rest_api_url = 'http://' . $piwik_rest_api . '/?module=' . $module . '&method=' . $method . '&idSite=' . $siteId;
+			$rest_api_url = 'http://' . $piwik_rest_api . '/?module=' . $module . '&method=' . $method . '&idSite=' . $this->getIdSite() . '&period=' . $period . '&format=' . $format . '&token_auth=' . $this->getTokenAuth();
 
 			return $rest_api_url;
 		}
 	}
-
 
 	/**
 	 * Dashboard page callback.
@@ -818,8 +855,8 @@ EOS;
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
 			<p>
 			<?php
-				$piwik_response = $this->remote_request($this->generatePiwikApiUrl('API', 'Dashboard.getDashboards', 1));
-				echo (htmlspecialchars($piwik_response['content']));
+				$piwik_response = $this->remote_request($this->generatePiwikApiUrl('API', 'Dashboard.getDashboards', 'day', 'original'));
+				echo ($piwik_response['content']);
 			?>
 			</p>
 		</div><?php
