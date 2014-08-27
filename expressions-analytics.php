@@ -272,7 +272,7 @@ EOS;
 	public function add_actions() {
 		//add_action( 'init', array( $this, 'action_init' ) );
 		add_action( 'admin_init', array( $this, 'action_admin_init') );
-		add_action( 'admin_menu', array( $this, 'buildDashboard') );
+		add_action( 'admin_menu', array( $this, 'build_dashboard') );
 		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
 		add_action( 'wp_footer', array( $this, 'action_print_tracking_code' ), 99999 );
@@ -785,7 +785,7 @@ EOS;
 	/**
 	* Get token_auth
 	*/
-	function getTokenAuth() {
+	function get_token_auth() {
 		$settings = $this->settings_get();
 
 		$piwik_token_auth = null;
@@ -804,7 +804,7 @@ EOS;
 	/**
 	* Get idSite
 	*/
-	function getIdSite() {
+	function get_id_site() {
 		$settings = $this->settings_get();
 
 		$piwik_site_id = null;
@@ -823,7 +823,7 @@ EOS;
 	/**
 	 * Build dashboard page
 	 */
-	function buildDashboard() {
+	function build_dashboard() {
 		if ( is_int( $this->getPiwikSiteId() ) ) {
 			add_options_page(
 				__( $this->dashboard_page_title, 'expana' ),
@@ -847,8 +847,8 @@ EOS;
 			<p>
 			<?php
 				$piwik_response = $this->query_piwik_api(array(
-					'token_auth'	=> $this->getTokenAuth(),
-					'idSite' 		=> $this->getIdSite(),
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
 					'method' 		=> 'Dashboard.getDashboards'
 					));
 				echo ($piwik_response['content']);
