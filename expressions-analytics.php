@@ -426,8 +426,9 @@ EOS;
 			$input_piwik_auth_token_dev  = trim( $input['piwik_auth_token_dev'] );
 			
 			//Check if the API is configured.
-			if ( is_string( EXPRESSIONS_PIWIK_REST_API ) && ! empty( EXPRESSIONS_PIWIK_REST_API ) ) {
-				$rest_api_url = 'http://' . EXPRESSIONS_PIWIK_REST_API;
+			$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
+			if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) ) {
+				$rest_api_url = 'http://' . $piwik_rest_api;
 				$piwik_error = null;
 				//Only use the current production level.
 				switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
@@ -557,16 +558,19 @@ EOS;
 	public function action_print_tracking_code() {
 		$settings = $this->settings_get();
 		
+		$piwik_global_tracking_domain = EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN;
+		$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
+		$piwik_global_tracking_id = EXPANA_PIWIK_GLOBAL_TRACKING_ID;
 		//Global tracking Piwik.
 		if (
-			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) &&
-			is_string( EXPRESSIONS_PIWIK_REST_API ) && ! empty( EXPRESSIONS_PIWIK_REST_API ) &&
-			is_int( EXPANA_PIWIK_GLOBAL_TRACKING_ID )
+			is_string( $piwik_global_tracking_domain ) && ! empty( $piwik_global_tracking_domain ) &&
+			is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) &&
+			is_int( $piwik_global_tracking_id )
 		) {
 			echo $this->tracking_code_piwik(
-				EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN,
-				EXPRESSIONS_PIWIK_REST_API,
-				EXPANA_PIWIK_GLOBAL_TRACKING_ID
+				$piwik_global_tracking_domain,
+				$piwik_rest_api,
+				$piwik_global_tracking_id
 			);
 		}
 		
@@ -585,7 +589,7 @@ EOS;
 			if ( ! empty( $site_domain ) ) {
 				echo $this->tracking_code_piwik(
 					'*.' . $site_domain,
-					EXPRESSIONS_PIWIK_REST_API,
+					$piwik_rest_api,
 					$piwik_site_id
 				);
 			}
@@ -602,8 +606,9 @@ EOS;
 		}
 		
 		//Add global tracking to the list.
-		if ( is_string( EXPANA_GOOGLE_GLOBAL_TRACKING_ID ) && ! empty( EXPANA_GOOGLE_GLOBAL_TRACKING_ID ) ) {
-			$ga_accounts[EXPANA_GOOGLE_GLOBAL_TRACKING_ID] = array(
+		$google_global_tracking_id = EXPANA_GOOGLE_GLOBAL_TRACKING_ID;
+		if ( is_string( $google_global_tracking_id ) && ! empty( $google_global_tracking_id ) ) {
+			$ga_accounts[$google_global_tracking_id] = array(
 				'namespace' => EXPANA_GOOGLE_GLOBAL_TRACKING_NAMESPACE
 			);
 		}
