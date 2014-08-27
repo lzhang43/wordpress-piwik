@@ -180,6 +180,26 @@ EOS;
 	 * The settings data cache.
 	 */
 	private $settings_data = null;
+
+	/**
+	 * Dashboard page label.
+	 */
+	private $dashboard_menu_label = 'Analytics Dashboard';
+	
+	/**
+	 * Dashboard page title.
+	 */
+	private $dashboard_page_title = 'Expressions Analytics Dashboard';
+	
+	/**
+	 * Dashboard page slug.
+	 */
+	private $dashboard_page_slug = 'expana_dashboard';
+
+	/**
+	 * Dashboard required privileges.
+	 */
+	private $dashboard_capability = 'manage_options';		
 	
 	/**
 	 * The default settings data.
@@ -250,11 +270,12 @@ EOS;
 	 * Initialize the action hooks.
 	 */
 	public function add_actions() {
-		//add_action( 'init',                  array( $this, 'action_init'                  )        );
-		add_action( 'admin_init',            array( $this, 'action_admin_init'            )        );
-		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' )        );
-		add_action( 'admin_menu',            array( $this, 'action_admin_menu'            )        );
-		add_action( 'wp_footer',             array( $this, 'action_print_tracking_code'   ), 99999 );
+		//add_action( 'init', array( $this, 'action_init' ) );
+		add_action( 'admin_init', array( $this, 'action_admin_init') );
+		add_action( 'admin_menu', array( $this, 'buildDashboard') );
+		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
+		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
+		add_action( 'wp_footer', array( $this, 'action_print_tracking_code' ), 99999 );
 	}
 	
 	public function action_init() {
@@ -736,5 +757,52 @@ EOS;
 			'content' => __( 'CURL and remote fopen are disabled', 'expana' )
 		);
 	}
+
+	/**
+	 * Get associated Piwik site id
+	 */
+	function getPiwikSiteId() {
+		$settings = $this->settings_get();
+
+		$piwik_site_id = null;
+		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
+			case 'prod':
+				$piwik_site_id = $settings['piwik_site_id_prod'];
+			break;
+			case 'dev':
+				$piwik_site_id = $settings['piwik_site_id_dev'];
+			break;
+		}
+
+		return $piwik_site_id;
+	}
+
+	/**
+	 * Build dashboard page
+	 */
+	function buildDashboard() {
+		if ( is_int( $this->getPiwikSiteId() ) ) {
+			add_options_page(
+				__( $this->dashboard_page_title, 'expana' ),
+				__( $this->dashboard_menu_label, 'expana' ),
+				$this->dashboard_capability,
+				$this->dashboard_page_slug,
+				array( $this, 'callback_dashboard_page' )
+			);
+		}
+	}
+
+	/**
+	 * Dashboard page callback.
+	 */
+	public function callback_dashboard_page() {
+		if ( ! current_user_can( $this->dashboard_capability ) ) {
+			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+		}
+		?><div class="wrap">
+			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
+		</div><?php
+	}
 }
+
 new ExpressionsAnalytics();
