@@ -7,6 +7,24 @@ Version: 1.0
 */
 
 /**
+ * The rest API URL for global tracking in Piwik, minus the protocol.
+ *
+ * Define as non-string or empty to disable.
+ */
+if ( ! defined( 'EXPRESSIONS_PRODUCTION_LEVEL' ) ) {
+	define( 'EXPRESSIONS_PRODUCTION_LEVEL', null );
+}
+
+/**
+ * The rest API URL for global tracking in Piwik, minus the protocol.
+ *
+ * Define as non-string or empty to disable.
+ */
+if ( ! defined( 'EXPRESSIONS_PIWIK_REST_API' ) ) {
+	define( 'EXPRESSIONS_PIWIK_REST_API', null );
+}
+
+/**
  * The site id for global tracking in Google.
  *
  * Define as non-string or empty to disable.
@@ -40,15 +58,6 @@ if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_ID' ) ) {
  */
 if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN' ) ) {
 	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN', '*.syr.edu' );
-}
-
-/**
- * The rest API URL for global tracking in Piwik, minus the protocol.
- *
- * Define as non-string or empty to disable.
- */
-if ( ! defined( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API' ) ) {
-	define( 'EXPANA_PIWIK_GLOBAL_TRACKING_REST_API', null );
 }
 
 /**
@@ -137,14 +146,44 @@ _gaq.push(%1$s);
 
 EOS;
 	
+	/**
+	 * Admin panel settings page label.
+	 */
 	private $admin_panel_menu_label = 'Analytics';
+	
+	/**
+	 * Admin panel settings page title.
+	 */
 	private $admin_panel_page_title = 'Expressions Analytics';
+	
+	/**
+	 * Admin panel settings page slug.
+	 */
 	private $admin_panel_page_slug = 'expana';
+	
+	/**
+	 * Admin panel settings field slug.
+	 */
 	private $admin_panel_settings_field_slug = 'expana-settings';
+	
+	/**
+	 * Admin panel settings required privileges.
+	 */
 	private $admin_panel_settings_capability = 'manage_options';
 	
+	/**
+	 * The settings option key.
+	 */
 	private $settings_name = 'expana_settings';
+	
+	/**
+	 * The settings data cache.
+	 */
 	private $settings_data = null;
+	
+	/**
+	 * The default settings data.
+	 */
 	private $settings_default = array(
 		'piwik_auth_token_prod'  => '',
 		'piwik_site_id_prod'     => null,
@@ -153,7 +192,13 @@ EOS;
 		'google_web_property_id' => ''
 	);
 	
+	/**
+	 * Initializes the plugin.
+	 */
 	public function __construct() {
+		$this->admin_panel_menu_label = __( $this->admin_panel_menu_label, 'expana' );
+		$this->admin_panel_page_title = __( $this->admin_panel_page_title, 'expana' );
+		
 		$this->add_actions();
 	}
 	
@@ -216,6 +261,11 @@ EOS;
 		
 	}
 	
+	/**
+	 * Get the plugin settings..
+	 * 
+	 * @return array The settings.
+	 */
 	public function settings_get() {
 		if ( ! is_array( $this->settings_data ) ) {
 			$this->settings_data = wp_parse_args( (array)get_option( $this->settings_name, array() ), $this->settings_default );
@@ -223,6 +273,9 @@ EOS;
 		return $this->settings_data;
 	}
 	
+	/**
+	 * Initialize the plugin settings.
+	 */
 	public function action_admin_init() {
 		$setting = $this->settings_get();
 		
@@ -362,7 +415,7 @@ EOS;
 	 * @return string The sanitized settings.
 	 */
 	public function callback_settings_sanitize( $input = null ) {
-		//Get current settings.
+		//Get old settings.
 		$settings = $this->settings_get();
 		if ( is_array( $input ) ) {
 			//Parse the input
@@ -373,36 +426,50 @@ EOS;
 			$input_piwik_auth_token_dev  = trim( $input['piwik_auth_token_dev'] );
 			
 			//Check if the API is configured.
-			if ( is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) ) {
-				$rest_api_url = 'http://' . EXPANA_PIWIK_GLOBAL_TRACKING_REST_API;
-				if ( $input_piwik_auth_token_prod ) {
-					//Check for changes or currently unset.
-					if ( $settings['piwik_auth_token_prod'] !== $input_piwik_auth_token_prod || ! is_int( $settings['piwik_site_id_prod'] ) ) {
-						//TODO: UPDATE IT OR NULL IT
-						$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_prod );
-						//var_dump( $res );
-					}
-				} else {
-					$settings['piwik_site_id_prod'] = null;
+			if ( is_string( EXPRESSIONS_PIWIK_REST_API ) && ! empty( EXPRESSIONS_PIWIK_REST_API ) ) {
+				$rest_api_url = 'http://' . EXPRESSIONS_PIWIK_REST_API;
+				$piwik_error = null;
+				//Only use the current production level.
+				switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
+					case 'prod':
+						if ( $input_piwik_auth_token_prod ) {
+							//Check for changes or currently unset.
+							if ( $settings['piwik_auth_token_prod'] !== $input_piwik_auth_token_prod || ! is_int( $settings['piwik_site_id_prod'] ) ) {
+								$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_prod );
+								if ( $res['result'] === 'success' ) {
+									$settings['piwik_site_id_prod'] = $res['content'];
+								} else {
+									$piwik_error = $res['content'];
+									$settings['piwik_site_id_prod'] = null;
+								}
+							}
+						} else {
+							$settings['piwik_site_id_prod'] = null;
+						}
+					break;
+					case 'dev':
+						if ( $input_piwik_auth_token_dev ) {
+							//Check for changes or currently unset.
+							if ( $settings['piwik_auth_token_dev'] !== $input_piwik_auth_token_dev || ! is_int( $settings['piwik_site_id_dev'] ) ) {
+								$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_dev );
+								if ( $res['result'] === 'success' ) {
+									$settings['piwik_site_id_dev'] = $res['content'];
+								} else {
+									$piwik_error = $res['content'];
+									$settings['piwik_site_id_dev'] = null;
+								}
+							}
+						} else {
+							$settings['piwik_site_id_dev'] = null;
+						}
+					break;
 				}
-				if ( $input_piwik_auth_token_dev ) {
-					//Check for changes or currently unset.
-					if ( $settings['piwik_auth_token_dev'] !== $input_piwik_auth_token_dev || ! is_int( $settings['piwik_site_id_dev'] ) ) {
-						//TODO: UPDATE IT OR NULL IT
-						$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_dev );
-						//var_dump( $res );
-					}
-				} else {
-					$settings['piwik_site_id_dev'] = null;
-				}
-				//TODO: Error handling.
-				//exit();
-				if ( true ) {
+				if ( $piwik_error ) {
 					add_settings_error(
-						$this->admin_panel_settings_field_slug . '-settings-error',
+						$this->admin_panel_settings_field_slug . '-piwik-error',
 						$this->admin_panel_settings_field_slug,
-						__( '', 'expana' ),
-						'error' 
+						__( 'Piwik Error:', 'expana' ) . '<br /><code>' . esc_html( $piwik_error ) . '</code>',
+						'error'
 					);
 				}
 			}
@@ -488,21 +555,52 @@ EOS;
 	 * Action callback to print all the tracking code.
 	 */
 	public function action_print_tracking_code() {
+		$settings = $this->settings_get();
+		
 		//Global tracking Piwik.
 		if (
 			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN ) &&
-			is_string( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) && ! empty( EXPANA_PIWIK_GLOBAL_TRACKING_REST_API ) &&
+			is_string( EXPRESSIONS_PIWIK_REST_API ) && ! empty( EXPRESSIONS_PIWIK_REST_API ) &&
 			is_int( EXPANA_PIWIK_GLOBAL_TRACKING_ID )
 		) {
 			echo $this->tracking_code_piwik(
 				EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN,
-				EXPANA_PIWIK_GLOBAL_TRACKING_REST_API,
+				EXPRESSIONS_PIWIK_REST_API,
 				EXPANA_PIWIK_GLOBAL_TRACKING_ID
 			);
 		}
 		
-		//TODO: User defined Piwik.
+		//Piwik code for the current production level.
+		$piwik_site_id = null;
+		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
+			case 'prod':
+				$piwik_site_id = $settings['piwik_site_id_prod'];
+			break;
+			case 'dev':
+				$piwik_site_id = $settings['piwik_site_id_dev'];
+			break;
+		}
+		if ( is_int( $piwik_site_id ) ) {
+			$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
+			if ( ! empty( $site_domain ) ) {
+				echo $this->tracking_code_piwik(
+					'*.' . $site_domain,
+					EXPRESSIONS_PIWIK_REST_API,
+					$piwik_site_id
+				);
+			}
+		}
+				
+		//Google tracking.
 		$ga_accounts = array();
+		
+		//Add user tracking to the list.
+		if ( ! empty( $settings['google_web_property_id'] ) ) {
+			$ga_accounts[$settings['google_web_property_id']] = array(
+				'namespace' => ''
+			);
+		}
+		
 		//Add global tracking to the list.
 		if ( is_string( EXPANA_GOOGLE_GLOBAL_TRACKING_ID ) && ! empty( EXPANA_GOOGLE_GLOBAL_TRACKING_ID ) ) {
 			$ga_accounts[EXPANA_GOOGLE_GLOBAL_TRACKING_ID] = array(
@@ -510,11 +608,10 @@ EOS;
 			);
 		}
 		
-		//TODO: Add site tracking to the list.
-		$ga_accounts['TEST-USER'] = array(
-			'namespace' => ''
-		);
-		echo $this->tracking_code_google( $ga_accounts );
+		//Output the tracking code.
+		if ( ! empty( $ga_accounts ) ) {
+			echo $this->tracking_code_google( $ga_accounts );
+		}
 	}
 	
 	/**
