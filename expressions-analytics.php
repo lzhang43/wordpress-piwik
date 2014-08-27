@@ -11,8 +11,8 @@ Version: 1.0
  *
  * Define as non-string or empty to disable.
  */
-if ( ! defined( 'EXPRESSIONS_PRODUCTION_LEVEL' ) ) {
-	define( 'EXPRESSIONS_PRODUCTION_LEVEL', null );
+if ( ! defined( 'EXP_PRODUCTION_LEVEL' ) ) {
+	define( 'EXP_PRODUCTION_LEVEL', null );
 }
 
 /**
@@ -20,8 +20,17 @@ if ( ! defined( 'EXPRESSIONS_PRODUCTION_LEVEL' ) ) {
  *
  * Define as non-string or empty to disable.
  */
-if ( ! defined( 'EXPRESSIONS_PIWIK_REST_API' ) ) {
-	define( 'EXPRESSIONS_PIWIK_REST_API', null );
+if ( ! defined( 'EXP_PIWIK_HOST' ) ) {
+	define( 'EXP_PIWIK_HOST', null );
+}
+
+/**
+ * The protocol to access the Piwik API over.
+ *
+ * Define as non-string or empty to disable.
+ */
+if ( ! defined( 'EXP_PIWIK_PROTO' ) ) {
+	define( 'EXP_PIWIK_PROTO', null );
 }
 
 /**
@@ -426,13 +435,14 @@ EOS;
 			$input_piwik_auth_token_dev  = trim( $input['piwik_auth_token_dev'] );
 			
 			//Check if the API is configured.
-			$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
-			if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) ) {
-				$rest_api_url = 'http://' . $piwik_rest_api;
+			$piwik_rest_api = EXP_PIWIK_HOST;
+			$piwik_protocol = EXP_PIWIK_PROTO;
+			if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) && is_string( $piwik_protocol ) && ! empty( $piwik_protocol ) ) {
+				$rest_api_url = $piwik_protocol . '://' . $piwik_rest_api;
 				$piwik_error = null;
 				//Only use the current production level.
-				switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
-					case 'prod':
+				switch ( EXP_PRODUCTION_LEVEL ) {
+					case 'PROD':
 						if ( $input_piwik_auth_token_prod ) {
 							//Check for changes or currently unset.
 							if ( $settings['piwik_auth_token_prod'] !== $input_piwik_auth_token_prod || ! is_int( $settings['piwik_site_id_prod'] ) ) {
@@ -448,7 +458,7 @@ EOS;
 							$settings['piwik_site_id_prod'] = null;
 						}
 					break;
-					case 'dev':
+					case 'DEV':
 						if ( $input_piwik_auth_token_dev ) {
 							//Check for changes or currently unset.
 							if ( $settings['piwik_auth_token_dev'] !== $input_piwik_auth_token_dev || ! is_int( $settings['piwik_site_id_dev'] ) ) {
@@ -559,7 +569,7 @@ EOS;
 		$settings = $this->settings_get();
 		
 		$piwik_global_tracking_domain = EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN;
-		$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
+		$piwik_rest_api = EXP_PIWIK_HOST;
 		$piwik_global_tracking_id = EXPANA_PIWIK_GLOBAL_TRACKING_ID;
 		//Global tracking Piwik.
 		if (
@@ -576,11 +586,11 @@ EOS;
 		
 		//Piwik code for the current production level.
 		$piwik_site_id = null;
-		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
-			case 'prod':
+		switch ( EXP_PRODUCTION_LEVEL ) {
+			case 'PROD':
 				$piwik_site_id = $settings['piwik_site_id_prod'];
 			break;
-			case 'dev':
+			case 'DEV':
 				$piwik_site_id = $settings['piwik_site_id_dev'];
 			break;
 		}
