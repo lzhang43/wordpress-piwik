@@ -666,7 +666,12 @@ EOS;
 	 * 
 	 * @return array The associative array.
 	 */
-	public function query_piwik_api( $restapi, $query ) {
+	public function query_piwik_api( $query, $restapi = NULL ) {
+		if ($restapi == NULL)
+		{
+			$restapi = 'http://' . EXPRESSIONS_PIWIK_REST_API;
+		}
+
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
 			'module'     => 'API',
 			'format'     => 'JSON'
@@ -831,20 +836,6 @@ EOS;
 	}
 
 	/**
-	 * Generate Piwik REST API url
-	 */
-	public function generatePiwikApiUrl( $module = 'API', $method, $period = 'day', $format = 'original' )
-	{
-		$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
-
-		if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) ) {
-			$rest_api_url = 'http://' . $piwik_rest_api . '/?module=' . $module . '&method=' . $method . '&idSite=' . $this->getIdSite() . '&period=' . $period . '&format=' . $format . '&token_auth=' . $this->getTokenAuth();
-
-			return $rest_api_url;
-		}
-	}
-
-	/**
 	 * Dashboard page callback.
 	 */
 	public function callback_dashboard_page() {
@@ -855,7 +846,11 @@ EOS;
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
 			<p>
 			<?php
-				$piwik_response = $this->remote_request($this->generatePiwikApiUrl('API', 'Dashboard.getDashboards', 'day', 'original'));
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->getTokenAuth(),
+					'idSite' 		=> $this->getIdSite(),
+					'method' 		=> 'Dashboard.getDashboards'
+					));
 				echo ($piwik_response['content']);
 			?>
 			</p>
