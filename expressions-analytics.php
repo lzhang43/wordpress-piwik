@@ -793,6 +793,21 @@ EOS;
 	}
 
 	/**
+	 * Generate Piwik REST API url
+	 */
+	public function generatePiwikApiUrl( $module, $method, $siteId )
+	{
+		$piwik_rest_api = EXPRESSIONS_PIWIK_REST_API;
+
+		if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) ) {
+			$rest_api_url = 'http://' . $piwik_rest_api . '/?module=' . $module . '&method=' . $method . '&idSite=' . $siteId;
+
+			return $rest_api_url;
+		}
+	}
+
+
+	/**
 	 * Dashboard page callback.
 	 */
 	public function callback_dashboard_page() {
@@ -801,6 +816,12 @@ EOS;
 		}
 		?><div class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
+			<p>
+			<?php
+				$piwik_response = $this->remote_request($this->generatePiwikApiUrl('API', 'Dashboard.getDashboards', 1));
+				echo (htmlspecialchars($piwik_response['content']));
+			?>
+			</p>
 		</div><?php
 	}
 }
