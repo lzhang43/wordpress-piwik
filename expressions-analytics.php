@@ -835,7 +835,7 @@ EOS;
 	 */
 	function build_dashboard() {
 		if ( is_int( $this->get_id_site() ) ) {
-			add_options_page(
+			add_dashboard_page(
 				__( $this->dashboard_page_title, 'expana' ),
 				__( $this->dashboard_menu_label, 'expana' ),
 				$this->dashboard_capability,
@@ -854,14 +854,23 @@ EOS;
 		}
 		?><div class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
+			<h4>Module ImageGraphs</h4>
 			<p>
 			<?php
 				$piwik_response = $this->query_piwik_api(array(
 					'token_auth'	=> $this->get_token_auth(),
 					'idSite' 		=> $this->get_id_site(),
-					'method' 		=> 'Dashboard.getDashboards'
+					'method' 		=> 'ImageGraph.get',
+					'apiModule'		=> 'VisitsSummary',
+					'apiAction'		=> 'get',
+					'graphType'		=> 'evolution',
+					'period'		=> 'day',
+					'date'			=> 'previous30',
+					'width'			=> '500',
+					'height'		=> '250'
 					));
-				echo ($piwik_response['content']);
+
+				print_r ($piwik_response);
 			?>
 			</p>
 		</div><?php
