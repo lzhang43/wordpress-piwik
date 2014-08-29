@@ -679,7 +679,7 @@ EOS;
 	public function query_piwik_api( $query, $restapi = NULL ) {
 		if ($restapi == NULL)
 		{
-			$restapi = 'http://' . EXPRESSIONS_PIWIK_REST_API;
+			$restapi = EXP_PIWIK_PROTO . '://' . EXP_PIWIK_HOST;
 		}
 
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
@@ -780,11 +780,11 @@ EOS;
 		$settings = $this->settings_get();
 
 		$piwik_site_id = null;
-		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
-			case 'prod':
+		switch ( EXP_PRODUCTION_LEVEL ) {
+			case 'PROD':
 				$piwik_site_id = $settings['piwik_site_id_prod'];
 			break;
-			case 'dev':
+			case 'DEV':
 				$piwik_site_id = $settings['piwik_site_id_dev'];
 			break;
 		}
@@ -799,11 +799,11 @@ EOS;
 		$settings = $this->settings_get();
 
 		$piwik_token_auth = null;
-		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
-			case 'prod':
+		switch ( EXP_PRODUCTION_LEVEL ) {
+			case 'PROD':
 				$piwik_token_auth = $settings['piwik_auth_token_prod'];
 			break;
-			case 'dev':
+			case 'DEV':
 				$piwik_token_auth = $settings['piwik_auth_token_dev'];
 			break;
 		}
@@ -818,11 +818,11 @@ EOS;
 		$settings = $this->settings_get();
 
 		$piwik_site_id = null;
-		switch ( EXPRESSIONS_PRODUCTION_LEVEL ) {
-			case 'prod':
+		switch ( EXP_PRODUCTION_LEVEL ) {
+			case 'PROD':
 				$piwik_site_id = $settings['piwik_site_id_prod'];
 			break;
-			case 'dev':
+			case 'DEV':
 				$piwik_site_id = $settings['piwik_site_id_dev'];
 			break;
 		}
@@ -834,7 +834,7 @@ EOS;
 	 * Build dashboard page
 	 */
 	function build_dashboard() {
-		if ( is_int( $this->getPiwikSiteId() ) ) {
+		if ( is_int( $this->get_id_site() ) ) {
 			add_options_page(
 				__( $this->dashboard_page_title, 'expana' ),
 				__( $this->dashboard_menu_label, 'expana' ),
