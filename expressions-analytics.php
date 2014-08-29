@@ -283,8 +283,22 @@ EOS;
 		add_action( 'admin_init', array( $this, 'action_admin_init') );
 		add_action( 'admin_menu', array( $this, 'build_dashboard') );
 		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
+		add_action( 'add_meta_boxes', array( $this, 'build_dashboard_metaboxes') );
 		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
 		add_action( 'wp_footer', array( $this, 'action_print_tracking_code' ), 99999 );
+		add_filter('screen_layout_columns', array(&$this, 'on_screen_layout_columns'), 10, 2);
+	}
+
+	/**
+	 * Support two columns.
+	 * 
+	 * @see http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins
+	 */ 
+	function on_screen_layout_columns($columns, $screen) {
+		if ($screen == $this->pagehook) {
+			$columns[$this->pagehook] = 2;
+		}
+		return $columns;
 	}
 	
 	public function action_init() {
@@ -776,7 +790,7 @@ EOS;
 	/**
 	 * Get associated Piwik site id
 	 */
-	function getPiwikSiteId() {
+	public function getPiwikSiteId() {
 		$settings = $this->settings_get();
 
 		$piwik_site_id = null;
@@ -795,7 +809,7 @@ EOS;
 	/**
 	* Get token_auth
 	*/
-	function get_token_auth() {
+	public function get_token_auth() {
 		$settings = $this->settings_get();
 
 		$piwik_token_auth = null;
@@ -814,7 +828,7 @@ EOS;
 	/**
 	* Get idSite
 	*/
-	function get_id_site() {
+	public function get_id_site() {
 		$settings = $this->settings_get();
 
 		$piwik_site_id = null;
@@ -833,15 +847,17 @@ EOS;
 	/**
 	 * Build dashboard page
 	 */
-	function build_dashboard() {
+	public function build_dashboard() {
 		if ( is_int( $this->get_id_site() ) ) {
-			add_dashboard_page(
+			$this->pagehook = add_dashboard_page(
 				__( $this->dashboard_page_title, 'expana' ),
 				__( $this->dashboard_menu_label, 'expana' ),
 				$this->dashboard_capability,
 				$this->dashboard_page_slug,
 				array( $this, 'callback_dashboard_page' )
 			);
+
+			add_action('load-'.$this->pagehook, array(&$this, 'load_dashboard'));
 		}
 	}
 
@@ -852,6 +868,7 @@ EOS;
 		if ( ! current_user_can( $this->dashboard_capability ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
+		global $screen_layout_columns;
 		?><div class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
 			<h4>Dashboard</h4>
@@ -971,8 +988,31 @@ EOS;
 			?>
 			</p>
 
-		</div><?php
+		</div>
+
+		<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
+			<div id="post-body" class="has-sidebar">
+				<div id="post-body-content" class="has-sidebar-content">
+					<?php do_meta_boxes($this->pagehook, 'normal', $data); ?>
+				</div>
+			</div>
+		</div>	
+
+		<?php
 	}
+
+	public function load_dashboard() {
+		wp_enqueue_script('common');
+		wp_enqueue_script('wp-lists');
+		wp_enqueue_script('postbox');
+
+		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
+	}
+
+	public function callback_dashboard_visit_summary()
+	{ ?>
+		<div id="widgetIframe"><iframe width="100%" height="350" src="http://its-suwi-dev.syr.edu/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=157&period=day&date=yesterday&disableLink=1&widget=1" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+	<?php }
 }
 
 new ExpressionsAnalytics();
