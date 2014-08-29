@@ -854,25 +854,123 @@ EOS;
 		}
 		?><div class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
-			<h4>Module ImageGraphs</h4>
+			<h4>Dashboard</h4>
 			<p>
 			<?php
 				$piwik_response = $this->query_piwik_api(array(
 					'token_auth'	=> $this->get_token_auth(),
 					'idSite' 		=> $this->get_id_site(),
-					'method' 		=> 'ImageGraph.get',
-					'apiModule'		=> 'VisitsSummary',
-					'apiAction'		=> 'get',
-					'graphType'		=> 'evolution',
-					'period'		=> 'day',
-					'date'			=> 'previous30',
-					'width'			=> '500',
-					'height'		=> '250'
+					'method'		=> 'Dashboard.getDashboards'
 					));
 
 				print_r ($piwik_response);
 			?>
 			</p>
+
+			<h4>Visit Summary (Visits Over Time)</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'VisitsSummary.get',
+					'period'		=> 'day',
+					'date'			=> 'today'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
+			<h4>Live (Visitors in Read-time)</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'Live.getCounters',
+					'lastMinutes'	=> '30'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
+			<h4>Visitor Interest (Length of Visits)</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration',
+					'period'		=> 'day',
+					'date'			=> 'today'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
+			<h4>Referrers (Websites/ Keywords/ Search Engines)</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'Referrers.getAll',
+					'period'		=> 'day',
+					'date'			=> 'today'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
+			<h4>User Country/ Continent/ Region/ City</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'UserCountry.getCountry',
+					'period'		=> 'day',
+					'date'			=> 'today'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
+			<h4>User Settings (Resolution/ Configuration/ OS/ MobileVsDesktop/ Browser/ WideScreen/ Plugin/ Language)</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'UserSettings.getResolution',
+					'period'		=> 'day',
+					'date'			=> 'today'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
+			<h4>Visit Time (Visits by Server Time)</h4>
+			<p>
+			<?php
+				$piwik_response = $this->query_piwik_api(array(
+					'token_auth'	=> $this->get_token_auth(),
+					'idSite' 		=> $this->get_id_site(),
+					'method'		=> 'VisitTime.getVisitInformationPerServerTime',
+					'period'		=> 'day',
+					'date'			=> 'today'
+					));
+
+				print_r ($piwik_response);
+			?>
+			</p>
+
 		</div><?php
 	}
 }
