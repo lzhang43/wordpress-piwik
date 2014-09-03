@@ -228,6 +228,7 @@ EOS;
 		$this->admin_panel_menu_label = __( $this->admin_panel_menu_label, 'expana' );
 		$this->admin_panel_page_title = __( $this->admin_panel_page_title, 'expana' );
 		
+		$this->action_init();
 		$this->add_actions();
 	}
 	
@@ -274,7 +275,23 @@ EOS;
 	public function tracking_code_google_api_call( $call ) {
 		return sprintf( self::TRACKING_CODE_GOOGLE_API_CALL, json_encode( $call ) );
 	}
+
+	/**
+	 * Support two columns.
+	 * 
+	 * @see http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins
+	 */ 
+	function on_screen_layout_columns($columns, $screen) {
+		if ($screen == $this->pagehook) {
+			$columns[$this->pagehook] = 3;
+		}
+		return $columns;
+	}
 	
+	public function action_init() {
+		add_filter( 'screen_layout_columns', array( $this, 'on_screen_layout_columns'), 10, 2 );
+	}
+
 	/**
 	 * Initialize the action hooks.
 	 */
@@ -286,23 +303,7 @@ EOS;
 		add_action( 'add_meta_boxes', array( $this, 'build_dashboard_metaboxes') );
 		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
 		add_action( 'wp_footer', array( $this, 'action_print_tracking_code' ), 99999 );
-		add_filter('screen_layout_columns', array(&$this, 'on_screen_layout_columns'), 10, 2);
-	}
-
-	/**
-	 * Support two columns.
-	 * 
-	 * @see http://www.code-styling.de/english/how-to-use-wordpress-metaboxes-at-own-plugins
-	 */ 
-	function on_screen_layout_columns($columns, $screen) {
-		if ($screen == $this->pagehook) {
-			$columns[$this->pagehook] = 2;
-		}
-		return $columns;
-	}
-	
-	public function action_init() {
-		
+		add_action( 'add_meta_boxes', array( $this, 'expana_dashboard_boxes' ) );
 	}
 	
 	/**
@@ -857,7 +858,7 @@ EOS;
 				array( $this, 'callback_dashboard_page' )
 			);
 
-			add_action('load-'.$this->pagehook, array(&$this, 'load_dashboard'));
+			add_action( 'load-'.$this->pagehook, array($this, 'load_dashboard') );
 		}
 	}
 
@@ -865,13 +866,41 @@ EOS;
 	 * Dashboard page callback.
 	 */
 	public function callback_dashboard_page() {
+
 		if ( ! current_user_can( $this->dashboard_capability ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
+
 		global $screen_layout_columns;
-		?><div class="wrap">
+
+		if (empty($screen_layout_columns)) {
+			$screen_layout_columns = 2;
+		}
+
+		?><div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
-			<h4>Dashboard</h4>
+			
+			<form action="admin-post.php" method="post">
+				<?php wp_nonce_field( 'expana_dashboard' ); ?>
+				<?php wp_nonce_field( 'closed_postboxes', 'closed_postboxes_nonce', false ); ?>
+				<?php wp_nonce_field( 'metabox_order', 'metabox_order_nonce', false ); ?>
+				<input type="hidden" name="action" value="save_expana_dashboard" />		
+				<div id="dashboard-widgets" class="metabox-holder columns-<?php echo $screen_layout_columns; ?><?php echo 2 <= $screen_layout_columns?' has-right-sidebar':''; ?>">
+					<div id='postbox-container-1' class='postbox-container'>
+						<?php $meta_boxes = do_meta_boxes($this->pagehook, 'normal', null); ?>	
+					</div>
+					
+					<div id='postbox-container-2' class='postbox-container'>
+						<?php do_meta_boxes($this->pagehook, 'side', null); ?>
+					</div>
+					
+					<div id='postbox-container-3' class='postbox-container'>
+						<?php do_meta_boxes($this->pagehook, 'column3', null); ?>
+					</div>
+				</div>
+			</form>
+
+			<!--<h4>Dashboard</h4>
 			<p>
 			<?php
 				$piwik_response = $this->query_piwik_api(array(
@@ -986,17 +1015,20 @@ EOS;
 
 				print_r ($piwik_response);
 			?>
-			</p>
+			</p>-->
 
 		</div>
 
-		<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
-			<div id="post-body" class="has-sidebar">
-				<div id="post-body-content" class="has-sidebar-content">
-					<?php do_meta_boxes($this->pagehook, 'normal', $data); ?>
-				</div>
-			</div>
-		</div>	
+		<script type="text/javascript">
+			//<![CDATA[
+			jQuery(document).ready( function($) {
+				// close postboxes that should be closed
+				$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+				// postboxes setup
+				postboxes.add_postbox_toggles('<?php echo $this->pagehook; ?>');
+			});
+			//]]>
+		</script>
 
 		<?php
 	}
