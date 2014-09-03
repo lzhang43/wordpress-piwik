@@ -874,7 +874,7 @@ EOS;
 		global $screen_layout_columns;
 
 		if (empty($screen_layout_columns)) {
-			$screen_layout_columns = 2;
+			$screen_layout_columns = 3;
 		}
 
 		?><div id="expana_dashboard" class="wrap">
@@ -1040,17 +1040,78 @@ EOS;
 
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
+		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
+		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_seo', 'SEO Rankings', array( $this, 'callback_dashboard_seo'), $this->pagehook, 'column3', 'core' );
 	}
 
 	public function callback_dashboard_visit_summary()
 	{ ?>
-		<div id="widgetIframe"><iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=157&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
 	<?php }
 
 	public function callback_dashboard_live()
 	{ ?>
-		<div id="widgetIframe"><iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=realtimeMap&idSite=157&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
 	<?php }
+
+	public function callback_dashboard_visitor_map()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=visitorMap&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>	
+		</div>
+	<?php }
+
+	public function callback_dashboard_visitor_browser()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=UserSettings&actionToWidgetize=getBrowser&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
+	<?php }
+
+	public function callback_dashboard_visitor_os()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getOsVersions&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
+	<?php }
+
+	public function callback_dashboard_referrers()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getAll&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
+	<?php }
+
+	public function callback_dashboard_search_engines()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getSearchEngines&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
+	<?php }
+
+	public function callback_dashboard_goals()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Goals&actionToWidgetize=widgetGoalsOverview&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		</div>
+	<?php }
+
+	public function callback_dashboard_seo()
+	{ ?>
+		<div id="widgetIframe">
+			<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=SEO&actionToWidgetize=getRank&idSite=<?php echo $this->get_id_site(); ?>&period=day&date=yesterday&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+		</div>
+	<?php }
+
 }
 
 new ExpressionsAnalytics();
