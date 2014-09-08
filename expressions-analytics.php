@@ -419,6 +419,7 @@ EOS;
 				'url'        => get_site_url()
 			)
 		);
+
 		//Check success.
 		if ( $req['result'] === 'success' && ! empty( $req['content'] ) ) {
 			//Decode the JSON content.
@@ -695,10 +696,18 @@ EOS;
 	 * 
 	 * @return array The associative array.
 	 */
-	public function query_piwik_api( $query, $restapi = NULL ) {
-		if ($restapi == NULL)
+	public function query_piwik_api( $restapi, $query ) {
+
+		$piwik_rest_api = EXP_PIWIK_HOST;
+		$piwik_protocol = EXP_PIWIK_PROTO;
+
+		if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) && is_string( $piwik_protocol ) && ! empty( $piwik_protocol ) ) {
+			$restapi = $piwik_protocol . '://' . $piwik_rest_api;
+		}
+		else
 		{
-			$restapi = EXP_PIWIK_PROTO . '://' . EXP_PIWIK_HOST;
+			$error = __( 'Piwik API error', 'expana' );
+			return $siteid === null ? array( 'result' => 'error', 'content' => $error ) : array( 'result' => 'success', 'content' => $siteid );
 		}
 
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
