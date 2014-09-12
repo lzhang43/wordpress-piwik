@@ -1081,6 +1081,8 @@ EOS;
 			?>
 			
 		<canvas id="visit_duration_chart" width="400" height="400"></canvas>
+
+		<p align="center"><span class="label dataset-2">Unique Visitors</span></p>
 		
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
@@ -1129,6 +1131,8 @@ EOS;
 			?>
 			
 		<canvas id="visit_time_chart" width="400" height="400"></canvas>
+
+		<p align="center"><span class="label dataset-2">Unique Visitors</span> &nbsp; <span class="label dataset-1">Visitor</span></p>
 		
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
