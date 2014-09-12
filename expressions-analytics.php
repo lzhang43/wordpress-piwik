@@ -1055,7 +1055,7 @@ EOS;
         wp_enqueue_script('expana_chartjs');
 		wp_enqueue_style('expana_style');
 
-		add_meta_box( 'expana_visit_length_of_visits', 'Length of Visits (Chart.js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
+		add_meta_box( 'expana_visit_length_of_visits', 'Visit Length of Visits (Chart.js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
@@ -1077,29 +1077,29 @@ EOS;
 			'date'			=> 'today'
 			)); 
 
-			var_dump($piwik_response);
-
 			?>
 			
-		<canvas id="myChart" width="400" height="400"></canvas>
+		<canvas id="visit_duration_chart" width="400" height="400"></canvas>
 		
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
-                $('#myChart').attr('width', $('#myChart').parent().width());
-                
-                new Chart(document.getElementById("myChart").getContext("2d")).Line({
-                    labels : ["January", "February", "March", "April", "May", "June", "July"],
+                $('#visit_duration_chart').attr('width', $('#visit_duration_chart').parent().width());
+
+				var visit_duration = jQuery.parseJSON('{"visit_duration_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var visit_duration_label = [];
+				var visit_duration_value = [];
+
+				for (var i in visit_duration.visit_duration_data) {
+					visit_duration_label.push(visit_duration.visit_duration_data[i].label);
+					visit_duration_value.push(visit_duration.visit_duration_data[i].nb_visits);
+				}
+
+				console.log(visit_duration_value);
+
+                new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Line({
+                    labels : visit_duration_label,
                     datasets : [
-                        {
-                            label: "My First dataset",
-                            fillColor: "rgba(220,220,220,0.2)",
-                            strokeColor: "rgba(220,220,220,1)",
-                            pointColor: "rgba(220,220,220,1)",
-                            pointStrokeColor: "#fff",
-                            pointHighlightFill: "#fff",
-                            pointHighlightStroke: "rgba(220,220,220,1)",
-                            data: [65, 59, 80, 81, 56, 55, 40]
-                        },
                         {
                             label: "My Second dataset",
                             fillColor: "rgba(151,187,205,0.2)",
@@ -1108,7 +1108,7 @@ EOS;
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: [28, 48, 40, 19, 86, 27, 90]
+                            data: visit_duration_value
                         }
                     ]
                 });
