@@ -396,6 +396,7 @@ EOS;
 
 		//Register scripts and styles
 		wp_register_script( 'expana_d3js', 'http://d3js.org/d3.v3.min.js' );
+        wp_register_script( 'expana_chartjs', plugins_url( 'Chart.min.js', __FILE__ ) );
 		wp_register_style( 'expana_style', plugins_url( 'style.css', __FILE__ ) );
 	}
 	
@@ -1051,6 +1052,7 @@ EOS;
 		wp_enqueue_script('wp-lists');
 		wp_enqueue_script('postbox');
 		wp_enqueue_script('expana_d3js');
+        wp_enqueue_script('expana_chartjs');
 		wp_enqueue_style('expana_style');
 
 		add_meta_box( 'expana_visit_length_of_visits', 'Length of Visits (d3js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
