@@ -1077,38 +1077,6 @@ EOS;
 			'date'			=> 'today'
 			)); ?>
 
-		<div id="expana_length_of_visits">
-			<svg id="expana_length_of_visits_svg" class="chart"></svg>
-		</div>
-
-		<script>
-			var length_of_visits_data_raw = <?php echo $piwik_response['content']; ?>;
-			var expana_length_of_visits = d3.select("#expana_length_of_visits_svg");
-
-			var width = 420,
-			    barHeight = 20;
-
-			var x = d3.scale.linear()
-			    .range([0, width]);
-
-			var chart = d3.select(".chart")
-			    .attr("width", width);
-
-			var rects = expana_length_of_visits.selectAll("rect")
-										.data(length_of_visits_data_raw)
-										.enter()
-										.append("rect");
-
-			var rect_attrs = rects
-								.attr("width", function(d) { return x(d.nb_visits); })
-      							.attr("height", barHeight - 1);
-
-			function type(d) {
-			  d.nb_visits = +d.nb_visits; // coerce to number
-			  return d;
-			}
-		</script>
-
 	<?php
 	}
 
