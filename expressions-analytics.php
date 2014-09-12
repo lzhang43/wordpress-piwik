@@ -1058,6 +1058,7 @@ EOS;
 		add_meta_box( 'expana_visit_length_of_visits', 'Visit Length of Visits (Chart.js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
+		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
@@ -1071,7 +1072,7 @@ EOS;
 	{
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
-			'idSite' 		=> '111',
+			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration',
 			'period'		=> 'day',
 			'date'			=> 'today'
@@ -1095,9 +1096,7 @@ EOS;
 					visit_duration_value.push(visit_duration.visit_duration_data[i].nb_visits);
 				}
 
-				console.log(visit_duration_value);
-
-                new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Line({
+                new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar({
                     labels : visit_duration_label,
                     datasets : [
                         {
@@ -1109,6 +1108,66 @@ EOS;
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
                             data: visit_duration_value
+                        }
+                    ]
+                });
+            });
+		</script>
+	<?php
+	}
+
+	public function callback_dashboard_visit_time()
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitTime.getVisitInformationPerLocalTime',
+			'period'		=> 'day',
+			'date'			=> 'today'
+			)); 
+
+			?>
+			
+		<canvas id="visit_time_chart" width="400" height="400"></canvas>
+		
+		<script language="JavaScript">
+            jQuery(document).ready(function($) {
+                $('#visit_time_chart').attr('width', $('#visit_time_chart').parent().width());
+
+				var visit_time = jQuery.parseJSON('{"visit_time_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var visit_time_label = [];
+				var visit_time_uniq_visitors = [];
+				var visit_time_visits = [];
+
+				for (var i in visit_time.visit_time_data) {
+					visit_time_label.push(visit_time.visit_time_data[i].label);
+					visit_time_uniq_visitors.push(visit_time.visit_time_data[i].nb_uniq_visitors);
+					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
+				}
+
+                new Chart(document.getElementById("visit_time_chart").getContext("2d")).Line({
+                    labels : visit_time_label,
+                    datasets : [
+				        {
+				            label: "My First dataset",
+				            fillColor: "rgba(220,220,220,0.2)",
+				            strokeColor: "rgba(220,220,220,1)",
+				            pointColor: "rgba(220,220,220,1)",
+				            pointStrokeColor: "#fff",
+				            pointHighlightFill: "#fff",
+				            pointHighlightStroke: "rgba(220,220,220,1)",
+				            data: visit_time_visits
+				        },
+                        {
+                            label: "My Second dataset",
+                            fillColor: "rgba(151,187,205,0.2)",
+                            strokeColor: "rgba(151,187,205,1)",
+                            pointColor: "rgba(151,187,205,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(151,187,205,1)",
+                            data: visit_time_uniq_visitors
                         }
                     ]
                 });
