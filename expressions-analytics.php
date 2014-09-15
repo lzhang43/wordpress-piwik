@@ -1059,6 +1059,7 @@ EOS;
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_devices', 'Device Types (Chart.js)', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_browsers', 'Browser Families (Chart.js)', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
@@ -1221,6 +1222,47 @@ EOS;
 		</script>
 	<?php }
 
+	public function callback_dashboard_browsers()
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'DevicesDetection.getBrowserFamilies',
+			'period'		=> 'day',
+			'date'			=> 'today'
+			));
+		?>
+
+		<canvas id="browsers_chart" width="400" height="400"></canvas>
+	
+		<script language="JavaScript">
+            jQuery(document).ready(function($) {
+                $('#browsers_chart').attr('width', $('#browsers_chart').parent().width());
+
+				var browsers = jQuery.parseJSON('{"browsers_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var data = [];
+				var options = [];
+
+				/*TODO: need an algorithm to calculate colors for this pie-chart*/
+				var color = ["#F7464A", "#46BFBD", "#FDB45C", "#000000"];
+				var highlight = ["#FF5A5E", "#5AD3D1", "#FFC870", "#454545"];
+
+				for (var i in browsers.browsers_data) {
+					
+					data_item = {};
+					data_item.label = browsers.browsers_data[i].label;
+					data_item.value = browsers.browsers_data[i].nb_uniq_visitors;
+					data_item.color = color[i];
+					data_item.highlight = highlight[i];
+
+					data.push(data_item);
+				}
+
+                new Chart(document.getElementById("browsers_chart").getContext("2d")).PolarArea(data);
+            });
+		</script>
+	<?php }
 
 	public function callback_dashboard_visit_summary()
 	{ ?>
