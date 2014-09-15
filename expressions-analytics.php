@@ -1051,7 +1051,6 @@ EOS;
 		wp_enqueue_script('common');
 		wp_enqueue_script('wp-lists');
 		wp_enqueue_script('postbox');
-		wp_enqueue_script('expana_d3js');
         wp_enqueue_script('expana_chartjs');
 		wp_enqueue_style('expana_style');
 
@@ -1059,6 +1058,7 @@ EOS;
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_devices', 'Device Types (Chart.js)', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
@@ -1179,6 +1179,48 @@ EOS;
 		</script>
 	<?php
 	}
+
+	public function callback_dashboard_devices()
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'DevicesDetection.getType',
+			'period'		=> 'day',
+			'date'			=> 'today'
+			));
+		?>
+
+		<canvas id="devices_chart" width="400" height="400"></canvas>
+	
+		<script language="JavaScript">
+            jQuery(document).ready(function($) {
+                $('#devices_chart').attr('width', $('#devices_chart').parent().width());
+
+				var devices = jQuery.parseJSON('{"devices_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var data = [];
+				var options = [];
+
+				var color = ["#F7464A", "#46BFBD", "#FDB45C", "#000000"];
+				var highlight = ["#FF5A5E", "#5AD3D1", "#FFC870", "#454545"];
+
+				for (var i in devices.devices_data) {
+					
+					data_item = {};
+					data_item.label = devices.devices_data[i].label;
+					data_item.value = devices.devices_data[i].nb_uniq_visitors;
+					data_item.color = color[i];
+					data_item.highlight = highlight[i];
+
+					data.push(data_item);
+				}
+
+                new Chart(document.getElementById("devices_chart").getContext("2d")).Doughnut(data);
+            });
+		</script>
+	<?php }
+
 
 	public function callback_dashboard_visit_summary()
 	{ ?>
