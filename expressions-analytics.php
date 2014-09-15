@@ -899,7 +899,10 @@ EOS;
 				<?php wp_nonce_field( 'expana_dashboard' ); ?>
 				<?php wp_nonce_field( 'closed_postboxes', 'closed_postboxes_nonce', false ); ?>
 				<?php wp_nonce_field( 'metabox_order', 'metabox_order_nonce', false ); ?>
-				<input type="hidden" name="action" value="save_expana_dashboard" />		
+				<input type="hidden" name="action" value="save_expana_dashboard" />
+				<div>
+					<h3>Filter</h3>
+				</div>
 				<div id="dashboard-widgets" class="metabox-holder columns-<?php echo $screen_layout_columns; ?><?php echo 2 <= $screen_layout_columns?' has-right-sidebar':''; ?>">
 					<div id='postbox-container-1' class='postbox-container'>
 						<?php $meta_boxes = do_meta_boxes($this->pagehook, 'normal', null); ?>	
