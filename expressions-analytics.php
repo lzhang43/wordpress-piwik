@@ -1089,8 +1089,8 @@ EOS;
 				var data = [];
 				var options = [];
 
-				var color = ["#F7464A", "#46BFBD", "#FDB45C", "#000000"];
-				var highlight = ["#FF5A5E", "#5AD3D1", "#FFC870", "#454545"];
+				var color = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5"];
+				var highlight = ["#454545", "#454545", "#454545", "#454545", "#454545", "#454545", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E"];
 
 				for (var i in devices.devices_data) {
 					
@@ -1130,9 +1130,8 @@ EOS;
 				var data = [];
 				var options = [];
 
-				/*TODO: need an algorithm to calculate colors for this pie-chart*/
-				var color = ["#F7464A", "#46BFBD", "#FDB45C", "#000000"];
-				var highlight = ["#FF5A5E", "#5AD3D1", "#FFC870", "#454545"];
+				var color = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5"];
+				var highlight = ["#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E"];
 
 				for (var i in browsers.browsers_data) {
 					
@@ -1149,6 +1148,11 @@ EOS;
             });
 		</script>
 	<?php }
+
+	public function callback_dashboard_()
+	{
+
+	}
 
 	public function callback_dashboard_visit_summary()
 	{ ?>
