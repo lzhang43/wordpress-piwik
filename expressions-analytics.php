@@ -1005,6 +1005,7 @@ EOS;
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_devices', 'Device Types (Chart.js)', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_resolutions', 'Resolutions (Chart.js)', array( $this, 'callback_dashboard_resolutions'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_browsers', 'Browser Families (Chart.js)', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
@@ -1227,9 +1228,54 @@ EOS;
 		</script>
 	<?php }
 
-	public function callback_dashboard_()
+	public function callback_dashboard_resolutions()
 	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'UserSettings.getResolution'
+			));
+		?>
 
+		<canvas id="resolutions_chart" width="400" height="400"></canvas>
+	
+		<script language="JavaScript">
+            jQuery(document).ready(function($) {
+                $('#resolutions_chart').attr('width', $('#resolutions_chart').parent().width());
+
+				var resolutions = jQuery.parseJSON('{"resolutions_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var data = [];
+				var options = [];
+
+				var color = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5"];
+				var highlight = ["#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E", "#FF5A5E"];
+
+				for (var i in resolutions.resolutions_data) {
+					
+					data_item = {};
+					data_item.label = resolutions.resolutions_data[i].label;
+
+					if (! resolutions.resolutions_data[i].nb_uniq_visitors)
+					{
+						data_item.value = resolutions.resolutions_data[i].sum_daily_nb_uniq_visitors;
+					}
+					else
+					{
+						data_item.value = resolutions.resolutions_data[i].nb_uniq_visitors;
+					}
+					
+					data_item.color = color[i];
+					data_item.highlight = highlight[i];
+
+					data.push(data_item);
+				}
+
+                new Chart(document.getElementById("resolutions_chart").getContext("2d")).Doughnut(data);
+            });
+		</script>
+	
+	<?php
 	}
 
 	public function callback_dashboard_visit_summary()
