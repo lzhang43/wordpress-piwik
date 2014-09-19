@@ -1158,7 +1158,16 @@ EOS;
 					
 					data_item = {};
 					data_item.label = devices.devices_data[i].label;
-					data_item.value = devices.devices_data[i].nb_uniq_visitors;
+
+					if (! devices.devices_data[i].nb_uniq_visitors)
+					{
+						data_item.value = devices.devices_data[i].sum_daily_nb_uniq_visitors;
+					}
+					else
+					{
+						data_item.value = devices.devices_data[i].nb_uniq_visitors;
+					}
+					
 					data_item.color = color[i];
 					data_item.highlight = highlight[i];
 
@@ -1197,7 +1206,16 @@ EOS;
 					
 					data_item = {};
 					data_item.label = browsers.browsers_data[i].label;
-					data_item.value = browsers.browsers_data[i].nb_uniq_visitors;
+
+					if (! browsers.browsers_data[i].nb_uniq_visitors)
+					{
+						data_item.value = browsers.browsers_data[i].sum_daily_nb_uniq_visitors;
+					}
+					else
+					{
+						data_item.value = browsers.browsers_data[i].nb_uniq_visitors;
+					}
+					
 					data_item.color = color[i];
 					data_item.highlight = highlight[i];
 
