@@ -702,7 +702,7 @@ EOS;
 		$piwik_rest_api = EXP_PIWIK_HOST;
 		$piwik_protocol = EXP_PIWIK_PROTO;
 
-		if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) && is_string( $piwik_protocol ) && ! empty( $piwik_protocol ) ) {
+		if ( is_string( $piwik_rest_api ) AND ! empty( $piwik_rest_api ) AND is_string( $piwik_protocol ) AND ! empty( $piwik_protocol ) ) {
 			$restapi = $piwik_protocol . '://' . $piwik_rest_api;
 		}
 		else
@@ -711,7 +711,49 @@ EOS;
 			return $siteid === null ? array( 'result' => 'error', 'content' => $error ) : array( 'result' => 'success', 'content' => $siteid );
 		}
 
+		if ( is_string( $_POST['expana-time-period'] ) )
+		{
+			$time_period = sanitize_text_field( $_POST['expana-time-period'] );
+		}
+		else
+		{
+			$time_period = 'today';
+		}
+
+		if ( $time_period == 'lastyear' )
+		{
+			$date = 'last1year';
+			$period = 'range';
+		}
+		elseif ( $time_period == 'lastmonth' )
+		{
+			$date = 'last1month';
+			$period = 'range';
+		}
+		elseif ( $time_period == 'lastweek' )
+		{
+			$date = 'last1week';
+			$period = 'range';
+		}
+		elseif ( $time_period == 'last10' )
+		{
+			$date = 'last10day';
+			$period = 'range';
+		}
+		elseif ( $time_period == 'last30' )
+		{
+			$date = 'last30day';
+			$period = 'range';
+		}
+		else
+		{
+			$date = $time_period;
+			$period = 'day';
+		}
+
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
+			'date'		 => $date,
+			'period'	 => $period,
 			'module'     => 'API',
 			'format'     => 'JSON'
 		) ) ) );
@@ -895,28 +937,46 @@ EOS;
 		<div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
 			
-			<form action="admin-post.php" method="post">
+			<form action="" method="post">
 				<?php wp_nonce_field( 'expana_dashboard' ); ?>
 				<?php wp_nonce_field( 'closed_postboxes', 'closed_postboxes_nonce', false ); ?>
 				<?php wp_nonce_field( 'metabox_order', 'metabox_order_nonce', false ); ?>
 				<input type="hidden" name="action" value="save_expana_dashboard" />
 				<div>
-					<h3>Filter</h3>
-				</div>
-				<div id="dashboard-widgets" class="metabox-holder columns-<?php echo $screen_layout_columns; ?><?php echo 2 <= $screen_layout_columns?' has-right-sidebar':''; ?>">
-					<div id='postbox-container-1' class='postbox-container'>
-						<?php $meta_boxes = do_meta_boxes($this->pagehook, 'normal', null); ?>	
-					</div>
-					
-					<div id='postbox-container-2' class='postbox-container'>
-						<?php do_meta_boxes($this->pagehook, 'side', null); ?>
-					</div>
-					
-					<div id='postbox-container-3' class='postbox-container'>
-						<?php do_meta_boxes($this->pagehook, 'column3', null); ?>
+					<div class="tablenav top">
+						<div class="alignleft actions">
+							<label class="screen-reader-text" for="expana-time-period">Select Time Period</label>
+							<select id="expana-time-period" name="expana-time-period">
+								<option selected="selected" value="-1">Time Period</option>
+								<option class="hide-if-no-js" value="today" <?php if($_POST['expana-time-period']=="today") echo("selected");?>>Today</option>
+								<option class="hide-if-no-js" value="yesterday" <?php if($_POST['expana-time-period']=="yesterday") echo("selected");?>>Yesterday</option>
+								<option class="hide-if-no-js" value="last10" <?php if($_POST['expana-time-period']=="last10") echo("selected");?>>Last 10 Days</option>
+								<option class="hide-if-no-js" value="last30" <?php if($_POST['expana-time-period']=="last30") echo("selected");?>>Last 30 Days</option>
+								<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
+								<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
+								<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
+							</select>
+							<input type="submit" value="Apply" class="button action" id="doaction" name="">
+						</div>
+					<br class="clear">
 					</div>
 				</div>
 			</form>
+
+			<div id="dashboard-widgets" class="metabox-holder columns-<?php echo $screen_layout_columns; ?><?php echo 2 <= $screen_layout_columns?' has-right-sidebar':''; ?>">
+				<div id='postbox-container-1' class='postbox-container'>
+					<?php $meta_boxes = do_meta_boxes($this->pagehook, 'normal', null); ?>	
+				</div>
+				
+				<div id='postbox-container-2' class='postbox-container'>
+					<?php do_meta_boxes($this->pagehook, 'side', null); ?>
+				</div>
+				
+				<div id='postbox-container-3' class='postbox-container'>
+					<?php do_meta_boxes($this->pagehook, 'column3', null); ?>
+				</div>
+			</div>
+			
 		</div>
 
 		<script type="text/javascript">
@@ -960,9 +1020,7 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration',
-			'period'		=> 'day',
-			'date'			=> 'today'
+			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration'
 			)); 
 
 			?>
@@ -1010,9 +1068,7 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitTime.getVisitInformationPerLocalTime',
-			'period'		=> 'day',
-			'date'			=> 'today'
+			'method'		=> 'VisitTime.getVisitInformationPerLocalTime'
 			)); 
 
 			?>
@@ -1033,7 +1089,15 @@ EOS;
 
 				for (var i in visit_time.visit_time_data) {
 					visit_time_label.push(visit_time.visit_time_data[i].label);
-					visit_time_uniq_visitors.push(visit_time.visit_time_data[i].nb_uniq_visitors);
+					if (! visit_time.visit_time_data[i].nb_uniq_visitors)
+					{
+						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].sum_daily_nb_uniq_visitors);
+					}
+					else
+					{
+						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].nb_uniq_visitors);
+					}
+					
 					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
 				}
 
@@ -1072,9 +1136,7 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'DevicesDetection.getType',
-			'period'		=> 'day',
-			'date'			=> 'today'
+			'method'		=> 'DevicesDetection.getType'
 			));
 		?>
 
@@ -1113,9 +1175,7 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'DevicesDetection.getBrowserFamilies',
-			'period'		=> 'day',
-			'date'			=> 'today'
+			'method'		=> 'DevicesDetection.getBrowserFamilies'
 			));
 		?>
 
