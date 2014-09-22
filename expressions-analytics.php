@@ -396,7 +396,7 @@ EOS;
 
 		//Register scripts and styles
 		wp_register_script( 'expana_d3js', 'http://d3js.org/d3.v3.min.js' );
-        wp_register_script( 'expana_chartjs', plugins_url( 'Chart.min.js', __FILE__ ) );
+        wp_register_script( 'expana_chartjs', plugins_url( 'js/chart.min.js', __FILE__ ) );
 		wp_register_style( 'expana_style', plugins_url( 'style.css', __FILE__ ) );
 	}
 	
