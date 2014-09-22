@@ -397,8 +397,7 @@ EOS;
 		//Register scripts and styles
 		//wp_register_script( 'expana_d3js', 'http://d3js.org/d3.v3.min.js' );
         wp_register_script( 'expana_chartjs', plugins_url( 'js/chart.min.js', __FILE__ ) );
-        wp_enqueue_script( 'jquery-ui-datepicker' );
-        wp_register_style( 'jquery-ui_style', plugins_url( 'css/jquery.ui.css', __FILE__ ) );
+		wp_register_style( 'jquery-ui_style', 'http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/themes/smoothness/jquery-ui.css' );
 		wp_register_style( 'expana_style', plugins_url( 'style.css', __FILE__ ) );
 	}
 	
@@ -960,10 +959,10 @@ EOS;
 							</select>
 
 							<label class="screen-reader-text" for="expana-from-date">From</label>
-							<input type="text" name="expana-from-date" value="" />
+							<input type="text" class="expana-datepicker" name="expana-from-date" value="" />
 
 							<label class="screen-reader-text" for="expana-to-date">To</label>
-							<input type="text" name="expana-to-date" value="" />
+							<input type="text" class="expana-datepicker" name="expana-to-date" value="" />
 
 							<input type="submit" value="Apply" class="button action" id="doaction" name="">
 						</div>
@@ -999,6 +998,14 @@ EOS;
 			//]]>
 		</script>
 
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('.expana-datepicker').datepicker({
+					dateFormat : 'mm/dd/yy'
+				});
+			});
+		</script>
+
 		<?php
 	}
 
@@ -1008,6 +1015,8 @@ EOS;
 		wp_enqueue_script('postbox');
         wp_enqueue_script('expana_chartjs');
 		wp_enqueue_style('expana_style');
+		wp_enqueue_style('jquery-ui_style');
+		wp_enqueue_script('jquery-ui-datepicker');
 
 		add_meta_box( 'expana_visit_length_of_visits', 'Visit Length of Visits (Chart.js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
