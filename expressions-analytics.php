@@ -743,17 +743,17 @@ EOS;
 
 		if ( $time_period == 'lastyear' )
 		{
-			$date = 'last1year';
+			$date = 'previous1year';
 			$period = 'range';
 		}
 		elseif ( $time_period == 'lastmonth' )
 		{
-			$date = 'last1month';
+			$date = 'previous1month';
 			$period = 'range';
 		}
 		elseif ( $time_period == 'lastweek' )
 		{
-			$date = 'last1week';
+			$date = 'previous1week';
 			$period = 'range';
 		}
 		elseif ( $time_period == 'last10' )
@@ -1033,6 +1033,7 @@ EOS;
 					maxDate: 'D',
 					onClose: function( selectedDate ) {
 						jQuery( "#expana-to-date" ).datepicker( "option", "minDate", selectedDate );
+						jQuery( "#expana-time-period>option[value='daterange']" ).prop( 'selected', true );
 					}
 				});
 
@@ -1043,7 +1044,43 @@ EOS;
 					maxDate: 'D',
 					onClose: function( selectedDate ) {
 						jQuery( "#expana-from-date" ).datepicker( "option", "maxDate", selectedDate );
+						jQuery( "#expana-time-period>option[value='daterange']" ).prop( 'selected', true );
 					}
+				});
+
+				jQuery( "#expana-time-period>option[value='today']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+				});
+
+				jQuery( "#expana-time-period>option[value='yesterday']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-1); return d})(new Date)) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-1); return d})(new Date)) );
+				});
+
+				jQuery( "#expana-time-period>option[value='last10']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-9); return d})(new Date)) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+				});
+
+				jQuery( "#expana-time-period>option[value='last30']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-29); return d})(new Date)) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+				});
+
+				jQuery( "#expana-time-period>option[value='lastweek']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-d.getDay()-7); return d})(new Date)) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-d.getDay()-1); return d})(new Date)) );
+				});
+
+				jQuery( "#expana-time-period>option[value='lastmonth']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()-1); d.setDate(1); return d})(new Date)) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()); d.setDate(0); return d})(new Date)) );
+				});
+
+				jQuery( "#expana-time-period>option[value='lastyear']" ).click(function() {
+					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()-1); d.setMonth(0); d.setDate(1); return d})(new Date)) );
+					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()); d.setMonth(0); d.setDate(0); return d})(new Date)) );
 				});
 			});
 		</script>
