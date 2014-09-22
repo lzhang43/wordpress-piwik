@@ -985,10 +985,10 @@ EOS;
 							</select>
 
 							<label class="screen-reader-text" for="expana-from-date">From</label>
-							<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" />
+							<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" placeholder="From" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" />
 
 							<label class="screen-reader-text" for="expana-to-date">To</label>
-							<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" />
+							<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" placeholder="To" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" />
 
 							<input type="submit" value="Apply" class="button action" id="doaction" name="">
 						</div>
