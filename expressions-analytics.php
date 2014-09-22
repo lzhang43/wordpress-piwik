@@ -956,6 +956,13 @@ EOS;
 								<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
 								<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
 							</select>
+
+							<label class="screen-reader-text" for="expana-from-date">From</label>
+							<input type="text" name="expana-from-date" value="" />
+
+							<label class="screen-reader-text" for="expana-to-date">To</label>
+							<input type="text" name="expana-to-date" value="" />
+
 							<input type="submit" value="Apply" class="button action" id="doaction" name="">
 						</div>
 					<br class="clear">
