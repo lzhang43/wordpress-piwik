@@ -959,10 +959,10 @@ EOS;
 							</select>
 
 							<label class="screen-reader-text" for="expana-from-date">From</label>
-							<input type="text" class="expana-datepicker" name="expana-from-date" value="" />
+							<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" value="" />
 
 							<label class="screen-reader-text" for="expana-to-date">To</label>
-							<input type="text" class="expana-datepicker" name="expana-to-date" value="" />
+							<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" value="" />
 
 							<input type="submit" value="Apply" class="button action" id="doaction" name="">
 						</div>
@@ -1000,8 +1000,24 @@ EOS;
 
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				jQuery('.expana-datepicker').datepicker({
-					dateFormat : 'mm/dd/yy'
+				jQuery( "#expana-from-date" ).datepicker({
+					dateFormat: 'mm/dd/yy',
+					changeMonth: true,
+					changeYear: true,
+					maxDate: 'D',
+					onClose: function( selectedDate ) {
+						jQuery( "#expana-to-date" ).datepicker( "option", "minDate", selectedDate );
+					}
+				});
+
+				jQuery( "#expana-to-date" ).datepicker({
+					dateFormat: 'mm/dd/yy',
+					changeMonth: true,
+					changeYear: true,
+					maxDate: 'D',
+					onClose: function( selectedDate ) {
+						jQuery( "#expana-from-date" ).datepicker( "option", "maxDate", selectedDate );
+					}
 				});
 			});
 		</script>
