@@ -689,7 +689,18 @@ EOS;
 		//If deleting all, then remove the option completely.
 		delete_option( $this->settings_name );
 	}
-	
+
+	/**
+	 * Validate date and time in all formats
+	 *
+	 * @return bool
+	 */
+	public function validate_date($date, $format = 'Y-m-d')
+	{
+		$d = DateTime::createFromFormat($format, $date);
+		return $d AND $d->format($format) == $date;
+	}
+
 	/**
 	 * Query the Piwik API with the specified parameters and return the contents in an associative array.
 	 * 
@@ -714,7 +725,16 @@ EOS;
 
 		if ( is_string( $_POST['expana-time-period'] ) )
 		{
-			$time_period = sanitize_text_field( $_POST['expana-time-period'] );
+			if ( $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
+			{
+				$time_period = 'daterange';
+				$from_date = $_POST['expana-from-date'];
+				$to_date =  $_POST['expana-to-date'];
+			}
+			else
+			{
+				$time_period = sanitize_text_field( $_POST['expana-time-period'] );
+			}
 		}
 		else
 		{
@@ -744,6 +764,11 @@ EOS;
 		elseif ( $time_period == 'last30' )
 		{
 			$date = 'last30day';
+			$period = 'range';
+		}
+		elseif ( $time_period == 'daterange' )
+		{
+			$date = $from_date . ',' . $to_date;
 			$period = 'range';
 		}
 		else
@@ -956,13 +981,14 @@ EOS;
 								<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
 								<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
 								<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
+								<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Date Range</option>
 							</select>
 
 							<label class="screen-reader-text" for="expana-from-date">From</label>
-							<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" value="" />
+							<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" />
 
 							<label class="screen-reader-text" for="expana-to-date">To</label>
-							<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" value="" />
+							<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" />
 
 							<input type="submit" value="Apply" class="button action" id="doaction" name="">
 						</div>
@@ -1001,7 +1027,7 @@ EOS;
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
 				jQuery( "#expana-from-date" ).datepicker({
-					dateFormat: 'mm/dd/yy',
+					dateFormat: 'yy-mm-dd',
 					changeMonth: true,
 					changeYear: true,
 					maxDate: 'D',
@@ -1011,7 +1037,7 @@ EOS;
 				});
 
 				jQuery( "#expana-to-date" ).datepicker({
-					dateFormat: 'mm/dd/yy',
+					dateFormat: 'yy-mm-dd',
 					changeMonth: true,
 					changeYear: true,
 					maxDate: 'D',
