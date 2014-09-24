@@ -738,7 +738,7 @@ EOS;
 		}
 		else
 		{
-			$time_period = 'today';
+			$time_period = 'last30';
 		}
 
 		if ( $time_period == 'lastyear' )
