@@ -1387,6 +1387,10 @@ EOS;
 
 		?>
 
+		<script language="JavaScript">
+
+		</script>
+
 	<?php
 	}
 
