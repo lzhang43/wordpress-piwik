@@ -981,7 +981,7 @@ EOS;
 								<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
 								<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
 								<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
-								<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Date Range</option>
+								<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Custom Date Range</option>
 							</select>
 
 							<label class="screen-reader-text" for="expana-from-date">From</label>
@@ -1107,6 +1107,7 @@ EOS;
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_visitor_map_new', 'Visitor Map (jQuery Vector Maps)', array( $this, 'callback_dashboard_visitor_map_new'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
@@ -1372,6 +1373,20 @@ EOS;
             });
 		</script>
 	
+	<?php }
+
+	public function callback_dashboard_visitor_map_new()
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'UserCountry.getCountry'
+			));
+
+		echo var_dump($piwik_response['content']);
+
+		?>
+
 	<?php
 	}
 
