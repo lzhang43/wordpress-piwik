@@ -1388,18 +1388,27 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'UserCountry.getCountry'
 			));
-
-		echo var_dump($piwik_response['content']);
-
 		?>
 
 		<script>
-		jQuery(document).ready(function() {
-			jQuery('#vmap').vectorMap({
-				map: 'world_en',
-				backgroundColor: null
+			var visitor_data_piwik = jQuery.parseJSON('{"visitor_data": <?php echo $piwik_response['content']; ?> }');
+
+			var data = {};
+
+			for (var i in visitor_data_piwik.visitor_data) {
+				country_code = visitor_data_piwik.visitor_data[i].code;
+				data[country_code] = visitor_data_piwik.visitor_data[i].nb_visits;
+			}
+
+			jQuery(document).ready(function() {
+				jQuery('#vmap').vectorMap({
+					map: 'world_en',
+					backgroundColor: null,
+					values: data
+				});
 			});
-		});
+
+			console.log(data);
 		</script>
 		 
 		<div id="vmap" style="width: 510px; height: 400px;"></div>
