@@ -1407,8 +1407,6 @@ EOS;
 					values: data
 				});
 			});
-
-			console.log(data);
 		</script>
 		 
 		<div id="vmap" style="width: 510px; height: 400px;"></div>
