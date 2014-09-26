@@ -1524,7 +1524,7 @@ EOS;
 
 	public function callback_dashboard_visit_summary()
 	{ ?>
-		<iframe width="100%" height="850" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="900" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_live()
@@ -1534,7 +1534,7 @@ EOS;
 
 	public function callback_dashboard_visitor_map()
 	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=visitorMap&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>	
+		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=visitorMap&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>	
 	<?php }
 
 	public function callback_dashboard_visitor_browser()
@@ -1544,22 +1544,22 @@ EOS;
 
 	public function callback_dashboard_visitor_os()
 	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getOsVersions&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="510" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getOsVersions&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_referrers()
 	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getAll&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="830" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getAll&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_search_engines()
 	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getSearchEngines&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="380" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getSearchEngines&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_goals()
 	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Goals&actionToWidgetize=widgetGoalsOverview&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Goals&actionToWidgetize=widgetGoalsOverview&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_seo()
