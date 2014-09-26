@@ -1404,7 +1404,20 @@ EOS;
 				jQuery('#vmap').vectorMap({
 					map: 'world_en',
 					backgroundColor: null,
-					values: data
+					values: data,
+					onLabelShow: function(element, label, code)
+					{
+						if(data[code])
+						{
+							var message = " Visits: " + data[code];
+						}
+						else
+						{
+							var message = "No Visit"
+						}
+						
+						label.text(message);
+					}
 				});
 			});
 		</script>
