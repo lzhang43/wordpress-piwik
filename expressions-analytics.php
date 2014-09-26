@@ -1204,7 +1204,7 @@ EOS;
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" );
 					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
-			});
+			}); 
 		</script>
 
 		<?php
@@ -1278,6 +1278,7 @@ EOS;
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
+                            responsive: true,
                             data: visit_duration_value
                         }
                     ]
