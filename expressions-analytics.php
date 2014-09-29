@@ -1184,22 +1184,15 @@ EOS;
 				if (jQuery( window ).width() <= 800)
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else if (jQuery( window ).width() <= 1500)
 				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					jQuery('canvas').width(jQuery('canvas').parent().width());
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
 				}
 				else
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
-					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
-
-				Chart.defaults.global = {
-					responsive: true,
-				};
 			});
 
 			jQuery( window ).resize(function() {
@@ -1212,7 +1205,7 @@ EOS;
 				}
 				else if (jQuery( window ).width() <= 1500)
 				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
 					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else
@@ -1306,7 +1299,7 @@ EOS;
 					responsive : true,
 				};
 
-                var myChart = new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar(data, options);
+                var visit_duration_chart = new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar(data, options);
             });
 		</script>
 	<?php
