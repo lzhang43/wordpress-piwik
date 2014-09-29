@@ -1578,10 +1578,12 @@ EOS;
 						label.text(message);
 					}
 				});
+
+				jQuery('#vmap').attr('width', jQuery('#vmap').parent().width()).attr('height', jQuery('#vmap').parent().height());
 			});
 		</script>
 		 
-		<div id="vmap" style="width: 510px; height: 400px;"></div>
+		<div id="vmap" style="height: 380px;"></div>
 
 	<?php
 	}
