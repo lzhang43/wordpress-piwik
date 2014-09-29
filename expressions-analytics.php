@@ -1181,13 +1181,19 @@ EOS;
 					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()); d.setMonth(0); d.setDate(0); return d})(new Date)) );
 				});
 
-				if (jQuery( window ).width() <= 1500) {
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" );
+				if (jQuery( window ).width() <= 800)
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
+					jQuery('canvas').width(jQuery('canvas').parent().width());
+				}
+				else if (jQuery( window ).width() <= 1500)
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
 					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else
 				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" );
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
 					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 			});
@@ -1195,13 +1201,19 @@ EOS;
 			jQuery( window ).resize(function() {
 				jQuery('canvas').width(jQuery('canvas').parent().width());
 
-				if (jQuery( window ).width() <= 1500) {
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" );
+				if (jQuery( window ).width() <= 800)
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
+					jQuery('canvas').width(jQuery('canvas').parent().width());
+				}
+				else if (jQuery( window ).width() <= 1500)
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
 					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else
 				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" );
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
 					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 			}); 
