@@ -1285,7 +1285,7 @@ EOS;
 					visit_duration_value.push(visit_duration.visit_duration_data[i].nb_visits);
 				}
 
-                new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar({
+				var data = {
                     labels : visit_duration_label,
                     datasets : [
                         {
@@ -1299,7 +1299,14 @@ EOS;
                             data: visit_duration_value
                         }
                     ]
-                });
+				};
+
+				var options = {
+					scaleShowGridLines : true,
+					responsive : true,
+				};
+
+                var myChart = new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar(data, options);
             });
 		</script>
 	<?php
