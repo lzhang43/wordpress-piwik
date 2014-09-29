@@ -1409,7 +1409,10 @@ EOS;
 				var devices = jQuery.parseJSON('{"devices_data": <?php echo $piwik_response['content']; ?> }');
 				
 				var data = [];
-				var options = [];
+				var options = {
+					segmentShowStroke : true,
+					responsive : true,
+				};
 
 				var color = ["#e51c23", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#5677fc", "#03a9f4", "#00bcd4", "#009688", "#259b24", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#9e9e9e", "#607d8b"];
 				var highlight = ["#e84e40", "#ec407a", "#ab47bc", "#7e57c2", "#5c6bc0", "#738ffe", "#29b6f6", "#26c6da", "#26a69a", "#2baf2b", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043", "#8d6e63", "#bdbdbd", "#78909c"];
@@ -1434,7 +1437,7 @@ EOS;
 					data.push(data_item);
 				}
 
-                new Chart(document.getElementById("devices_chart").getContext("2d")).Doughnut(data);
+                new Chart(document.getElementById("devices_chart").getContext("2d")).Doughnut(data, options);
             });
 		</script>
 	<?php }
@@ -1459,7 +1462,9 @@ EOS;
 				var browsers = jQuery.parseJSON('{"browsers_data": <?php echo $piwik_response['content']; ?> }');
 				
 				var data = [];
-				var options = [];
+				var options = {
+					responsive : true,
+				};
 
 				var color = ["#e51c23", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#5677fc", "#03a9f4", "#00bcd4", "#009688", "#259b24", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#9e9e9e", "#607d8b"];
 				var highlight = ["#e84e40", "#ec407a", "#ab47bc", "#7e57c2", "#5c6bc0", "#738ffe", "#29b6f6", "#26c6da", "#26a69a", "#2baf2b", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043", "#8d6e63", "#bdbdbd", "#78909c"];
@@ -1484,7 +1489,7 @@ EOS;
 					data.push(data_item);
 				}
 
-                new Chart(document.getElementById("browsers_chart").getContext("2d")).PolarArea(data);
+                new Chart(document.getElementById("browsers_chart").getContext("2d")).PolarArea(data, options);
             });
 		</script>
 	<?php }
@@ -1509,7 +1514,9 @@ EOS;
 				var resolutions = jQuery.parseJSON('{"resolutions_data": <?php echo $piwik_response['content']; ?> }');
 				
 				var data = [];
-				var options = [];
+				var options = {
+					responsive : true,
+				};
 
 				var color = ["#e51c23", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#5677fc", "#03a9f4", "#00bcd4", "#009688", "#259b24", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#9e9e9e", "#607d8b"];
 				var highlight = ["#e84e40", "#ec407a", "#ab47bc", "#7e57c2", "#5c6bc0", "#738ffe", "#29b6f6", "#26c6da", "#26a69a", "#2baf2b", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043", "#8d6e63", "#bdbdbd", "#78909c"];
@@ -1534,7 +1541,7 @@ EOS;
 					data.push(data_item);
 				}
 
-                new Chart(document.getElementById("resolutions_chart").getContext("2d")).Doughnut(data);
+                new Chart(document.getElementById("resolutions_chart").getContext("2d")).Doughnut(data, options);
             });
 		</script>
 	
