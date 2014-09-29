@@ -1196,25 +1196,29 @@ EOS;
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
 					jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
+
+				Chart.defaults.global = {
+					responsive: true,
+				};
 			});
 
 			jQuery( window ).resize(function() {
-				jQuery('canvas').width(jQuery('canvas').parent().width());
+				//jQuery('canvas').width(jQuery('canvas').parent().width());
 
 				if (jQuery( window ).width() <= 800)
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					jQuery('canvas').width(jQuery('canvas').parent().width());
+					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else if (jQuery( window ).width() <= 1500)
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					jQuery('canvas').width(jQuery('canvas').parent().width());
+					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
-					jQuery('canvas').width(jQuery('canvas').parent().width());
+					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 			}); 
 		</script>
@@ -1226,7 +1230,7 @@ EOS;
 		wp_enqueue_script('common');
 		wp_enqueue_script('wp-lists');
 		wp_enqueue_script('postbox');
-        wp_enqueue_script('expana_chartjs');
+		wp_enqueue_script('expana_chartjs');
 		wp_enqueue_style('expana_style');
 		wp_enqueue_style('expana_jqvmap_style');
 		wp_enqueue_style('jquery-ui_style');
@@ -1261,7 +1265,9 @@ EOS;
 
 			?>
 			
-		<canvas id="visit_duration_chart" width="400" height="400"></canvas>
+		<div class="canvas-holder">
+			<canvas id="visit_duration_chart" width="400" height="400"></canvas>
+		</div>
 
 		<p align="center"><span class="label dataset-2">Unique Visitors</span></p>
 		
@@ -1290,7 +1296,6 @@ EOS;
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
-                            responsive: true,
                             data: visit_duration_value
                         }
                     ]
@@ -1310,7 +1315,9 @@ EOS;
 
 			?>
 			
-		<canvas id="visit_time_chart" width="400" height="400"></canvas>
+		<div class="canvas-holder">
+			<canvas id="visit_time_chart" width="400" height="400"></canvas>
+		</div>
 
 		<p align="center"><span class="label dataset-2">Unique Visitors</span> &nbsp; <span class="label dataset-1">Visitor</span></p>
 		
@@ -1377,8 +1384,10 @@ EOS;
 			));
 		?>
 
-		<canvas id="devices_chart" width="400" height="400"></canvas>
-	
+		<div class="canvas-holder">
+			<canvas id="devices_chart" width="400" height="400"></canvas>
+		</div>
+
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
                 $('#devices_chart').attr('width', $('#devices_chart').parent().width());
@@ -1425,7 +1434,9 @@ EOS;
 			));
 		?>
 
-		<canvas id="browsers_chart" width="400" height="400"></canvas>
+		<div class="canvas-holder">
+			<canvas id="browsers_chart" width="400" height="400"></canvas>
+		</div>
 	
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
@@ -1473,8 +1484,10 @@ EOS;
 			));
 		?>
 
-		<canvas id="resolutions_chart" width="400" height="400"></canvas>
-	
+		<div class="canvas-holder">
+			<canvas id="resolutions_chart" width="400" height="400"></canvas>
+		</div>
+
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
                 $('#resolutions_chart').attr('width', $('#resolutions_chart').parent().width());
