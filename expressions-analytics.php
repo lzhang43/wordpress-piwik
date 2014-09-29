@@ -1352,31 +1352,38 @@ EOS;
 					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
 				}
 
-                new Chart(document.getElementById("visit_time_chart").getContext("2d")).Line({
-                    labels : visit_time_label,
-                    datasets : [
-				        {
-				            label: "My First dataset",
-				            fillColor: "rgba(220,220,220,0.2)",
-				            strokeColor: "rgba(220,220,220,1)",
-				            pointColor: "rgba(220,220,220,1)",
-				            pointStrokeColor: "#fff",
-				            pointHighlightFill: "#fff",
-				            pointHighlightStroke: "rgba(220,220,220,1)",
-				            data: visit_time_visits
-				        },
-                        {
-                            label: "My Second dataset",
-                            fillColor: "rgba(151,187,205,0.2)",
-                            strokeColor: "rgba(151,187,205,1)",
-                            pointColor: "rgba(151,187,205,1)",
-                            pointStrokeColor: "#fff",
-                            pointHighlightFill: "#fff",
-                            pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: visit_time_uniq_visitors
-                        }
-                    ]
-                });
+				var data = {
+					labels : visit_time_label,
+					datasets : [
+						{
+							label: "My First dataset",
+							fillColor: "rgba(220,220,220,0.2)",
+							strokeColor: "rgba(220,220,220,1)",
+							pointColor: "rgba(220,220,220,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(220,220,220,1)",
+							data: visit_time_visits
+						},
+						{
+							label: "My Second dataset",
+							fillColor: "rgba(151,187,205,0.2)",
+							strokeColor: "rgba(151,187,205,1)",
+							pointColor: "rgba(151,187,205,1)",
+							pointStrokeColor: "#fff",
+							pointHighlightFill: "#fff",
+							pointHighlightStroke: "rgba(151,187,205,1)",
+							data: visit_time_uniq_visitors
+						}
+					]
+				};
+
+				var options = {
+					scaleShowGridLines : true,
+					responsive : true,
+				};
+
+                new Chart(document.getElementById("visit_time_chart").getContext("2d")).Line(data, options);
             });
 		</script>
 	<?php
