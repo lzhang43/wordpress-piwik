@@ -1564,6 +1564,8 @@ EOS;
 					map: 'world_en',
 					backgroundColor: null,
 					values: data,
+					selectedColor: '#c2d6e0',
+					scaleColors: ['#dcdcdc', '#97bbcd'],
 					onLabelShow: function(element, label, code)
 					{
 						if(data[code])
