@@ -1187,7 +1187,8 @@ EOS;
 				}
 				else if (jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500)
 				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
+					console.log("ran");
 				}
 				else
 				{
@@ -1201,17 +1202,14 @@ EOS;
 				if (jQuery( window ).width() <= 800)
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else if (jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500)
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
-					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 				else
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
-					//jQuery('canvas').width(jQuery('canvas').parent().width());
 				}
 			}); 
 		</script>
