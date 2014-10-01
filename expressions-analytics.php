@@ -1197,7 +1197,6 @@ EOS;
 			});
 
 			jQuery( window ).resize(function() {
-				//jQuery('canvas').width(jQuery('canvas').parent().width());
 
 				if (jQuery( window ).width() <= 800)
 				{
