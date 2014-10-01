@@ -1043,6 +1043,18 @@ EOS;
 	}
 
 	/**
+	 * Make Piwik API data available to JavaScript
+	 *
+	 */
+	public function localize_piwik_data() {
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration'
+			));
+	}
+
+	/**
 	 * Dashboard page callback.
 	 */
 	public function callback_dashboard_page() {
@@ -1181,14 +1193,15 @@ EOS;
 					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()); d.setMonth(0); d.setDate(0); return d})(new Date)) );
 				});
 
-				if (jQuery( window ).width() <= 800)
+				if ( jQuery( window ).width() <= 800 )
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
 				}
-				else if (jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500)
+				else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					console.log("ran");
+					console.log( jQuery( '.canvas-holder:first-child' ).width() );
+					visit_duration_chart.resize();
 				}
 				else
 				{
@@ -1198,11 +1211,11 @@ EOS;
 
 			jQuery( window ).resize(function() {
 
-				if (jQuery( window ).width() <= 800)
+				if ( jQuery( window ).width() <= 800 )
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
 				}
-				else if (jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500)
+				else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
 				}
@@ -1256,7 +1269,7 @@ EOS;
 			?>
 			
 		<div class="canvas-holder">
-			<canvas id="visit_duration_chart" width="400" height="400"></canvas>
+			<canvas id="visit_duration_chart" height="400"></canvas>
 		</div>
 
 		<p align="center"><span class="label dataset-2">Unique Visitors</span></p>
@@ -1264,6 +1277,10 @@ EOS;
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
                 $('#visit_duration_chart').attr('width', $('#visit_duration_chart').parent().width());
+                //console.log("->", $('#visit_duration_chart').parent().width());
+                //setInterval(function(){
+                //	console.log("->", $('#visit_duration_chart').parent().width());
+                //}, 100);
 
 				var visit_duration = jQuery.parseJSON('{"visit_duration_data": <?php echo $piwik_response['content']; ?> }');
 				
@@ -1321,6 +1338,7 @@ EOS;
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
                 $('#visit_time_chart').attr('width', $('#visit_time_chart').parent().width());
+                console.log( $('#visit_time_chart').parent().width());
 
 				var visit_time = jQuery.parseJSON('{"visit_time_data": <?php echo $piwik_response['content']; ?> }');
 				
