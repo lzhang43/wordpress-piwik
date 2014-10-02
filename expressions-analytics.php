@@ -1257,7 +1257,6 @@ EOS;
 		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
-		add_meta_box( 'expana_seo', 'SEO Rankings', array( $this, 'callback_dashboard_seo'), $this->pagehook, 'column3', 'core' );
 	}
 
 	public function callback_dashboard_length_of_visits()
@@ -1645,11 +1644,6 @@ EOS;
 	public function callback_dashboard_goals()
 	{ ?>
 		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Goals&actionToWidgetize=widgetGoalsOverview&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
-	<?php }
-
-	public function callback_dashboard_seo()
-	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=SEO&actionToWidgetize=getRank&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 }
