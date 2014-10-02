@@ -1070,6 +1070,23 @@ EOS;
 		}
 
 		?>
+		<script type="text/javascript">
+		jQuery(document).ready( function($) {
+			if ( jQuery( window ).width() <= 800 )
+			{
+				jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
+			}
+			else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
+			{
+				jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
+			}
+			else
+			{
+				jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
+			}
+		});
+		</script>
+
 		<div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
 			
@@ -1192,21 +1209,6 @@ EOS;
 					jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()-1); d.setMonth(0); d.setDate(1); return d})(new Date)) );
 					jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()); d.setMonth(0); d.setDate(0); return d})(new Date)) );
 				});
-
-				if ( jQuery( window ).width() <= 800 )
-				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
-				}
-				else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
-				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
-					console.log( jQuery( '.canvas-holder:first-child' ).width() );
-					visit_duration_chart.resize();
-				}
-				else
-				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
-				}
 			});
 
 			jQuery( window ).resize(function() {
