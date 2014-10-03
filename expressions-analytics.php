@@ -1278,10 +1278,6 @@ EOS;
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
                 $('#visit_duration_chart').attr('width', $('#visit_duration_chart').parent().width());
-                //console.log("->", $('#visit_duration_chart').parent().width());
-                //setInterval(function(){
-                //	console.log("->", $('#visit_duration_chart').parent().width());
-                //}, 100);
 
 				var visit_duration = jQuery.parseJSON('{"visit_duration_data": <?php echo $piwik_response['content']; ?> }');
 				
@@ -1339,7 +1335,6 @@ EOS;
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
                 $('#visit_time_chart').attr('width', $('#visit_time_chart').parent().width());
-                console.log( $('#visit_time_chart').parent().width());
 
 				var visit_time = jQuery.parseJSON('{"visit_time_data": <?php echo $piwik_response['content']; ?> }');
 				
