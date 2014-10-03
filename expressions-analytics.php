@@ -1293,7 +1293,7 @@ EOS;
                     labels : visit_duration_label,
                     datasets : [
                         {
-                            label: "My Second dataset",
+                            label: "Unique Visitors",
                             fillColor: "rgba(151,187,205,0.2)",
                             strokeColor: "rgba(151,187,205,1)",
                             pointColor: "rgba(151,187,205,1)",
@@ -1360,7 +1360,7 @@ EOS;
 					labels : visit_time_label,
 					datasets : [
 						{
-							label: "My First dataset",
+							label: "Visits",
 							fillColor: "rgba(220,220,220,0.2)",
 							strokeColor: "rgba(220,220,220,1)",
 							pointColor: "rgba(220,220,220,1)",
@@ -1370,7 +1370,7 @@ EOS;
 							data: visit_time_visits
 						},
 						{
-							label: "My Second dataset",
+							label: "Unique Visits",
 							fillColor: "rgba(151,187,205,0.2)",
 							strokeColor: "rgba(151,187,205,1)",
 							pointColor: "rgba(151,187,205,1)",
