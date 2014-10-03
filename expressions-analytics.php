@@ -1517,7 +1517,6 @@ EOS;
                 $('#resolutions_chart').attr('width', $('#resolutions_chart').parent().width());
 
 				var resolutions = jQuery.parseJSON('{"resolutions_data": <?php echo $piwik_response['content']; ?> }');
-				console.log(resolutions);
 
 				var data = [];
 				var options = {
@@ -1528,8 +1527,6 @@ EOS;
 				var highlight = ["#e84e40", "#ec407a", "#ab47bc", "#7e57c2", "#5c6bc0", "#738ffe", "#29b6f6", "#26c6da", "#26a69a", "#2baf2b", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043", "#8d6e63", "#bdbdbd", "#78909c"];
 
 				for (var i in resolutions.resolutions_data) {
-
-					console.log(i);
 
 					if (i > 18) {
 						break;
@@ -1551,8 +1548,6 @@ EOS;
 					data_item.highlight = highlight[i];
 
 					data.push(data_item);
-
-					console.log(data_item);
 				}
 
 
@@ -1581,8 +1576,7 @@ EOS;
                 $('#social_media_chart').attr('width', $('#social_media_chart').parent().width());
 
 				var social_media = jQuery.parseJSON('{"social_media_data": <?php echo $piwik_response['content']; ?> }');
-				console.log(social_media);
-
+				
 				var data = [];
 				var options = {
 					responsive : true,
