@@ -1576,7 +1576,7 @@ EOS;
                 $('#social_media_chart').attr('width', $('#social_media_chart').parent().width());
 
 				var social_media = jQuery.parseJSON('{"social_media_data": <?php echo $piwik_response['content']; ?> }');
-				
+
 				var data = [];
 				var options = {
 					responsive : true,
@@ -1699,7 +1699,7 @@ EOS;
 
 	public function callback_dashboard_search_engines()
 	{ ?>
-		<iframe width="100%" height="380" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getSearchEngines&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="380" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getSearchEngines&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_goals()
