@@ -402,6 +402,8 @@ EOS;
 		wp_register_style( 'jquery-ui_style', 'http://ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/themes/smoothness/jquery-ui.css' );
 		wp_register_style( 'expana_jqvmap_style', plugins_url( 'css/jqvmap.css', __FILE__ ) );
 		wp_register_style( 'expana_style', plugins_url( 'style.css', __FILE__ ) );
+		wp_register_script( 'expana_highcharts', plugins_url( 'js/highcharts.js', __FILE__ ) );
+		wp_register_script( 'expana_highcharts_exporting', plugins_url( 'js/modules/exporting.js', __FILE__ ) );
 	}
 	
 	/**
@@ -1242,6 +1244,8 @@ EOS;
 		wp_enqueue_script('expana_jqvmap');
 		wp_enqueue_script('expana_jqvmap_world');
 		wp_enqueue_script('jquery-ui-datepicker');
+		wp_enqueue_script('expana_highcharts');
+		wp_enqueue_script('expana_highcharts_exporting');
 
 		add_meta_box( 'expana_visit_length_of_visits', 'Visit Length of Visits (Chart.js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
@@ -1258,6 +1262,7 @@ EOS;
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_social_media', 'Social Media', array( $this, 'callback_dashboard_social_media'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_social_media_new', 'Social Media (Rendered with Highcharts)', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
 	}
 
 	public function callback_dashboard_length_of_visits()
@@ -1613,6 +1618,69 @@ EOS;
 
                 new Chart(document.getElementById("social_media_chart").getContext("2d")).Doughnut(data, options);
             });
+		</script>
+	
+	<?php }
+
+	public function callback_dashboard_social_media_new()
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'Referrers.getSocials'
+			));
+		?>
+
+		<div class="canvas-holder">
+			<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+		</div>
+
+		<script type="text/javascript">
+			jQuery(function ($) {
+			    $('#container').highcharts({
+			        chart: {
+			            plotBackgroundColor: null,
+			            plotBorderWidth: null,
+			            plotShadow: false
+			        },
+			        title: {
+			            text: null,
+			        },
+			        tooltip: {
+			            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+			        },
+			        plotOptions: {
+			            pie: {
+			                allowPointSelect: true,
+			                cursor: 'pointer',
+			                dataLabels: {
+			                    enabled: true,
+			                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+			                    style: {
+			                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+			                    }
+			                }
+			            }
+			        },
+			        series: [{
+			            type: 'pie',
+			            name: 'Browser share',
+			            data: [
+			                ['Firefox',   45.0],
+			                ['IE',       26.8],
+			                {
+			                    name: 'Chrome',
+			                    y: 12.8,
+			                    sliced: true,
+			                    selected: true
+			                },
+			                ['Safari',    8.5],
+			                ['Opera',     6.2],
+			                ['Others',   0.7]
+			            ]
+			        }]
+			    });
+			});
 		</script>
 	
 	<?php }
