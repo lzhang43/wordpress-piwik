@@ -1629,6 +1629,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'Referrers.getSocials'
 			));
+
+		print_r ($piwik_response['content']);
 		?>
 
 		<div class="canvas-holder">
