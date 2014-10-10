@@ -1659,9 +1659,6 @@ EOS;
 					data.push(data_item);
 				}
 
-				console.log(data);
-
-
 			    $('#container').highcharts({
 			        chart: {
 			            plotBackgroundColor: null,
