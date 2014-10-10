@@ -1686,7 +1686,7 @@ EOS;
 			        },
 			        series: [{
 			            type: 'pie',
-			            name: 'Browser share',
+			            name: 'Social Network Referrers',
 			            data: data,
 			        }]
 			    });
