@@ -1820,7 +1820,7 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'UserCountry.getCountry'
 			));
-		
+
 		if ($piwik_response['content'] !== '[]') {
 		?>
 
@@ -1845,14 +1845,12 @@ EOS;
 					{
 						if(data[code])
 						{
-							var message = " Visits: " + data[code];
+							label.append(": " + data[code] + " visits");
 						}
 						else
 						{
-							var message = "No Visit"
+							label.append(": No visit");
 						}
-						
-						label.text(message);
 					}
 				});
 
