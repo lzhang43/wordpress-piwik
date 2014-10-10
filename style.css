@@ -40,5 +40,55 @@
 
 .canvas-holder {
   width: 100%;
+  min-height: 300px;
 }
 
+.canvas-holder .no-data {
+    border: 4px solid gray;
+    border-radius: 50%;
+    height: 80px;
+    margin: 100px auto 20px auto;
+    width: 80px;
+    display: block;
+    position: relative;
+    border-color: rgba(151, 187, 205, 1);
+}
+
+.canvas-holder .no-data .line {
+    background-color: rgba(151, 187, 205, 1);
+    border-radius: 2px;
+    display: block;
+    height: 5px;
+    position: absolute;
+    top: 37px;
+    width: 47px;
+}
+
+.canvas-holder .no-data .line.left {
+    left: 17px;
+    transform: rotate(45deg);
+}
+
+.canvas-holder .no-data .line.right {
+    right: 16px;
+    transform: rotate(-45deg);
+}
+
+.canvas-holder > h2 {
+    color: #575757;
+    font-size: 30px;
+    font-weight: 600;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+}
+
+.canvas-holder > p {
+    color: #797979;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: normal;
+    margin: 0;
+    position: relative;
+    text-align: center;
+}

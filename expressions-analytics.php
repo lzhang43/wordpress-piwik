@@ -1406,6 +1406,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'DevicesDetection.getType'
 			));
+
+		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
@@ -1451,6 +1453,22 @@ EOS;
             });
 		</script>
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_browsers()
 	{
