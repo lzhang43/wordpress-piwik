@@ -1555,8 +1555,6 @@ EOS;
 					data.push(data_item);
 				}
 
-
-
                 new Chart(document.getElementById("resolutions_chart").getContext("2d")).Doughnut(data, options);
             });
 		</script>
@@ -1629,8 +1627,6 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'Referrers.getSocials'
 			));
-
-		print_r ($piwik_response['content']);
 		?>
 
 		<div class="canvas-holder">
