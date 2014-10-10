@@ -51,11 +51,11 @@
     width: 80px;
     display: block;
     position: relative;
-    border-color: rgba(151, 187, 205, 1);
+    border-color: #f27474;
 }
 
 .canvas-holder .no-data .line {
-    background-color: rgba(151, 187, 205, 1);
+    background-color: #f27474;
     border-radius: 2px;
     display: block;
     height: 5px;
