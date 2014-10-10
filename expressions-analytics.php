@@ -1639,6 +1639,29 @@ EOS;
 
 		<script type="text/javascript">
 			jQuery(function ($) {
+				var social_media = jQuery.parseJSON('{"social_media_data": <?php echo $piwik_response['content']; ?> }');
+
+				var data = [];
+
+				for (var i in social_media.social_media_data) {
+					data_item = {};
+					data_item.name = social_media.social_media_data[i].label;
+
+					if (! social_media.social_media_data[i].nb_uniq_visitors)
+					{
+						data_item.y = social_media.social_media_data[i].sum_daily_nb_uniq_visitors;
+					}
+					else
+					{
+						data_item.y = social_media.social_media_data[i].nb_uniq_visitors;
+					}
+
+					data.push(data_item);
+				}
+
+				console.log(data);
+
+
 			    $('#container').highcharts({
 			        chart: {
 			            plotBackgroundColor: null,
@@ -1667,34 +1690,7 @@ EOS;
 			        series: [{
 			            type: 'pie',
 			            name: 'Browser share',
-			            data: [
-			                {
-			                	name: 'Firefox',
-			                	y: 45.0,
-			                },
-			                {
-			                	name: 'IE',
-			                	y: 26.8,
-			                },
-			                {
-			                    name: 'Chrome',
-			                    y: 12.8,
-			                    sliced: true,
-			                    selected: true
-			                },
-			                {
-			                    name: 'Safari',
-			                    y: 8.5,
-			                },
-			                {
-			                    name: 'Opera',
-			                    y: 6.2,
-			                },
-			                {
-			                    name: 'Others',
-			                    y: 0.7,
-			                },
-			            ]
+			            data: data,
 			        }]
 			    });
 			});
