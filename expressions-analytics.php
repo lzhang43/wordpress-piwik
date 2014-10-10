@@ -1328,10 +1328,10 @@ EOS;
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'VisitTime.getVisitInformationPerLocalTime'
-			)); 
+			));
 
-			?>
-			
+		if ($piwik_response['content'] !== '[]') {
+		?>			
 		<div class="canvas-holder">
 			<canvas id="visit_time_chart" width="400" height="400"></canvas>
 		</div>
@@ -1396,7 +1396,22 @@ EOS;
                 new Chart(document.getElementById("visit_time_chart").getContext("2d")).Line(data, options);
             });
 		</script>
-	<?php
+	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
 	}
 
 	public function callback_dashboard_devices()
