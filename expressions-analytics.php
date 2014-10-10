@@ -1273,7 +1273,8 @@ EOS;
 			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration'
 			)); 
 
-			?>
+		if ($piwik_response['content'] !== '[]') {
+		?>
 			
 		<div class="canvas-holder">
 			<canvas id="visit_duration_chart" height="400"></canvas>
@@ -1319,7 +1320,22 @@ EOS;
                 var visit_duration_chart = new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar(data, options);
             });
 		</script>
-	<?php
+	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
 	}
 
 	public function callback_dashboard_visit_time()
@@ -1492,6 +1508,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'DevicesDetection.getBrowserFamilies'
 			));
+
+		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
@@ -1535,7 +1553,24 @@ EOS;
                 new Chart(document.getElementById("browsers_chart").getContext("2d")).PolarArea(data, options);
             });
 		</script>
+
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_resolutions()
 	{
@@ -1544,6 +1579,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'UserSettings.getResolution'
 			));
+
+		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
@@ -1593,6 +1630,22 @@ EOS;
 		</script>
 	
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_social_media()
 	{
@@ -1601,6 +1654,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'Referrers.getSocials'
 			));
+
+		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
@@ -1652,6 +1707,22 @@ EOS;
 		</script>
 	
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_social_media_new()
 	{
@@ -1660,6 +1731,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'Referrers.getSocials'
 			));
+
+		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
@@ -1723,6 +1796,22 @@ EOS;
 		</script>
 	
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_visitor_map_new()
 	{
@@ -1731,6 +1820,8 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'UserCountry.getCountry'
 			));
+		
+		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<script>
@@ -1771,7 +1862,22 @@ EOS;
 		 
 		<div id="vmap" style="height: 380px;"></div>
 
-	<?php
+	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
 	}
 
 	public function callback_dashboard_visit_summary()
