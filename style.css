@@ -66,11 +66,15 @@
 
 .canvas-holder .no-data .line.left {
     left: 17px;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
 }
 
 .canvas-holder .no-data .line.right {
     right: 16px;
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }
 
