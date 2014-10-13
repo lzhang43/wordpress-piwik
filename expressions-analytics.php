@@ -1263,6 +1263,7 @@ EOS;
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_social_media', 'Social Media', array( $this, 'callback_dashboard_social_media'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_social_media_new', 'Social Media (Rendered with Highcharts)', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_insights', 'Movers and Shakers (Rendered with Highcharts)', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'side', 'core' );
 	}
 
 	public function callback_dashboard_length_of_visits()
@@ -1916,6 +1917,11 @@ EOS;
 	public function callback_dashboard_goals()
 	{ ?>
 		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Goals&actionToWidgetize=widgetGoalsOverview&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+	<?php }
+
+	public function callback_dashboard_insights()
+	{ ?>
+		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Insights&actionToWidgetize=getOverallMoversAndShakers&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 }
