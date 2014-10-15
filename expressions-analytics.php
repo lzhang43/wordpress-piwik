@@ -1769,7 +1769,7 @@ EOS;
 			            plotShadow: false
 			        },
 			        title: {
-			            text: 'demo chart for social media',
+			            text: null,
 			        },
 			        tooltip: {
 			            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
