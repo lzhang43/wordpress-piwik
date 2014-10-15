@@ -1737,7 +1737,7 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+			<div id="container" style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"></div>
 		</div>
 
 		<script type="text/javascript">
