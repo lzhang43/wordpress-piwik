@@ -1263,7 +1263,7 @@ EOS;
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_social_media', 'Social Media', array( $this, 'callback_dashboard_social_media'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_social_media_new', 'Social Media (Rendered with Highcharts)', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
-		add_meta_box( 'expana_insights', 'Movers and Shakers (Rendered with Highcharts)', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_insights', 'Movers and Shakers', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'side', 'core' );
 	}
 
 	public function callback_dashboard_length_of_visits()
@@ -1769,7 +1769,7 @@ EOS;
 			            plotShadow: false
 			        },
 			        title: {
-			            text: null,
+			            text: 'demo chart for social media',
 			        },
 			        tooltip: {
 			            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
