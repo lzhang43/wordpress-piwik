@@ -1251,7 +1251,7 @@ EOS;
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
-		add_meta_box( 'expana_devices', 'Device Types (Chart.js)', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_devices', 'Device Types', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_resolutions', 'Resolutions (Chart.js)', array( $this, 'callback_dashboard_resolutions'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_browsers', 'Browser Families (Chart.js)', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
@@ -1262,7 +1262,7 @@ EOS;
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
 		//add_meta_box( 'expana_social_media', 'Social Media', array( $this, 'callback_dashboard_social_media'), $this->pagehook, 'column3', 'core' );
-		add_meta_box( 'expana_social_media_new', 'Social Media (Rendered with Highcharts)', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_social_media_new', 'Social Media', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_insights', 'Movers and Shakers', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'column3', 'core' );
 	}
 
@@ -1443,7 +1443,7 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<canvas id="devices_chart" width="400" height="400"></canvas>
+			<div id="devices_chart" style="min-width: 400px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 		</div>
 
 		<script language="JavaScript">
@@ -1464,24 +1464,62 @@ EOS;
 				for (var i in devices.devices_data) {
 					
 					data_item = {};
-					data_item.label = devices.devices_data[i].label;
+					data_item.name = devices.devices_data[i].label;
 
 					if (! devices.devices_data[i].nb_uniq_visitors)
 					{
-						data_item.value = devices.devices_data[i].sum_daily_nb_uniq_visitors;
+						data_item.y = devices.devices_data[i].sum_daily_nb_uniq_visitors;
 					}
 					else
 					{
-						data_item.value = devices.devices_data[i].nb_uniq_visitors;
+						data_item.y = devices.devices_data[i].nb_uniq_visitors;
 					}
-					
-					data_item.color = color[i];
-					data_item.highlight = highlight[i];
 
 					data.push(data_item);
 				}
 
-                new Chart(document.getElementById("devices_chart").getContext("2d")).Doughnut(data, options);
+				console.log(data);
+
+				$(function () {
+				    $('#devices_chart').highcharts({
+				        chart: {
+				            plotBackgroundColor: null,
+				            plotBorderWidth: 0,
+				            plotShadow: false
+				        },
+				        title: {
+				            text: 'Device<br>types',
+				            align: 'center',
+				            verticalAlign: 'middle',
+				            y: 50
+				        },
+				        tooltip: {
+				            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+				        },
+				        plotOptions: {
+				            pie: {
+				                dataLabels: {
+				                    enabled: true,
+				                    distance: -50,
+				                    style: {
+				                        fontWeight: 'bold',
+				                        color: 'white',
+				                        textShadow: '0px 1px 2px black'
+				                    }
+				                },
+				                startAngle: -90,
+				                endAngle: 90,
+				                center: ['50%', '75%']
+				            }
+				        },
+				        series: [{
+				            type: 'pie',
+				            name: 'Browser share',
+				            innerSize: '50%',
+				            data: data
+				        }]
+				    });
+				});
             });
 		</script>
 	<?php }
@@ -1737,7 +1775,7 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<div id="container" style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"></div>
+			<div id="social_media_chart" style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"></div>
 		</div>
 
 		<script type="text/javascript">
@@ -1762,7 +1800,7 @@ EOS;
 					data.push(data_item);
 				}
 
-			    $('#container').highcharts({
+			    $('#social_media_chart').highcharts({
 			        chart: {
 			            plotBackgroundColor: null,
 			            plotBorderWidth: null,
