@@ -1443,7 +1443,7 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<div id="devices_chart" style="min-width: 400px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+			<div id="devices_chart" style="min-width: 300px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 		</div>
 
 		<script language="JavaScript">
