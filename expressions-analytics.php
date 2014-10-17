@@ -404,6 +404,8 @@ EOS;
 		wp_register_style( 'expana_style', plugins_url( 'style.css', __FILE__ ) );
 		wp_register_script( 'expana_highcharts', plugins_url( 'js/highcharts.js', __FILE__ ) );
 		wp_register_script( 'expana_highcharts_exporting', plugins_url( 'js/modules/exporting.js', __FILE__ ) );
+		wp_register_script( 'expana_highcharts_data', plugins_url( 'js/modules/data.js', __FILE__ ) );
+		wp_register_script( 'expana_highcharts_drilldown', plugins_url( 'js/modules/drilldown.js', __FILE__ ) );
 	}
 	
 	/**
@@ -1246,6 +1248,8 @@ EOS;
 		wp_enqueue_script('jquery-ui-datepicker');
 		wp_enqueue_script('expana_highcharts');
 		wp_enqueue_script('expana_highcharts_exporting');
+		wp_enqueue_script('expana_highcharts_data');
+		wp_enqueue_script('expana_highcharts_drilldown');
 
 		add_meta_box( 'expana_visit_length_of_visits', 'Visit Length of Visits (Chart.js)', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
@@ -1253,7 +1257,7 @@ EOS;
 		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_devices', 'Device Types', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_resolutions', 'Resolutions (Chart.js)', array( $this, 'callback_dashboard_resolutions'), $this->pagehook, 'side', 'core' );
-		add_meta_box( 'expana_browsers', 'Browser Families (Chart.js)', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'normal', 'core' );
+		add_meta_box( 'expana_browsers', 'Browser Families (Highcharts)', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
@@ -1545,53 +1549,136 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'DevicesDetection.getBrowserFamilies'
+			'method'		=> 'DevicesDetection.getBrowserVersions',
+			'format'		=> 'Tsv'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
-			<canvas id="browsers_chart" width="400" height="400"></canvas>
+			<div id="browsers_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 		</div>
-	
+
 		<script language="JavaScript">
-            jQuery(document).ready(function($) {
-                $('#browsers_chart').attr('width', $('#browsers_chart').parent().width());
+			jQuery(document).ready(function($) {
 
-				var browsers = jQuery.parseJSON('{"browsers_data": <?php echo $piwik_response['content']; ?> }');
-				
-				var data = [];
-				var options = {
-					responsive : true,
-				};
+			    Highcharts.data({
+			        csv: document.getElementById('browser_verisions_tsv').innerHTML,
+			        itemDelimiter: '\t',
+			        parsed: function (columns) {
 
-				var color = ["#e51c23", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#5677fc", "#03a9f4", "#00bcd4", "#009688", "#259b24", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#9e9e9e", "#607d8b"];
-				var highlight = ["#e84e40", "#ec407a", "#ab47bc", "#7e57c2", "#5c6bc0", "#738ffe", "#29b6f6", "#26c6da", "#26a69a", "#2baf2b", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043", "#8d6e63", "#bdbdbd", "#78909c"];
+			            var brands = {},
+			                brandsData = [],
+			                versions = {},
+			                drilldownSeries = [];
 
-				for (var i in browsers.browsers_data) {
-					
-					data_item = {};
-					data_item.label = browsers.browsers_data[i].label;
+			            // Parse percentage strings
+			            columns[1] = $.map(columns[1], function (value) {
+			                return value;
+			            });
 
-					if (! browsers.browsers_data[i].nb_uniq_visitors)
-					{
-						data_item.value = browsers.browsers_data[i].sum_daily_nb_uniq_visitors;
-					}
-					else
-					{
-						data_item.value = browsers.browsers_data[i].nb_uniq_visitors;
-					}
-					
-					data_item.color = color[i];
-					data_item.highlight = highlight[i];
+			            $.each(columns[0], function (i, name) {
+			                var brand,
+			                    version;
 
-					data.push(data_item);
-				}
+			                if (i > 0) {
 
-                new Chart(document.getElementById("browsers_chart").getContext("2d")).PolarArea(data, options);
-            });
+			                    // Remove special edition notes
+			                    name = name.split(' -')[0];
+
+			                    // Split into brand and version
+			                    version = name.match(/([0-9]+[\.0-9x]*)/);
+			                    if (version) {
+			                        version = version[0];
+			                    }
+			                    brand = name.replace(version, '');
+
+			                    // Create the main data
+			                    if (!brands[brand]) {
+			                        brands[brand] = columns[1][i];
+			                    } else {
+			                        brands[brand] += columns[1][i];
+			                    }
+
+			                    // Create the version data
+			                    if (version !== null) {
+			                        if (!versions[brand]) {
+			                            versions[brand] = [];
+			                        }
+			                        versions[brand].push(['v' + version, columns[1][i]]);
+			                    }
+			                }
+
+			            });
+
+			            $.each(brands, function (name, y) {
+			                brandsData.push({
+			                    name: name,
+			                    y: y,
+			                    drilldown: versions[name] ? name : null
+			                });
+			            });
+			            $.each(versions, function (key, value) {
+			                drilldownSeries.push({
+			                    name: key,
+			                    id: key,
+			                    data: value
+			                });
+			            });
+
+			            // Create the chart
+			            $('#browsers_chart').highcharts({
+			                chart: {
+			                    type: 'column'
+			                },
+			                title: {
+			                    text: null
+			                },
+			                subtitle: {
+			                    text: 'Click the columns to view versions'
+			                },
+			                xAxis: {
+			                    type: 'category'
+			                },
+			                yAxis: {
+			                    title: {
+			                        text: 'Unique Visits'
+			                    }
+			                },
+			                legend: {
+			                    enabled: false
+			                },
+			                plotOptions: {
+			                    series: {
+			                        borderWidth: 0,
+			                        dataLabels: {
+			                            enabled: true,
+			                            format: '{point.y:.1f}'
+			                        }
+			                    }
+			                },
+
+			                tooltip: {
+			                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+			                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b> of total<br/>'
+			                },
+
+			                series: [{
+			                    name: 'Brands',
+			                    colorByPoint: true,
+			                    data: brandsData
+			                }],
+			                drilldown: {
+			                    series: drilldownSeries
+			                }
+			            });
+			        }
+			    });
+			});
 		</script>
+
+		<pre id="browser_verisions_tsv" style="display:none"><?php print_r($piwik_response['content']); ?></pre>
 
 	<?php }
 		else { ?>
