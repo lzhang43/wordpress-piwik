@@ -2025,9 +2025,158 @@ EOS;
 	<?php }
 
 	public function callback_dashboard_visitor_os()
-	{ ?>
-		<iframe width="100%" height="510" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getOsVersions&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'DevicesDetection.getOsVersions',
+			'format'		=> 'Tsv'
+			));
+
+		if ($piwik_response['content'] !== '[]') {
+		?>
+
+		<div class="canvas-holder">
+			<div id="os_version_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		</div>
+
+		<script language="JavaScript">
+			jQuery(document).ready(function($) {
+
+			    Highcharts.data({
+			        csv: document.getElementById('os_version_tsv').innerHTML,
+			        itemDelimiter: '\t',
+			        parsed: function (columns) {
+
+			            var brands = {},
+			                brandsData = [],
+			                versions = {},
+			                drilldownSeries = [];
+
+			            // Parse percentage strings
+			            columns[1] = $.map(columns[1], function (value) {
+			                return value;
+			            });
+
+			            $.each(columns[0], function (i, name) {
+			                var brand,
+			                    version;
+
+			                if (i > 0) {
+
+			                    // Remove special edition notes
+			                    name = name.split(' -')[0];
+
+			                    // Split into brand and version
+			                    version = name.match(/([0-9]+[\.0-9x]*)/);
+			                    if (version) {
+			                        version = version[0];
+			                    }
+			                    brand = name.replace(version, '');
+
+			                    // Create the main data
+			                    if (!brands[brand]) {
+			                        brands[brand] = columns[1][i];
+			                    } else {
+			                        brands[brand] += columns[1][i];
+			                    }
+
+			                    // Create the version data
+			                    if (version !== null) {
+			                        if (!versions[brand]) {
+			                            versions[brand] = [];
+			                        }
+			                        versions[brand].push(['v' + version, columns[1][i]]);
+			                    }
+			                }
+
+			            });
+
+			            $.each(brands, function (name, y) {
+			                brandsData.push({
+			                    name: name,
+			                    y: y,
+			                    drilldown: versions[name] ? name : null
+			                });
+			            });
+			            $.each(versions, function (key, value) {
+			                drilldownSeries.push({
+			                    name: key,
+			                    id: key,
+			                    data: value
+			                });
+			            });
+
+			            // Create the chart
+			            $('#os_version_chart').highcharts({
+			                chart: {
+			                    type: 'column'
+			                },
+			                title: {
+			                    text: null
+			                },
+			                subtitle: {
+			                    text: 'Click the columns to view versions'
+			                },
+			                xAxis: {
+			                    type: 'category'
+			                },
+			                yAxis: {
+			                    title: {
+			                        text: 'Unique Visits'
+			                    }
+			                },
+			                legend: {
+			                    enabled: false
+			                },
+			                plotOptions: {
+			                    series: {
+			                        borderWidth: 0,
+			                        dataLabels: {
+			                            enabled: true,
+			                            format: '{point.y:.0f}'
+			                        }
+			                    }
+			                },
+
+			                tooltip: {
+			                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+			                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+			                },
+
+			                series: [{
+			                    name: 'Brands',
+			                    colorByPoint: true,
+			                    data: brandsData
+			                }],
+			                drilldown: {
+			                    series: drilldownSeries
+			                }
+			            });
+			        }
+			    });
+			});
+		</script>
+
+		<pre id="os_version_tsv" style="display:none"><?php print_r($piwik_response['content']); ?></pre>
+
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_referrers()
 	{ ?>
