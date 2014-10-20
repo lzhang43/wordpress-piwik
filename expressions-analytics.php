@@ -1781,7 +1781,7 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<canvas id="social_media_chart" width="400" height="400"></canvas>
+			<!-- Canvas removed -->
 		</div>
 
 		<script language="JavaScript">
@@ -1858,7 +1858,7 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<div id="social_media_chart" style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"></div>
+			<div id="social_media_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 		</div>
 
 		<script type="text/javascript">
