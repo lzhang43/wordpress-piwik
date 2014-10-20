@@ -1694,47 +1694,71 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<!-- <canvas id="resolutions_chart" width="400" height="400"></canvas> -->
 			<div id="resolutions_chart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 		</div>
 
 		<script language="JavaScript">
-            jQuery(document).ready(function($) {
-                $('#resolutions_chart').attr('width', $('#resolutions_chart').parent().width());
+		    jQuery(document).ready(function($) {
 
 				var resolutions = jQuery.parseJSON('{"resolutions_data": <?php echo $piwik_response['content']; ?> }');
-
+				
 				var data = [];
 				var options = {
+					segmentShowStroke : true,
 					responsive : true,
 				};
 
-				var color = ["#e51c23", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#5677fc", "#03a9f4", "#00bcd4", "#009688", "#259b24", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#9e9e9e", "#607d8b"];
-				var highlight = ["#e84e40", "#ec407a", "#ab47bc", "#7e57c2", "#5c6bc0", "#738ffe", "#29b6f6", "#26c6da", "#26a69a", "#2baf2b", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043", "#8d6e63", "#bdbdbd", "#78909c"];
-
 				for (var i in resolutions.resolutions_data) {
 
-					if (i > 18) {
+					if (i > 15) {
 						break;
 					}
-
+					
 					data_item = {};
-					data_item.label = resolutions.resolutions_data[i].label;
+					data_item.name = resolutions.resolutions_data[i].label;
 
 					if (! resolutions.resolutions_data[i].nb_uniq_visitors)
 					{
-						data_item.value = resolutions.resolutions_data[i].sum_daily_nb_uniq_visitors;
+						data_item.y = resolutions.resolutions_data[i].sum_daily_nb_uniq_visitors;
 					}
 					else
 					{
-						data_item.value = resolutions.resolutions_data[i].nb_uniq_visitors;
+						data_item.y = resolutions.resolutions_data[i].nb_uniq_visitors;
 					}
 
 					data.push(data_item);
 				}
 
-                new Chart(document.getElementById("resolutions_chart").getContext("2d")).Doughnut(data, options);
-            });
+		        // Build the chart
+		        $('#resolutions_chart').highcharts({
+		            chart: {
+		                plotBackgroundColor: null,
+		                plotBorderWidth: null,
+		                plotShadow: false
+		            },
+		            title: {
+		                text: null
+		            },
+		            tooltip: {
+		                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+		            },
+		            plotOptions: {
+		                pie: {
+		                    allowPointSelect: true,
+		                    cursor: 'pointer',
+		                    dataLabels: {
+		                        enabled: false
+		                    },
+		                    showInLegend: true
+		                }
+		            },
+		            series: [{
+		                type: 'pie',
+		                name: 'Resolution',
+		                data: data
+		            }]
+		        });
+		    });
 		</script>
 	
 	<?php }
