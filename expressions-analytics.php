@@ -1257,7 +1257,7 @@ EOS;
 		add_meta_box( 'expana_visit_time', 'Visit Information Per LocalTime (Chart.js)', array( $this, 'callback_dashboard_visit_time'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_devices', 'Device Types', array( $this, 'callback_dashboard_devices'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_resolutions', 'Resolutions (Chart.js)', array( $this, 'callback_dashboard_resolutions'), $this->pagehook, 'side', 'core' );
-		add_meta_box( 'expana_visitor_browser', 'Browser Version', array( $this, 'callback_dashboard_visitor_browser'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_browsers', 'Browser Version', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_map_new', 'Visitor Map (jQuery Vector Maps)', array( $this, 'callback_dashboard_visitor_map_new'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
@@ -1480,8 +1480,6 @@ EOS;
 					data.push(data_item);
 				}
 
-				console.log(data);
-
 				$(function () {
 				    $('#devices_chart').highcharts({
 				        chart: {
@@ -1516,7 +1514,7 @@ EOS;
 				        },
 				        series: [{
 				            type: 'pie',
-				            name: 'Browser share',
+				            name: 'Device',
 				            innerSize: '50%',
 				            data: data
 				        }]
