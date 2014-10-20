@@ -2244,7 +2244,7 @@ EOS;
 			        },
 			        series: [{
 			            type: 'pie',
-			            name: 'Browser share',
+			            name: 'Search engine share',
 			            data: data
 			        }]
 			    });
