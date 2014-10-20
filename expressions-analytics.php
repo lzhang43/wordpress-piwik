@@ -1047,18 +1047,6 @@ EOS;
 	}
 
 	/**
-	 * Make Piwik API data available to JavaScript
-	 *
-	 */
-	public function localize_piwik_data() {
-		$piwik_response = $this->query_piwik_api(NULL, array(
-			'token_auth'	=> $this->get_token_auth(),
-			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration'
-			));
-	}
-
-	/**
 	 * Dashboard page callback.
 	 */
 	public function callback_dashboard_page() {
@@ -1706,7 +1694,8 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<canvas id="resolutions_chart" width="400" height="400"></canvas>
+			<!-- <canvas id="resolutions_chart" width="400" height="400"></canvas> -->
+			<div id="resolutions_chart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 		</div>
 
 		<script language="JavaScript">
@@ -1740,9 +1729,6 @@ EOS;
 					{
 						data_item.value = resolutions.resolutions_data[i].nb_uniq_visitors;
 					}
-					
-					data_item.color = color[i];
-					data_item.highlight = highlight[i];
 
 					data.push(data_item);
 				}
