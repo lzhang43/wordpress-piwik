@@ -2180,9 +2180,93 @@ EOS;
 	<?php }
 
 	public function callback_dashboard_search_engines()
-	{ ?>
-		<iframe width="100%" height="380" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getSearchEngines&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'Referrers.getSearchEngines'
+			));
+
+		if ($piwik_response['content'] !== '[]') {
+		?>
+
+		<div class="canvas-holder">
+			<div id="search_engine_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		</div>
+
+		<script language="JavaScript">
+			jQuery(document).ready(function($) {
+
+				var search_engines = jQuery.parseJSON('{"search_engines_data": <?php echo $piwik_response['content']; ?> }');
+
+				var data = [];
+
+				for (var i in search_engines.search_engines_data) {
+					data_item = {};
+					data_item.name = search_engines.search_engines_data[i].label;
+
+					if (! search_engines.search_engines_data[i].nb_uniq_visitors)
+					{
+						data_item.y = search_engines.search_engines_data[i].sum_daily_nb_uniq_visitors;
+					}
+					else
+					{
+						data_item.y = search_engines.search_engines_data[i].nb_uniq_visitors;
+					}
+
+					data.push(data_item);
+				}
+
+			    $('#search_engine_chart').highcharts({
+			        chart: {
+			            plotBackgroundColor: null,
+			            plotBorderWidth: null,
+			            plotShadow: false
+			        },
+			        title: {
+			            text: null
+			        },
+			        tooltip: {
+			            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+			        },
+			        plotOptions: {
+			            pie: {
+			                allowPointSelect: true,
+			                cursor: 'pointer',
+			                dataLabels: {
+			                    enabled: true,
+			                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+			                    style: {
+			                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+			                    }
+			                }
+			            }
+			        },
+			        series: [{
+			            type: 'pie',
+			            name: 'Browser share',
+			            data: data
+			        }]
+			    });
+			});
+		</script>
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_goals()
 	{ ?>
