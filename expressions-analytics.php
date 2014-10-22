@@ -290,6 +290,7 @@ EOS;
 	
 	public function action_init() {
 		add_filter( 'screen_layout_columns', array( $this, 'on_screen_layout_columns'), 10, 2 );
+		add_action('admin_post_save_expana_dashboard', array(&$this, 'on_save_changes'));
 	}
 
 	/**
@@ -1082,10 +1083,10 @@ EOS;
 		<div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
 			
-			<form action="" method="post">
-				<?php wp_nonce_field( 'expana_dashboard' ); ?>
-				<?php wp_nonce_field( 'closed_postboxes', 'closed_postboxes_nonce', false ); ?>
-				<?php wp_nonce_field( 'metabox_order', 'metabox_order_nonce', false ); ?>
+			<form action="admin-post.php" method="post">
+				<?php wp_nonce_field('expana-metaboxes'); ?>
+				<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
+				<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
 				<input type="hidden" name="action" value="save_expana_dashboard" />
 				<div>
 					<div class="tablenav top">
@@ -1221,6 +1222,19 @@ EOS;
 		</script>
 
 		<?php
+	}
+
+	function on_save_changes() {
+		//user permission check
+		if ( !current_user_can('manage_options') )
+			wp_die( __('Cheatin&#8217; uh?') );
+		//cross check the given referer
+		check_admin_referer('expana-metaboxes');
+		
+		//process option saving
+		
+		//lets redirect the post request into get request (you may add additional params at the url, if you need to show save results
+		wp_redirect($_POST['_wp_http_referer']);		
 	}
 
 	public function load_dashboard() {
@@ -2079,7 +2093,6 @@ EOS;
 			                        versions[brand].push(['v' + version, columns[1][i]]);
 			                    }
 			                }
-
 			            });
 
 			            $.each(brands, function (name, y) {
