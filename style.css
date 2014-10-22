@@ -43,6 +43,10 @@
   min-height: 300px;
 }
 
+.canvas-holder div {
+  margin: 0 auto;
+}
+
 .canvas-holder .no-data {
     border: 4px solid gray;
     border-radius: 50%;
