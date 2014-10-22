@@ -1353,14 +1353,11 @@ EOS;
 		if ($piwik_response['content'] !== '[]') {
 		?>			
 		<div class="canvas-holder">
-			<canvas id="visit_time_chart" width="400" height="400"></canvas>
+			<div id="visit_time_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 		</div>
-
-		<p align="center"><span class="label dataset-2">Unique Visitors</span> &nbsp; <span class="label dataset-1">Visitor</span></p>
 		
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
-                $('#visit_time_chart').attr('width', $('#visit_time_chart').parent().width());
 
 				var visit_time = jQuery.parseJSON('{"visit_time_data": <?php echo $piwik_response['content']; ?> }');
 				
@@ -1382,39 +1379,43 @@ EOS;
 					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
 				}
 
-				var data = {
-					labels : visit_time_label,
-					datasets : [
-						{
-							label: "Visits",
-							fillColor: "rgba(220,220,220,0.2)",
-							strokeColor: "rgba(220,220,220,1)",
-							pointColor: "rgba(220,220,220,1)",
-							pointStrokeColor: "#fff",
-							pointHighlightFill: "#fff",
-							pointHighlightStroke: "rgba(220,220,220,1)",
-							data: visit_time_visits
-						},
-						{
-							label: "Unique Visits",
-							fillColor: "rgba(151,187,205,0.2)",
-							strokeColor: "rgba(151,187,205,1)",
-							pointColor: "rgba(151,187,205,1)",
-							pointStrokeColor: "#fff",
-							pointHighlightFill: "#fff",
-							pointHighlightStroke: "rgba(151,187,205,1)",
-							data: visit_time_uniq_visitors
-						}
-					]
-				};
-
-				var options = {
-					scaleShowGridLines : true,
-					responsive : true,
-				};
-
-                new Chart(document.getElementById("visit_time_chart").getContext("2d")).Line(data, options);
-            });
+				$('#visit_time_chart').highcharts({
+				    title: {
+				        text: null,
+				        x: -20 //center
+				    },
+				    subtitle: {
+				        text: null,
+				        x: -20
+				    },
+				    xAxis: {
+				        categories: visit_time_label
+				    },
+				    yAxis: {
+				        title: {
+				            text: 'Visits'
+				        },
+				        plotLines: [{
+				            value: 0,
+				            width: 1,
+				            color: '#808080'
+				        }]
+				    },
+				    legend: {
+				        layout: 'horizontal',
+				        align: 'center',
+				        verticalAlign: 'bottom',
+				        borderWidth: 0
+				    },
+				    series: [{
+				        name: 'Visits',
+				        data: visit_time_visits
+				    }, {
+				        name: 'Unique Visits',
+				        data: visit_time_uniq_visitors
+				    }]
+				});
+				});
 		</script>
 	<?php }
 		else { ?>
