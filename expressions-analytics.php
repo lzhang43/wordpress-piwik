@@ -1082,54 +1082,56 @@ EOS;
 
 		<div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
-			
+
+				<div>
+					<form action="" method="post">
+						<div class="tablenav top">
+							<div class="alignleft actions">
+								<label class="screen-reader-text" for="expana-time-period">Select Time Period</label>
+								<select id="expana-time-period" name="expana-time-period">
+									<option selected="selected" value="-1">Time Period</option>
+									<option class="hide-if-no-js" value="today" <?php if($_POST['expana-time-period']=="today") echo("selected");?>>Today</option>
+									<option class="hide-if-no-js" value="yesterday" <?php if($_POST['expana-time-period']=="yesterday") echo("selected");?>>Yesterday</option>
+									<option class="hide-if-no-js" value="last10" <?php if($_POST['expana-time-period']=="last10") echo("selected");?>>Last 10 Days</option>
+									<option class="hide-if-no-js" value="last30" <?php if($_POST['expana-time-period']=="last30") echo("selected");?>>Last 30 Days</option>
+									<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
+									<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
+									<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
+									<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Custom Date Range</option>
+								</select>
+
+								<label class="screen-reader-text" for="expana-from-date">From</label>
+								<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" placeholder="From" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" />
+
+								<label class="screen-reader-text" for="expana-to-date">To</label>
+								<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" placeholder="To" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" />
+
+								<input type="submit" value="Apply" class="button action" id="doaction" name="">
+							</div>
+						<br class="clear">
+						</div>
+					</form>
+				</div>
+
 			<form action="admin-post.php" method="post">
 				<?php wp_nonce_field('expana-metaboxes'); ?>
 				<?php wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false ); ?>
 				<?php wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false ); ?>
 				<input type="hidden" name="action" value="save_expana_dashboard" />
-				<div>
-					<div class="tablenav top">
-						<div class="alignleft actions">
-							<label class="screen-reader-text" for="expana-time-period">Select Time Period</label>
-							<select id="expana-time-period" name="expana-time-period">
-								<option selected="selected" value="-1">Time Period</option>
-								<option class="hide-if-no-js" value="today" <?php if($_POST['expana-time-period']=="today") echo("selected");?>>Today</option>
-								<option class="hide-if-no-js" value="yesterday" <?php if($_POST['expana-time-period']=="yesterday") echo("selected");?>>Yesterday</option>
-								<option class="hide-if-no-js" value="last10" <?php if($_POST['expana-time-period']=="last10") echo("selected");?>>Last 10 Days</option>
-								<option class="hide-if-no-js" value="last30" <?php if($_POST['expana-time-period']=="last30") echo("selected");?>>Last 30 Days</option>
-								<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
-								<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
-								<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
-								<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Custom Date Range</option>
-							</select>
-
-							<label class="screen-reader-text" for="expana-from-date">From</label>
-							<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" placeholder="From" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" />
-
-							<label class="screen-reader-text" for="expana-to-date">To</label>
-							<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" placeholder="To" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" />
-
-							<input type="submit" value="Apply" class="button action" id="doaction" name="">
-						</div>
-					<br class="clear">
+				<div id="dashboard-widgets" class="metabox-holder columns-<?php echo $screen_layout_columns; ?><?php echo 2 <= $screen_layout_columns?' has-right-sidebar':''; ?>">
+					<div id='postbox-container-1' class='postbox-container'>
+						<?php $meta_boxes = do_meta_boxes($this->pagehook, 'normal', null); ?>	
+					</div>
+					
+					<div id='postbox-container-2' class='postbox-container'>
+						<?php do_meta_boxes($this->pagehook, 'side', null); ?>
+					</div>
+					
+					<div id='postbox-container-3' class='postbox-container'>
+						<?php do_meta_boxes($this->pagehook, 'column3', null); ?>
 					</div>
 				</div>
 			</form>
-
-			<div id="dashboard-widgets" class="metabox-holder columns-<?php echo $screen_layout_columns; ?><?php echo 2 <= $screen_layout_columns?' has-right-sidebar':''; ?>">
-				<div id='postbox-container-1' class='postbox-container'>
-					<?php $meta_boxes = do_meta_boxes($this->pagehook, 'normal', null); ?>	
-				</div>
-				
-				<div id='postbox-container-2' class='postbox-container'>
-					<?php do_meta_boxes($this->pagehook, 'side', null); ?>
-				</div>
-				
-				<div id='postbox-container-3' class='postbox-container'>
-					<?php do_meta_boxes($this->pagehook, 'column3', null); ?>
-				</div>
-			</div>
 			
 		</div>
 
