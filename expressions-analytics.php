@@ -1281,47 +1281,79 @@ EOS;
 		?>
 			
 		<div class="canvas-holder">
-			<canvas id="visit_duration_chart" height="400"></canvas>
+			<div id="visit_duration_chart" style="min-width: 500px; height: 400px; margin: 0 auto"></div>
 		</div>
-
-		<p align="center"><span class="label dataset-2">Unique Visitors</span></p>
 		
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
-                $('#visit_duration_chart').attr('width', $('#visit_duration_chart').parent().width());
 
 				var visit_duration = jQuery.parseJSON('{"visit_duration_data": <?php echo $piwik_response['content']; ?> }');
 				
 				var visit_duration_label = [];
 				var visit_duration_value = [];
+				var visit_duration_data = [];
+				var visit_duration_data_item = [];
 
 				for (var i in visit_duration.visit_duration_data) {
-					visit_duration_label.push(visit_duration.visit_duration_data[i].label);
-					visit_duration_value.push(visit_duration.visit_duration_data[i].nb_visits);
+					visit_duration_data_item.push(visit_duration.visit_duration_data[i].label);
+					visit_duration_data_item.push(parseFloat(visit_duration.visit_duration_data[i].nb_visits));
+					visit_duration_data.push(visit_duration_data_item);
+
+					visit_duration_data_item = [];
 				}
 
-				var data = {
-                    labels : visit_duration_label,
-                    datasets : [
-                        {
-                            label: "Unique Visitors",
-                            fillColor: "rgba(151,187,205,0.2)",
-                            strokeColor: "rgba(151,187,205,1)",
-                            pointColor: "rgba(151,187,205,1)",
-                            pointStrokeColor: "#fff",
-                            pointHighlightFill: "#fff",
-                            pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: visit_duration_value
-                        }
-                    ]
-				};
+				console.log(visit_duration_data);
 
-				var options = {
-					scaleShowGridLines : true,
-					responsive : true,
-				};
-
-                var visit_duration_chart = new Chart(document.getElementById("visit_duration_chart").getContext("2d")).Bar(data, options);
+			    $('#visit_duration_chart').highcharts({
+			        chart: {
+			            type: 'column'
+			        },
+			        title: {
+			            text: null
+			        },
+			        subtitle: {
+			            text: null
+			        },
+			        xAxis: {
+			            type: 'category',
+			            labels: {
+			                rotation: -45,
+			                style: {
+			                    fontSize: '13px',
+			                    fontFamily: 'Verdana, sans-serif'
+			                }
+			            }
+			        },
+			        yAxis: {
+			            min: 0,
+			            title: {
+			                text: 'Visits'
+			            }
+			        },
+			        legend: {
+			            enabled: false
+			        },
+			        tooltip: {
+			            pointFormat: '{point.y:.0f} visits'
+			        },
+			        series: [{
+			            name: 'visits',
+			            data: visit_duration_data,
+			            dataLabels: {
+			                enabled: true,
+			                rotation: -90,
+			                color: '#FFFFFF',
+			                align: 'right',
+			                x: 4,
+			                y: 10,
+			                style: {
+			                    fontSize: '13px',
+			                    fontFamily: 'Verdana, sans-serif',
+			                    textShadow: '0 0 3px black'
+			                }
+			            }
+			        }]
+			    });
             });
 		</script>
 	<?php }
