@@ -1283,7 +1283,7 @@ EOS;
 		?>
 			
 		<div class="canvas-holder">
-			<div id="visit_duration_chart" style="min-width: 500px; height: 400px; margin: 0 auto"></div>
+			<div id="visit_duration_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 		</div>
 		
 		<script language="JavaScript">
