@@ -2099,10 +2099,6 @@ EOS;
 					}
 				}
 
-				console.log(visit_summary_label);
-				console.log(visit_summary_uniq_visitors);
-				console.log(visit_summary_visits);
-
 				$('#visit_summary_chart').highcharts({
 				    title: {
 				        text: null,
@@ -2129,6 +2125,9 @@ EOS;
 				            width: 1,
 				            color: '#808080'
 				        }]
+				    },
+				    yAxis: {
+				    	min: 0
 				    },
 				    legend: {
 				        layout: 'horizontal',
