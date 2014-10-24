@@ -2068,25 +2068,40 @@ EOS;
 		<script language="JavaScript">
             jQuery(document).ready(function($) {
 
-				var visit_time = jQuery.parseJSON('{"visit_summary_data": <?php echo $piwik_response['content']; ?> }');
+				var visit_summary = jQuery.parseJSON('{"visit_summary_data": <?php echo $piwik_response['content']; ?> }');
 				
-				var visit_time_label = [];
-				var visit_time_uniq_visitors = [];
-				var visit_time_visits = [];
+				var visit_summary_label = [];
+				var visit_summary_uniq_visitors = [];
+				var visit_summary_visits = [];
 
-				for (var i in visit_time.visit_time_data) {
-					visit_time_label.push(visit_time.visit_time_data[i].label);
-					if (! visit_time.visit_time_data[i].nb_uniq_visitors)
+				console.log(visit_summary.visit_summary_data);
+
+				for (var i in visit_summary.visit_summary_data) {
+
+					visit_summary_label.push(i);
+					
+					if (visit_summary.visit_summary_data[i].nb_uniq_visitors > 0)
 					{
-						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].sum_daily_nb_uniq_visitors);
+						visit_summary_uniq_visitors.push(visit_summary.visit_summary_data[i].nb_uniq_visitors);
 					}
 					else
 					{
-						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].nb_uniq_visitors);
+						visit_summary_uniq_visitors.push(0);
 					}
-					
-					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
+
+					if (visit_summary.visit_summary_data[i].nb_visits > 0)
+					{
+						visit_summary_visits.push(visit_summary.visit_summary_data[i].nb_visits);
+					}
+					else
+					{
+						visit_summary_visits.push(0);
+					}
 				}
+
+				console.log(visit_summary_label);
+				console.log(visit_summary_uniq_visitors);
+				console.log(visit_summary_visits);
 
 				$('#visit_summary_chart').highcharts({
 				    title: {
@@ -2098,7 +2113,12 @@ EOS;
 				        x: -20
 				    },
 				    xAxis: {
-				        categories: visit_time_label
+				        categories: visit_summary_label,
+				        type: 'datetime',
+				        labels: {
+				        	step: 14,
+				        	enabled: false
+				        }
 				    },
 				    yAxis: {
 				        title: {
@@ -2118,10 +2138,10 @@ EOS;
 				    },
 				    series: [{
 				        name: 'Visits',
-				        data: visit_time_visits
+				        data: visit_summary_visits
 				    }, {
 				        name: 'Unique Visits',
-				        data: visit_time_uniq_visitors
+				        data: visit_summary_uniq_visitors
 				    }]
 				});
 				});
