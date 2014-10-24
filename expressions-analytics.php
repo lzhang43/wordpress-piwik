@@ -1255,6 +1255,7 @@ EOS;
 		wp_enqueue_script('expana_highcharts_data');
 		wp_enqueue_script('expana_highcharts_drilldown');
 
+		add_meta_box( 'expana_report', 'Report', array( $this, 'callback_dashboard_report' ), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_length_of_visits', 'Visit Length of Visits', array( $this, 'callback_dashboard_length_of_visits'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_visit_summary', 'Visit Summary', array( $this, 'callback_dashboard_visit_summary'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_live', 'Live', array( $this, 'callback_dashboard_live'), $this->pagehook, 'normal', 'core' );
@@ -1269,6 +1270,11 @@ EOS;
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_social_media_new', 'Social Media', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_insights', 'Movers and Shakers', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'column3', 'core' );
+	}
+
+	public function callback_dashboard_report()
+	{
+		echo ("report");
 	}
 
 	public function callback_dashboard_length_of_visits()
