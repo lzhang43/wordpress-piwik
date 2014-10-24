@@ -2044,7 +2044,97 @@ EOS;
 	}
 
 	public function callback_dashboard_visit_summary()
-	{ ?>
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.get'
+			)); 
+
+		if ($piwik_response['content'] !== '[]') {
+		?>
+			
+		<div class="canvas-holder">
+			<div id="visit_summary_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		</div>
+		
+		<script language="JavaScript">
+            jQuery(document).ready(function($) {
+
+				var visit_time = jQuery.parseJSON('{"visit_summary_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var visit_time_label = [];
+				var visit_time_uniq_visitors = [];
+				var visit_time_visits = [];
+
+				for (var i in visit_time.visit_time_data) {
+					visit_time_label.push(visit_time.visit_time_data[i].label);
+					if (! visit_time.visit_time_data[i].nb_uniq_visitors)
+					{
+						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].sum_daily_nb_uniq_visitors);
+					}
+					else
+					{
+						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].nb_uniq_visitors);
+					}
+					
+					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
+				}
+
+				$('#visit_summary_chart').highcharts({
+				    title: {
+				        text: null,
+				        x: -20 //center
+				    },
+				    subtitle: {
+				        text: null,
+				        x: -20
+				    },
+				    xAxis: {
+				        categories: visit_time_label
+				    },
+				    yAxis: {
+				        title: {
+				            text: 'Visits'
+				        },
+				        plotLines: [{
+				            value: 0,
+				            width: 1,
+				            color: '#808080'
+				        }]
+				    },
+				    legend: {
+				        layout: 'horizontal',
+				        align: 'center',
+				        verticalAlign: 'bottom',
+				        borderWidth: 0
+				    },
+				    series: [{
+				        name: 'Visits',
+				        data: visit_time_visits
+				    }, {
+				        name: 'Unique Visits',
+				        data: visit_time_uniq_visitors
+				    }]
+				});
+				});
+		</script>
+	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php } ?>
 		<iframe id="dashboard_visit_summary" width="100%" height="900" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=index&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
