@@ -1578,7 +1578,13 @@ EOS;
 			'format'		=> 'Tsv'
 			));
 
-		if ($piwik_response['content'] !== '[]') {
+		$piwik_response2 = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'DevicesDetection.getBrowserVersions',
+			));
+
+		if ($piwik_response2['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
@@ -2162,7 +2168,13 @@ EOS;
 			'format'		=> 'Tsv'
 			));
 
-		if ($piwik_response['content'] !== '[]') {
+		$piwik_response2 = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'DevicesDetection.getOsVersions'
+			));
+
+		if ($piwik_response2['content'] !== '[]') {
 		?>
 
 		<div class="canvas-holder">
