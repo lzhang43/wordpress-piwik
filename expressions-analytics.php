@@ -771,7 +771,7 @@ EOS;
 		}
 		elseif ( $time_period == 'last30' )
 		{
-			$date = 'last30day';
+			$date = 'last30';
 			$period = 'range';
 		}
 		elseif ( $time_period == 'daterange' )
@@ -2054,7 +2054,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.get'
+			'method'		=> 'VisitsSummary.get',
+			'period'		=> 'day'
 			)); 
 
 		if ($piwik_response['content'] !== '[]') {
