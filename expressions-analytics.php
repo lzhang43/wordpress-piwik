@@ -1401,7 +1401,7 @@ EOS;
 					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=avg_time_on_site&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
 				</div>
 				<div class="description">
-					<?php echo $visits_length_pretty['content']; ?>s average visit duration
+					<?php echo $visits_length_pretty['content']; ?> average visit duration
 				</div>
 				<div class="clear"></div>
 			</div>
