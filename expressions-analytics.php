@@ -887,6 +887,27 @@ EOS;
 
 		return $date;
 	}
+
+	/**
+	* Return date range in STARTDATE,ENDDATE format
+	* If no date range specified, use last 30 days option by default
+	*
+	* @return string
+	*/
+	public function get_query_dates() {
+		if ( $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
+		{
+			$from_date = $_POST['expana-from-date'];
+			$to_date =  $_POST['expana-to-date'];
+		}
+		else
+		{
+			$from_date = date('Y-m-d', strtotime('-30 days'));
+			$to_date = date('Y-m-d', strtotime('-1 day'));
+		}
+
+		return $from_date.",".$to_date;
+	}
 	
 	/**
 	 * Fetch an external URL and return the contents and success in an associative array.
@@ -1324,7 +1345,7 @@ EOS;
 		print_r (var_dump($visits_converted)."<br />");
 		print_r (var_dump($visits_length_pretty)."<br />"); ?>
 
-<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=2014-09-27,2014-10-26&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=nb_visits%2Cnb_uniq_visitors&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=nb_visits%2Cnb_uniq_visitors&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
 
 	<?php 
 	}
