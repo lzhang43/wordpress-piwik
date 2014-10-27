@@ -1274,7 +1274,47 @@ EOS;
 
 	public function callback_dashboard_report()
 	{
-		echo ("report");
+		$visits = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getVisits'
+			)); 
+
+		$unique_visitors = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getUniqueVisitors'
+			)); 
+
+		$actions = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getActions'
+			)); 
+
+		$max_actions = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getMaxActions'
+			)); 
+
+		$bounce_count = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getBounceCount'
+			)); 
+
+		$visits_converted = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getVisitsConverted'
+			));
+
+		$visits_length_pretty = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'VisitsSummary.getSumVisitsLengthPretty'
+			));
 	}
 
 	public function callback_dashboard_length_of_visits()
