@@ -1096,7 +1096,7 @@ EOS;
 									<option class="hide-if-no-js" value="last30" <?php if($_POST['expana-time-period']=="last30") echo("selected");?>>Last 30 Days</option>
 									<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
 									<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
-									<option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option>
+									<!-- <option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option> -->
 									<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Custom Date Range</option>
 								</select>
 
@@ -1315,6 +1315,14 @@ EOS;
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'VisitsSummary.getSumVisitsLengthPretty'
 			));
+
+		print_r (var_dump($visits)."<br />");
+		print_r (var_dump($unique_visitors)."<br />");
+		print_r (var_dump($actions)."<br />");
+		print_r (var_dump($max_actions)."<br />");
+		print_r (var_dump($bounce_count)."<br />");
+		print_r (var_dump($visits_converted)."<br />");
+		print_r (var_dump($visits_length_pretty)."<br />");
 	}
 
 	public function callback_dashboard_length_of_visits()
