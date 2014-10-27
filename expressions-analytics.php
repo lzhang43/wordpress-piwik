@@ -1298,54 +1298,108 @@ EOS;
 		$visits = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getVisits'
+			'method'		=> 'VisitsSummary.getVisits',
+			'format'		=> 'xml'
 			)); 
 
 		$unique_visitors = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getUniqueVisitors'
+			'method'		=> 'VisitsSummary.getUniqueVisitors',
+			'format'		=> 'xml'
 			)); 
 
 		$actions = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getActions'
+			'method'		=> 'VisitsSummary.getActions',
+			'format'		=> 'xml'
 			)); 
 
 		$max_actions = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getMaxActions'
+			'method'		=> 'VisitsSummary.getMaxActions',
+			'format'		=> 'xml'
 			)); 
 
 		$bounce_count = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getBounceCount'
+			'method'		=> 'VisitsSummary.getBounceCount',
+			'format'		=> 'xml'
 			)); 
 
 		$visits_converted = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getVisitsConverted'
+			'method'		=> 'VisitsSummary.getVisitsConverted',
+			'format'		=> 'xml'
 			));
 
 		$visits_length_pretty = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitsSummary.getSumVisitsLengthPretty'
+			'method'		=> 'VisitsSummary.getSumVisitsLengthPretty',
+			'format'		=> 'xml'
 			));
+		?>
 
-		print_r (var_dump($visits)."<br />");
-		print_r (var_dump($unique_visitors)."<br />");
-		print_r (var_dump($actions)."<br />");
-		print_r (var_dump($max_actions)."<br />");
-		print_r (var_dump($bounce_count)."<br />");
-		print_r (var_dump($visits_converted)."<br />");
-		print_r (var_dump($visits_length_pretty)."<br />"); ?>
+		<div class="report-container">
+			<div class="report-item">
+				<div class="graph">
+					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=nb_visits%2Cnb_uniq_visitors&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+				</div>
+				<div class="description">
+					<?php echo $visits['content']; ?> visits, <?php echo $unique_visitors['content']; ?> unique visitors
+				</div>
+			</div>
 
-<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=nb_visits%2Cnb_uniq_visitors&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+			<div class="report-item">
+				<div class="graph">
+					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=nb_actions_per_visit&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+				</div>
+				<div class="description">
+					<?php echo $actions['content']; ?> actions (page views, downloads, outlinks and internal site searches) per visit
+				</div>
+			</div>
+
+			<div class="report-item">
+				<div class="graph">
+					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=max_actions&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+				</div>
+				<div class="description">
+					<?php echo $max_actions['content']; ?> max actions in one visit
+				</div>
+			</div>
+
+			<div class="report-item">
+				<div class="graph">
+					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=bounce_rate&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+				</div>
+				<div class="description">
+					<?php echo $bounce_count['content']; ?> visits have bounced (left the website after one page) 
+				</div>
+			</div>
+
+			<div class="report-item">
+				<div class="graph">
+					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=visits_converted&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+				</div>
+				<div class="description">
+					<?php echo $visits_converted['content']; ?> visits converted 
+				</div>
+			</div>
+
+			<div class="report-item">
+				<div class="graph">
+					<img src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?date=<?php echo $this->get_query_dates(); ?>&module=VisitsSummary&action=getEvolutionGraph&token_auth=<?php echo $this->get_token_auth(); ?>&widget=1&idSite=1&period=day&viewDataTable=sparkline&columns=avg_time_on_site&colors={%22backgroundColor%22%3A%22%23ffffff%22%2C%22lineColor%22%3A%22%23162c4a%22%2C%22minPointColor%22%3A%22%23ff7f7f%22%2C%22maxPointColor%22%3A%22%2375bf7c%22%2C%22lastPointColor%22%3A%22%2355aaff%22}" />
+				</div>
+				<div class="description">
+					<?php echo $visits_length_pretty['content']; ?>s average visit duration
+				</div>
+			</div>
+		</div>
 
 	<?php 
 	}
