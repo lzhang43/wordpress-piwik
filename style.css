@@ -100,3 +100,19 @@
     position: relative;
     text-align: center;
 }
+
+.report-container .report-item {
+    margin: 15px 10px;
+    padding-bottom: 5px;
+    border-bottom: solid 1px #C0C0C0;
+}
+
+.report-container .report-item .graph, 
+.report-container .report-item .description {
+    float: left;
+}
+
+.report-container .report-item .description {
+    font-size: 14px;
+    padding-left: 15px;
+}

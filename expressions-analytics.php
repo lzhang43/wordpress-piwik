@@ -1353,6 +1353,7 @@ EOS;
 				<div class="description">
 					<?php echo $visits['content']; ?> visits, <?php echo $unique_visitors['content']; ?> unique visitors
 				</div>
+				<div class="clear"></div>
 			</div>
 
 			<div class="report-item">
@@ -1362,6 +1363,7 @@ EOS;
 				<div class="description">
 					<?php echo $actions['content']; ?> actions (page views, downloads, outlinks and internal site searches) per visit
 				</div>
+				<div class="clear"></div>
 			</div>
 
 			<div class="report-item">
@@ -1371,6 +1373,7 @@ EOS;
 				<div class="description">
 					<?php echo $max_actions['content']; ?> max actions in one visit
 				</div>
+				<div class="clear"></div>
 			</div>
 
 			<div class="report-item">
@@ -1380,6 +1383,7 @@ EOS;
 				<div class="description">
 					<?php echo $bounce_count['content']; ?> visits have bounced (left the website after one page) 
 				</div>
+				<div class="clear"></div>
 			</div>
 
 			<div class="report-item">
@@ -1389,6 +1393,7 @@ EOS;
 				<div class="description">
 					<?php echo $visits_converted['content']; ?> visits converted 
 				</div>
+				<div class="clear"></div>
 			</div>
 
 			<div class="report-item">
@@ -1398,6 +1403,7 @@ EOS;
 				<div class="description">
 					<?php echo $visits_length_pretty['content']; ?>s average visit duration
 				</div>
+				<div class="clear"></div>
 			</div>
 		</div>
 
