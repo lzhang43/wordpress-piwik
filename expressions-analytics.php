@@ -2571,9 +2571,118 @@ EOS;
 	}
 
 	public function callback_dashboard_goals()
-	{ ?>
-		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Goals&actionToWidgetize=widgetGoalsOverview&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+	{
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'Goals.get',
+			'period'		=> 'day'
+			)); 
+
+		if ($piwik_response['content'] !== '[]') {
+		?>
+			
+		<div class="canvas-holder">
+			<div id="goals_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		</div>
+		
+		<script language="JavaScript">
+            jQuery(document).ready(function($) {
+
+				var goals = jQuery.parseJSON('{"goals_data": <?php echo $piwik_response['content']; ?> }');
+				
+				var goals_label = [];
+				var goals_visits_converted = [];
+				var goals_conversions = [];
+
+				console.log(goals.goals_data);
+
+				for (var i in goals.goals_data) {
+
+					goals_label.push(i);
+					
+					if (goals.goals_data[i].nb_visits_converted > 0)
+					{
+						goals_conversions.push(goals.goals_data[i].nb_visits_converted);
+					}
+					else
+					{
+						goals_conversions.push(0);
+					}
+
+					if (goals.goals_data[i].nb_conversions > 0)
+					{
+						goals_visits_converted.push(goals.goals_data[i].nb_conversions);
+					}
+					else
+					{
+						goals_visits_converted.push(0);
+					}
+				}
+
+				$('#goals_chart').highcharts({
+				    title: {
+				        text: null,
+				        x: -20 //center
+				    },
+				    subtitle: {
+				        text: null,
+				        x: -20
+				    },
+				    xAxis: {
+				        categories: goals_label,
+				        type: 'datetime',
+				        labels: {
+				        	step: 14,
+				        	enabled: false
+				        }
+				    },
+				    yAxis: {
+				        title: {
+				            text: 'Number'
+				        },
+				        plotLines: [{
+				            value: 0,
+				            width: 1,
+				            color: '#808080'
+				        }]
+				    },
+				    yAxis: {
+				    	min: 0
+				    },
+				    legend: {
+				        layout: 'horizontal',
+				        align: 'center',
+				        verticalAlign: 'bottom',
+				        borderWidth: 0
+				    },
+				    series: [{
+				        name: 'Goal conversions',
+				        data: goals_conversions
+				    }, {
+				        name: 'Visits that converted a goal',
+				        data: goals_visits_converted
+				    }]
+				});
+				});
+		</script>
 	<?php }
+		else { ?>
+
+		<div class="canvas-holder">
+			<div class="no-data">
+				<span class="x-mark">
+					<span class="line left"></span>
+					<span class="line right"></span>
+				</span>
+			</div>
+
+			<h2>No Data Available</h2>
+			<p style="display: block;">Try another date range?</p>
+		</div>
+
+	<?php }
+	}
 
 	public function callback_dashboard_insights()
 	{ ?>
