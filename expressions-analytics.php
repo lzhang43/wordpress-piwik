@@ -1443,8 +1443,6 @@ EOS;
 					visit_duration_data_item = [];
 				}
 
-				console.log(visit_duration_data);
-
 			    $('#visit_duration_chart').highcharts({
 			        chart: {
 			            type: 'column'
@@ -2213,8 +2211,6 @@ EOS;
 				var visit_summary_uniq_visitors = [];
 				var visit_summary_visits = [];
 
-				console.log(visit_summary.visit_summary_data);
-
 				for (var i in visit_summary.visit_summary_data) {
 
 					visit_summary_label.push(i);
@@ -2594,8 +2590,6 @@ EOS;
 				var goals_label = [];
 				var goals_visits_converted = [];
 				var goals_conversions = [];
-
-				console.log(goals.goals_data);
 
 				for (var i in goals.goals_data) {
 
