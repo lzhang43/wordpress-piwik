@@ -749,12 +749,7 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastyear' )
-		{
-			$date = 'previous1year';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'lastmonth' )
+		if ( $time_period == 'lastmonth' )
 		{
 			$date = 'previous1month';
 			$period = 'range';
@@ -819,7 +814,7 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastyear' OR $time_period == 'lastmonth' OR $time_period == 'lastweek' OR $time_period == 'last10' OR $time_period == 'last30' OR $time_period == 'daterange')
+		if ( $time_period == 'lastmonth' OR $time_period == 'lastweek' OR $time_period == 'last10' OR $time_period == 'last30' OR $time_period == 'daterange')
 		{
 			$period = 'range';
 		}
@@ -856,11 +851,7 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastyear' )
-		{
-			$date = 'previous1year';
-		}
-		elseif ( $time_period == 'lastmonth' )
+		if ( $time_period == 'lastmonth' )
 		{
 			$date = 'previous1month';
 		}
@@ -1098,7 +1089,6 @@ EOS;
 									<option class="hide-if-no-js" value="last30" <?php if($_POST['expana-time-period']=="last30") echo("selected");?>>Last 30 Days</option>
 									<option class="hide-if-no-js" value="lastweek" <?php if($_POST['expana-time-period']=="lastweek") echo("selected");?>>Last Week</option>
 									<option class="hide-if-no-js" value="lastmonth" <?php if($_POST['expana-time-period']=="lastmonth") echo("selected");?>>Last Month</option>
-									<!-- <option class="hide-if-no-js" value="lastyear" <?php if($_POST['expana-time-period']=="lastyear") echo("selected");?>>Last Year</option> -->
 									<option class="hide-if-no-js" value="daterange" <?php if($_POST['expana-time-period']=="daterange") echo("selected");?>>Custom Date Range</option>
 								</select>
 
@@ -1201,11 +1191,6 @@ EOS;
 			jQuery( "#expana-time-period>option[value='lastmonth']" ).click(function() {
 				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()-1); d.setDate(1); return d})(new Date)) );
 				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()); d.setDate(0); return d})(new Date)) );
-			});
-
-			jQuery( "#expana-time-period>option[value='lastyear']" ).click(function() {
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()-1); d.setMonth(0); d.setDate(1); return d})(new Date)) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setFullYear(d.getFullYear()); d.setMonth(0); d.setDate(0); return d})(new Date)) );
 			});
 
 			jQuery( window ).resize(function() {
