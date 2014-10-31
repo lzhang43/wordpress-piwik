@@ -995,25 +995,6 @@ EOS;
 	}
 
 	/**
-	 * Get associated Piwik site id
-	 */
-	public function getPiwikSiteId() {
-		$settings = $this->settings_get();
-
-		$piwik_site_id = null;
-		switch ( EXP_PRODUCTION_LEVEL ) {
-			case 'PROD':
-				$piwik_site_id = $settings['piwik_site_id_prod'];
-			break;
-			case 'DEV':
-				$piwik_site_id = $settings['piwik_site_id_dev'];
-			break;
-		}
-
-		return $piwik_site_id;
-	}
-
-	/**
 	* Get token_auth
 	*/
 	public function get_token_auth() {
