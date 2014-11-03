@@ -297,14 +297,10 @@ EOS;
 	 * Initialize the action hooks.
 	 */
 	public function add_actions() {
-		//add_action( 'init', array( $this, 'action_init' ) );
 		add_action( 'admin_init', array( $this, 'action_admin_init') );
 		add_action( 'admin_menu', array( $this, 'build_dashboard') );
-		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
-		//add_action( 'add_meta_boxes', array( $this, 'build_dashboard_metaboxes') );
 		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
 		add_action( 'wp_footer', array( $this, 'action_print_tracking_code' ), 99999 );
-		//add_action( 'add_meta_boxes', array( $this, 'expana_dashboard_boxes' ) );
 	}
 	
 	/**
