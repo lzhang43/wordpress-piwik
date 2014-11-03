@@ -744,35 +744,36 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastmonth' )
-		{
-			$date = 'previous1month';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'lastweek' )
-		{
-			$date = 'previous1week';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'last10' )
-		{
-			$date = 'last10day';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'last30' )
-		{
-			$date = 'last30';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'daterange' )
-		{
-			$date = $from_date . ',' . $to_date;
-			$period = 'range';
-		}
-		else
-		{
-			$date = $time_period;
-			$period = 'day';
+		switch ($time_period) {
+
+			case 'lastmonth':
+				$date = 'previous1month';
+				$period = 'range';
+				break;
+
+			case 'lastweek':
+				$date = 'previous1week';
+				$period = 'range';
+				break;
+
+			case 'last10':
+				$date = 'last10day';
+				$period = 'range';
+				break;
+
+			case 'last30':
+				$date = 'last30';
+				$period = 'range';
+				break;
+
+			case 'daterange':
+				$date = $from_date . ',' . $to_date;
+				$period = 'range';
+				break;
+
+			default:
+				$date = $time_period;
+				$period = 'day';
 		}
 
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
@@ -846,29 +847,30 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastmonth' )
-		{
-			$date = 'previous1month';
-		}
-		elseif ( $time_period == 'lastweek' )
-		{
-			$date = 'previous1week';
-		}
-		elseif ( $time_period == 'last10' )
-		{
-			$date = 'last10';
-		}
-		elseif ( $time_period == 'last30' )
-		{
-			$date = 'last30';
-		}
-		elseif ( $time_period == 'daterange' )
-		{
-			$date = $from_date . ',' . $to_date;
-		}
-		else
-		{
-			$date = $time_period;
+		switch ($time_period) {
+
+			case 'lastmonth':
+				$date = 'previous1month';
+				break;
+
+			case 'lastweek':
+				$date = 'previous1week';
+				break;
+
+			case 'last10':
+				$date = 'last10';
+				break;
+
+			case 'last30':
+				$date = 'last30';
+				break;
+
+			case 'daterange':
+				$date = $from_date . ',' . $to_date;
+				break;
+
+			default:
+				$date = $time_period;
 		}
 
 		return $date;
