@@ -1255,7 +1255,7 @@ EOS;
 		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
-		add_meta_box( 'expana_social_media_new', 'Social Media', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_social_media', 'Social Media', array( $this, 'callback_dashboard_social_media'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_insights', 'Movers and Shakers', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'column3', 'core' );
 	}
 
@@ -1929,7 +1929,7 @@ EOS;
 	<?php }
 	}
 
-	public function callback_dashboard_social_media_new()
+	public function callback_dashboard_social_media()
 	{
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
