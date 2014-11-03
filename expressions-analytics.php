@@ -392,7 +392,6 @@ EOS;
 		);
 
 		//Register scripts and stylesa
-		//wp_register_script( 'expana_d3js', 'http://d3js.org/d3.v3.min.js' );
         wp_register_script( 'expana_chartjs', plugins_url( 'js/chart.min.js', __FILE__ ) );
         wp_register_script( 'expana_jqvmap', plugins_url( 'js/jquery.vmap.js', __FILE__ ) );
         wp_register_script( 'expana_jqvmap_world', plugins_url( 'js/maps/jquery.vmap.world.js', __FILE__ ) );
