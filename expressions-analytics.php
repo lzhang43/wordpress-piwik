@@ -1216,10 +1216,6 @@ EOS;
 			wp_die( __('Cheatin&#8217; uh?') );
 		//cross check the given referer
 		check_admin_referer('expana-metaboxes');
-		
-		//process option saving
-		
-		//lets redirect the post request into get request (you may add additional params at the url, if you need to show save results
 		wp_redirect($_POST['_wp_http_referer']);		
 	}
 
