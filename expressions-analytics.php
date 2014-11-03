@@ -1251,7 +1251,7 @@ EOS;
 		add_meta_box( 'expana_resolutions', 'Resolutions', array( $this, 'callback_dashboard_resolutions'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_browsers', 'Browser Version', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
-		add_meta_box( 'expana_visitor_map_new', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map_new'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
@@ -2018,7 +2018,7 @@ EOS;
 	<?php }
 	}
 
-	public function callback_dashboard_visitor_map_new()
+	public function callback_dashboard_visitor_map()
 	{
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
