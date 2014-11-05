@@ -983,7 +983,7 @@ EOS;
 	}
 
 	/**
-	* Get token_auth
+	* Get token_auth from piwik settings (not by site url)
 	*/
 	public function get_token_auth() {
 		$settings = $this->settings_get();
@@ -1002,7 +1002,7 @@ EOS;
 	}
 
 	/**
-	* Get idSite
+	* Get idSite from piwik settings (not by site url)
 	*/
 	public function get_id_site() {
 		$settings = $this->settings_get();
