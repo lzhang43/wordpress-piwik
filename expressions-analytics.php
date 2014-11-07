@@ -297,14 +297,10 @@ EOS;
 	 * Initialize the action hooks.
 	 */
 	public function add_actions() {
-		//add_action( 'init', array( $this, 'action_init' ) );
 		add_action( 'admin_init', array( $this, 'action_admin_init') );
 		add_action( 'admin_menu', array( $this, 'build_dashboard') );
-		//add_action( 'admin_enqueue_scripts', array( $this, 'action_admin_enqueue_scripts' ) );
-		//add_action( 'add_meta_boxes', array( $this, 'build_dashboard_metaboxes') );
 		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
 		add_action( 'wp_footer', array( $this, 'action_print_tracking_code' ), 99999 );
-		//add_action( 'add_meta_boxes', array( $this, 'expana_dashboard_boxes' ) );
 	}
 	
 	/**
@@ -396,7 +392,6 @@ EOS;
 		);
 
 		//Register scripts and stylesa
-		//wp_register_script( 'expana_d3js', 'http://d3js.org/d3.v3.min.js' );
         wp_register_script( 'expana_chartjs', plugins_url( 'js/chart.min.js', __FILE__ ) );
         wp_register_script( 'expana_jqvmap', plugins_url( 'js/jquery.vmap.js', __FILE__ ) );
         wp_register_script( 'expana_jqvmap_world', plugins_url( 'js/maps/jquery.vmap.world.js', __FILE__ ) );
@@ -749,35 +744,36 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastmonth' )
-		{
-			$date = 'previous1month';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'lastweek' )
-		{
-			$date = 'previous1week';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'last10' )
-		{
-			$date = 'last10day';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'last30' )
-		{
-			$date = 'last30';
-			$period = 'range';
-		}
-		elseif ( $time_period == 'daterange' )
-		{
-			$date = $from_date . ',' . $to_date;
-			$period = 'range';
-		}
-		else
-		{
-			$date = $time_period;
-			$period = 'day';
+		switch ($time_period) {
+
+			case 'lastmonth':
+				$date = 'previous1month';
+				$period = 'range';
+				break;
+
+			case 'lastweek':
+				$date = 'previous1week';
+				$period = 'range';
+				break;
+
+			case 'last10':
+				$date = 'last10day';
+				$period = 'range';
+				break;
+
+			case 'last30':
+				$date = 'last30';
+				$period = 'range';
+				break;
+
+			case 'daterange':
+				$date = $from_date . ',' . $to_date;
+				$period = 'range';
+				break;
+
+			default:
+				$date = $time_period;
+				$period = 'day';
 		}
 
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
@@ -851,29 +847,30 @@ EOS;
 			$time_period = 'last30';
 		}
 
-		if ( $time_period == 'lastmonth' )
-		{
-			$date = 'previous1month';
-		}
-		elseif ( $time_period == 'lastweek' )
-		{
-			$date = 'previous1week';
-		}
-		elseif ( $time_period == 'last10' )
-		{
-			$date = 'last10';
-		}
-		elseif ( $time_period == 'last30' )
-		{
-			$date = 'last30';
-		}
-		elseif ( $time_period == 'daterange' )
-		{
-			$date = $from_date . ',' . $to_date;
-		}
-		else
-		{
-			$date = $time_period;
+		switch ($time_period) {
+
+			case 'lastmonth':
+				$date = 'previous1month';
+				break;
+
+			case 'lastweek':
+				$date = 'previous1week';
+				break;
+
+			case 'last10':
+				$date = 'last10';
+				break;
+
+			case 'last30':
+				$date = 'last30';
+				break;
+
+			case 'daterange':
+				$date = $from_date . ',' . $to_date;
+				break;
+
+			default:
+				$date = $time_period;
 		}
 
 		return $date;
@@ -1002,7 +999,7 @@ EOS;
 	}
 
 	/**
-	* Get token_auth
+	* Get token_auth from piwik settings (not by site url)
 	*/
 	public function get_token_auth() {
 		$settings = $this->settings_get();
@@ -1021,7 +1018,7 @@ EOS;
 	}
 
 	/**
-	* Get idSite
+	* Get idSite from piwik settings (not by site url)
 	*/
 	public function get_id_site() {
 		$settings = $this->settings_get();
@@ -1239,10 +1236,6 @@ EOS;
 			wp_die( __('Cheatin&#8217; uh?') );
 		//cross check the given referer
 		check_admin_referer('expana-metaboxes');
-		
-		//process option saving
-		
-		//lets redirect the post request into get request (you may add additional params at the url, if you need to show save results
 		wp_redirect($_POST['_wp_http_referer']);		
 	}
 
@@ -1271,11 +1264,11 @@ EOS;
 		add_meta_box( 'expana_resolutions', 'Resolutions', array( $this, 'callback_dashboard_resolutions'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_browsers', 'Browser Version', array( $this, 'callback_dashboard_browsers'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_visitor_os', 'Visitor OS', array( $this, 'callback_dashboard_visitor_os'), $this->pagehook, 'side', 'core' );
-		add_meta_box( 'expana_visitor_map_new', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map_new'), $this->pagehook, 'column3', 'core' );
+		add_meta_box( 'expana_visitor_map', 'Visitor Map', array( $this, 'callback_dashboard_visitor_map'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_referrers', 'Referrers', array( $this, 'callback_dashboard_referrers'), $this->pagehook, 'column3', 'core' );
 		add_meta_box( 'expana_search_engines', 'Search Engines', array( $this, 'callback_dashboard_search_engines'), $this->pagehook, 'normal', 'core' );
 		add_meta_box( 'expana_goals', 'Goals', array( $this, 'callback_dashboard_goals'), $this->pagehook, 'column3', 'core' );
-		add_meta_box( 'expana_social_media_new', 'Social Media', array( $this, 'callback_dashboard_social_media_new'), $this->pagehook, 'side', 'core' );
+		add_meta_box( 'expana_social_media', 'Social Media', array( $this, 'callback_dashboard_social_media'), $this->pagehook, 'side', 'core' );
 		add_meta_box( 'expana_insights', 'Movers and Shakers', array( $this, 'callback_dashboard_insights'), $this->pagehook, 'column3', 'core' );
 	}
 
@@ -1961,75 +1954,6 @@ EOS;
 		?>
 
 		<div class="canvas-holder">
-			<!-- Canvas removed -->
-		</div>
-
-		<script language="JavaScript">
-            jQuery(document).ready(function($) {
-                $('#social_media_chart').attr('width', $('#social_media_chart').parent().width());
-
-				var social_media = jQuery.parseJSON('{"social_media_data": <?php echo $piwik_response['content']; ?> }');
-
-				var data = [];
-
-				for (var i in social_media.social_media_data) {
-
-					if (i > 18) {
-						break;
-					}
-
-					data_item = {};
-					data_item.label = social_media.social_media_data[i].label;
-
-					if (! social_media.social_media_data[i].nb_uniq_visitors)
-					{
-						data_item.value = social_media.social_media_data[i].sum_daily_nb_uniq_visitors;
-					}
-					else
-					{
-						data_item.value = social_media.social_media_data[i].nb_uniq_visitors;
-					}
-					
-					data_item.color = color[i];
-					data_item.highlight = highlight[i];
-
-					data.push(data_item);
-				}
-
-                new Chart(document.getElementById("social_media_chart").getContext("2d")).Doughnut(data, options);
-            });
-		</script>
-	
-	<?php }
-		else { ?>
-
-		<div class="canvas-holder">
-			<div class="no-data">
-				<span class="x-mark">
-					<span class="line left"></span>
-					<span class="line right"></span>
-				</span>
-			</div>
-
-			<h2>No Data Available</h2>
-			<p style="display: block;">Try another date range?</p>
-		</div>
-
-	<?php }
-	}
-
-	public function callback_dashboard_social_media_new()
-	{
-		$piwik_response = $this->query_piwik_api(NULL, array(
-			'token_auth'	=> $this->get_token_auth(),
-			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'Referrers.getSocials'
-			));
-
-		if ($piwik_response['content'] !== '[]') {
-		?>
-
-		<div class="canvas-holder">
 			<div id="social_media_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 		</div>
 
@@ -2107,7 +2031,7 @@ EOS;
 	<?php }
 	}
 
-	public function callback_dashboard_visitor_map_new()
+	public function callback_dashboard_visitor_map()
 	{
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
