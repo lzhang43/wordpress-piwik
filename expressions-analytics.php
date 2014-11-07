@@ -704,11 +704,13 @@ EOS;
 	/**
 	 * Validate date and time in all formats
 	 *
+	 * @todo validate the time period in PHP to detect tampered POST request
 	 * @return bool
 	 */
 	public function validate_date($date, $format = 'Y-m-d')
 	{
 		$d = DateTime::createFromFormat($format, $date);
+
 		return $d AND $d->format($format) == $date;
 	}
 
@@ -1139,37 +1141,44 @@ EOS;
 						jQuery( "#expana-time-period>option[value='daterange']" ).prop( 'selected', true );
 					}
 				});
-			});	
 
-			jQuery( "#expana-time-period>option[value='today']" ).click(function() {
-				console.log('trigger');
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+				jQuery("#expana-time-period").val('<?php echo EXPANA_DEFAULT_TIME_PERIOD; ?>');
 			});
 
-			jQuery( "#expana-time-period>option[value='yesterday']" ).click(function() {
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-1); return d})(new Date)) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-1); return d})(new Date)) );
-			});
+			jQuery("#expana-time-period").change(function (){
+				var current_time_period = jQuery(this).attr('value');
 
-			jQuery( "#expana-time-period>option[value='last10']" ).click(function() {
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-9); return d})(new Date)) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
-			});
+				switch (current_time_period) {
+					case "today":
+						jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+						jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+					break;
 
-			jQuery( "#expana-time-period>option[value='last30']" ).click(function() {
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-29); return d})(new Date)) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
-			});
+					case "yesterday":
+						jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-1); return d})(new Date)) );
+						jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-1); return d})(new Date)) );
+					break;
 
-			jQuery( "#expana-time-period>option[value='lastweek']" ).click(function() {
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-d.getDay()-7); return d})(new Date)) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-d.getDay()-1); return d})(new Date)) );
-			});
+					case "last10":
+						jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-9); return d})(new Date)) );
+						jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+					break;
 
-			jQuery( "#expana-time-period>option[value='lastmonth']" ).click(function() {
-				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()-1); d.setDate(1); return d})(new Date)) );
-				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()); d.setDate(0); return d})(new Date)) );
+					case "last30":
+						jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-29); return d})(new Date)) );
+						jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
+					break;
+
+					case "lastweek":
+						jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-d.getDay()-7); return d})(new Date)) );
+						jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setDate(d.getDate()-d.getDay()-1); return d})(new Date)) );
+					break;
+
+					case "lastmonth":
+						jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()-1); d.setDate(1); return d})(new Date)) );
+						jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', (function(d){ d.setMonth(d.getMonth()); d.setDate(0); return d})(new Date)) );
+					break;
+				}
 			});
 
 			jQuery( window ).resize(function() {
