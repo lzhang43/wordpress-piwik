@@ -83,6 +83,14 @@ if ( ! defined( 'EXPANA_EXTERNAL_API_DISABLE_SSL_VERIFICATION' ) ) {
 	define( 'EXPANA_EXTERNAL_API_DISABLE_SSL_VERIFICATION', false );
 }
 
+/**
+ * Define the default time period
+ * possible values: today, yesterday, last10, last30, lastweek, lastmonth;
+ */
+if ( ! defined( 'EXPANA_DEFAULT_TIME_PERIOD' ) ) {
+	define( 'EXPANA_DEFAULT_TIME_PERIOD', 'yesterday' );
+}
+
 //Check if inside WordPress.
 if ( ! defined( 'ABSPATH' ) ) { exit(); }
 
