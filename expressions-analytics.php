@@ -899,6 +899,22 @@ EOS;
 
 		return $from_date.",".$to_date;
 	}
+
+	/**
+	* Return website meta info such as creation date, url, and etc.
+	*
+	* @return array
+	*/
+	public function get_site_meta_info() {
+		$piwik_response = $this->query_piwik_api(NULL, array(
+			'token_auth'	=> $this->get_token_auth(),
+			'idSite' 		=> $this->get_id_site(),
+			'method'		=> 'SitesManager.getSiteFromId'
+			));
+
+		return $piwik_response["content"];
+	}
+
 	
 	/**
 	 * Fetch an external URL and return the contents and success in an associative array.
@@ -1139,6 +1155,9 @@ EOS;
 		</script>
 
 		<script type="text/javascript">
+			var site_meta_info = jQuery.parseJSON('{ "site_meta_info_json": <?php echo $this->get_site_meta_info(); ?> }');
+			console.log(site_meta_info.site_meta_info_json[0].ts_created);
+
 			jQuery(document).ready(function() {
 				jQuery( "#expana-from-date" ).datepicker({
 					dateFormat: 'yy-mm-dd',
@@ -1164,6 +1183,7 @@ EOS;
 			});	
 
 			jQuery( "#expana-time-period>option[value='today']" ).click(function() {
+				console.log('trigger');
 				jQuery( "#expana-from-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
 				jQuery( "#expana-to-date" ).val( jQuery.datepicker.formatDate('yy-mm-dd', new Date()) );
 			});
@@ -1207,7 +1227,7 @@ EOS;
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
 				}
-			}); 
+			});
 		</script>
 
 		<?php
