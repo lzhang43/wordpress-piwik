@@ -1153,13 +1153,14 @@ EOS;
 
 		<script type="text/javascript">
 			var site_meta_info = jQuery.parseJSON('{ "site_meta_info_json": <?php echo $this->get_site_meta_info(); ?> }');
-			console.log(site_meta_info.site_meta_info_json[0].ts_created);
+			var website_creation_date = site_meta_info.site_meta_info_json[0].ts_created;
 
 			jQuery(document).ready(function() {
 				jQuery( "#expana-from-date" ).datepicker({
 					dateFormat: 'yy-mm-dd',
 					changeMonth: true,
 					changeYear: true,
+					minDate: website_creation_date,
 					maxDate: 'D',
 					onClose: function( selectedDate ) {
 						jQuery( "#expana-to-date" ).datepicker( "option", "minDate", selectedDate );
@@ -1171,6 +1172,7 @@ EOS;
 					dateFormat: 'yy-mm-dd',
 					changeMonth: true,
 					changeYear: true,
+					minDate: website_creation_date,
 					maxDate: 'D',
 					onClose: function( selectedDate ) {
 						jQuery( "#expana-from-date" ).datepicker( "option", "maxDate", selectedDate );
