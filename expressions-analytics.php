@@ -1106,10 +1106,10 @@ EOS;
 								</select>
 
 								<label class="screen-reader-text" for="expana-from-date">From</label>
-								<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" placeholder="From" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" />
+								<input type="text" class="expana-datepicker" id="expana-from-date" name="expana-from-date" placeholder="From" value="<?php if ($this->validate_date( $_POST['expana-from-date'] )) echo $_POST['expana-from-date']; ?>" readonly="readonly" />
 
 								<label class="screen-reader-text" for="expana-to-date">To</label>
-								<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" placeholder="To" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" />
+								<input type="text" class="expana-datepicker" id="expana-to-date" name="expana-to-date" placeholder="To" value="<?php if ($this->validate_date( $_POST['expana-to-date'] )) echo $_POST['expana-to-date']; ?>" readonly="readonly" />
 
 								<input type="submit" value="Apply" class="button action" id="doaction" name="">
 							</div>
@@ -1162,7 +1162,8 @@ EOS;
 					changeYear: true,
 					minDate: website_creation_date,
 					maxDate: 'D',
-					onClose: function( selectedDate ) {
+					constrainInput: true,
+					onSelect: function( selectedDate ) {
 						jQuery( "#expana-to-date" ).datepicker( "option", "minDate", selectedDate );
 						jQuery( "#expana-time-period>option[value='daterange']" ).prop( 'selected', true );
 					}
@@ -1174,7 +1175,8 @@ EOS;
 					changeYear: true,
 					minDate: website_creation_date,
 					maxDate: 'D',
-					onClose: function( selectedDate ) {
+					constrainInput: true,
+					onSelect: function( selectedDate ) {
 						jQuery( "#expana-from-date" ).datepicker( "option", "maxDate", selectedDate );
 						jQuery( "#expana-time-period>option[value='daterange']" ).prop( 'selected', true );
 					}
