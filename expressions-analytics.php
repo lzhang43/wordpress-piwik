@@ -1142,7 +1142,8 @@ EOS;
 					}
 				});
 
-				jQuery("#expana-time-period").val('<?php echo EXPANA_DEFAULT_TIME_PERIOD; ?>');
+				//todo: add if statement for potential $_POST request
+ 				jQuery("#expana-time-period").val('<?php echo EXPANA_DEFAULT_TIME_PERIOD; ?>');
 			});
 
 			jQuery("#expana-time-period").change(function (){
