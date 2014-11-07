@@ -734,59 +734,9 @@ EOS;
 			return $siteid === null ? array( 'result' => 'error', 'content' => $error ) : array( 'result' => 'success', 'content' => $siteid );
 		}
 
-		if ( is_string( $_POST['expana-time-period'] ) )
-		{
-			if ( $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
-			{
-				$time_period = 'daterange';
-				$from_date = $_POST['expana-from-date'];
-				$to_date =  $_POST['expana-to-date'];
-			}
-			else
-			{
-				$time_period = sanitize_text_field( $_POST['expana-time-period'] );
-			}
-		}
-		else
-		{
-			$time_period = 'last30';
-		}
-
-		switch ($time_period) {
-
-			case 'lastmonth':
-				$date = 'previous1month';
-				$period = 'range';
-				break;
-
-			case 'lastweek':
-				$date = 'previous1week';
-				$period = 'range';
-				break;
-
-			case 'last10':
-				$date = 'last10day';
-				$period = 'range';
-				break;
-
-			case 'last30':
-				$date = 'last30';
-				$period = 'range';
-				break;
-
-			case 'daterange':
-				$date = $from_date . ',' . $to_date;
-				$period = 'range';
-				break;
-
-			default:
-				$date = $time_period;
-				$period = 'day';
-		}
-
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
-			'date'		 => $date,
-			'period'	 => $period,
+			'date'		 => $this->get_query_date(),
+			'period'	 => $this->get_query_period(),
 			'module'     => 'API',
 			'format'     => 'JSON'
 		) ) ) );
@@ -814,8 +764,8 @@ EOS;
 		}
 		else
 		{
-			//No POST request. Default option is last 30 days.
-			$time_period = 'last30';
+			//No POST request. Return the default option defined.
+			$time_period = EXPANA_DEFAULT_TIME_PERIOD;
 		}
 
 		if ( $time_period == 'lastmonth' OR $time_period == 'lastweek' OR $time_period == 'last10' OR $time_period == 'last30' OR $time_period == 'daterange')
@@ -852,7 +802,7 @@ EOS;
 		}
 		else
 		{
-			$time_period = 'last30';
+			$time_period = EXPANA_DEFAULT_TIME_PERIOD;
 		}
 
 		switch ($time_period) {
