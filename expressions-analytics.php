@@ -1165,24 +1165,39 @@ EOS;
 				}
 			});
 
-			jQuery( window ).resize(function() {
-				if ( jQuery( window ).width() <= 800 )
+			jQuery( window ).resize(function(event, skip) {
+				if (!skip)
 				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
-				}
-				else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
-				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
-				}
-				else
-				{
-					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
+					if ( jQuery( window ).width() <= 800 )
+					{
+						jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
+					}
+					else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
+					{
+						jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
+					}
+					else
+					{
+						jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
+					}
 				}
 			});
 
-			jQuery( '.columns-prefs input' ).on("click", function() {
-				console.log("changed");
-				
+			jQuery( '.columns-prefs input' ).on("change", function() {
+				jQuery(window).trigger('resize', [true]);
+
+				if ( this.value == 1 )
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
+				}
+				else if ( this.value == 2 )
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).addClass( "has-right-sidebar" );
+				}
+				else if (  this.value == 3 )
+				{
+					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
+				}
 			});
 		</script>
 
