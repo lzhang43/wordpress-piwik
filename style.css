@@ -76,3 +76,11 @@
     font-size: 14px;
     padding-left: 15px;
 }
+
+#wpbody-content #expana_dashboard #dashboard-widgets.columns-2 .postbox-container {
+    width: 49.5%;
+}
+
+#wpbody-content #expana_dashboard #dashboard-widgets.columns-1 .postbox-container {
+    width: 100%;
+}

@@ -1181,7 +1181,8 @@ EOS;
 			});
 
 			jQuery( '.columns-prefs input' ).on("click", function() {
-				console.log("Redraw required");
+				console.log("changed");
+				
 			});
 		</script>
 
@@ -1412,25 +1413,6 @@ EOS;
 			        tooltip: {
 			            pointFormat: '{point.y:.0f} visits'
 			        },
-		            events: {
-		                redraw: function () {
-		                    var label = this.renderer.label('The chart was just redrawn', 100, 120)
-		                        .attr({
-		                            fill: Highcharts.getOptions().colors[0],
-		                            padding: 10,
-		                            r: 5,
-		                            zIndex: 8
-		                        })
-		                        .css({
-		                            color: '#FFFFFF'
-		                        })
-		                        .add();
-
-		                    setTimeout(function () {
-		                        label.fadeOut();
-		                    }, 1000);
-		                }
-		            },
 			        series: [{
 			            name: 'visits',
 			            data: visit_duration_data,
