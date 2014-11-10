@@ -1024,27 +1024,15 @@ EOS;
 
 		global $screen_layout_columns;
 
+		error_log("columns: ".$screen_layout_columns);
+
 		if (empty($screen_layout_columns)) {
 			$screen_layout_columns = 3;
 		}
 
+		error_log("columns: ".$screen_layout_columns);
+
 		?>
-		<script type="text/javascript">
-		jQuery(document).ready( function($) {
-			if ( jQuery( window ).width() <= 800 )
-			{
-				jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
-			}
-			else if ( jQuery( window ).width() > 800 && jQuery( window ).width() <= 1500 )
-			{
-				jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).addClass( "columns-2" ).removeClass( "has-right-sidebar" );
-			}
-			else
-			{
-				jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
-			}
-		});
-		</script>
 
 		<div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
