@@ -1055,7 +1055,7 @@ EOS;
 							<div class="alignleft actions">
 								<label class="screen-reader-text" for="expana-time-period">Select Time Period</label>
 								<select id="expana-time-period" name="expana-time-period">
-									<option selected="selected" value="-1">Time Period</option>
+									<option selected="selected" value="-1" disabled>Time Period</option>
 									<option class="hide-if-no-js" value="today" <?php if($_POST['expana-time-period']=="today") echo("selected");?>>Today</option>
 									<option class="hide-if-no-js" value="yesterday" <?php if($_POST['expana-time-period']=="yesterday") echo("selected");?>>Yesterday</option>
 									<option class="hide-if-no-js" value="last10" <?php if($_POST['expana-time-period']=="last10") echo("selected");?>>Last 10 Days</option>
