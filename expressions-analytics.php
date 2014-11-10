@@ -1024,15 +1024,10 @@ EOS;
 
 		global $screen_layout_columns;
 
-		error_log("columns: ".$screen_layout_columns);
-
 		if (empty($screen_layout_columns)) {
 			$screen_layout_columns = 3;
 		}
-
-		error_log("columns: ".$screen_layout_columns);
-
-		?>
+	?>
 
 		<div id="expana_dashboard" class="wrap">
 			<h2><?php echo __( $this->dashboard_page_title, 'expana' ); ?></h2>
