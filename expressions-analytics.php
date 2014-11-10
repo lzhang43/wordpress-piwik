@@ -1166,7 +1166,6 @@ EOS;
 			});
 
 			jQuery( window ).resize(function() {
-
 				if ( jQuery( window ).width() <= 800 )
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-3" ).removeClass( "columns-2" ).removeClass( "has-right-sidebar" );
@@ -1179,6 +1178,10 @@ EOS;
 				{
 					jQuery( "#dashboard-widgets" ).removeClass( "columns-2" ).addClass( "columns-3" ).addClass( "has-right-sidebar" );
 				}
+			});
+
+			jQuery( '.columns-prefs input' ).on("click", function() {
+				console.log("Redraw required");
 			});
 		</script>
 
@@ -1377,7 +1380,7 @@ EOS;
 					visit_duration_data_item = [];
 				}
 
-			    $('#visit_duration_chart').highcharts({
+			    var visit_duration_chart = $('#visit_duration_chart').highcharts({
 			        chart: {
 			            type: 'column'
 			        },
@@ -1409,6 +1412,25 @@ EOS;
 			        tooltip: {
 			            pointFormat: '{point.y:.0f} visits'
 			        },
+		            events: {
+		                redraw: function () {
+		                    var label = this.renderer.label('The chart was just redrawn', 100, 120)
+		                        .attr({
+		                            fill: Highcharts.getOptions().colors[0],
+		                            padding: 10,
+		                            r: 5,
+		                            zIndex: 8
+		                        })
+		                        .css({
+		                            color: '#FFFFFF'
+		                        })
+		                        .add();
+
+		                    setTimeout(function () {
+		                        label.fadeOut();
+		                    }, 1000);
+		                }
+		            },
 			        series: [{
 			            name: 'visits',
 			            data: visit_duration_data,
