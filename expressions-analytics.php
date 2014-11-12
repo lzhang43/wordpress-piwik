@@ -737,7 +737,7 @@ EOS;
 		}
 
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
-			'date'		 => $this->get_query_date(),
+			'date'		 => $this->get_query_dates(),
 			'period'	 => $this->get_query_period(),
 			'module'     => 'API',
 			'format'     => 'JSON'
@@ -779,61 +779,9 @@ EOS;
 			$period = 'day';
 		}
 
+		error_log("attn: ".$period);
+
 		return $period;
-	}
-
-	/**
-	 * Return date range argument for Piwik iFrame widgets
-	 * DON'T CALL THIS FUNCTION IN query_piwik_api(). Their date formats are different.
-	 *
-	 * @return string
-	 */
-	public function get_query_date() {
-		if ( is_string( $_POST['expana-time-period'] ) )
-		{
-			if ( $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
-			{
-				$time_period = 'daterange';
-				$from_date = $_POST['expana-from-date'];
-				$to_date =  $_POST['expana-to-date'];
-			}
-			else
-			{
-				$time_period = sanitize_text_field( $_POST['expana-time-period'] );
-			}
-		}
-		else
-		{
-			$time_period = EXPANA_DEFAULT_TIME_PERIOD;
-		}
-
-		switch ($time_period) {
-
-			case 'lastmonth':
-				$date = 'previous1month';
-				break;
-
-			case 'lastweek':
-				$date = 'previous1week';
-				break;
-
-			case 'last10':
-				$date = 'last10';
-				break;
-
-			case 'last30':
-				$date = 'last30';
-				break;
-
-			case 'daterange':
-				$date = $from_date . ',' . $to_date;
-				break;
-
-			default:
-				$date = $time_period;
-		}
-
-		return $date;
 	}
 
 	/**
@@ -842,19 +790,59 @@ EOS;
 	*
 	* @return string
 	*/
-	public function get_query_dates() {
-		if ( $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
+	public function get_query_dates( $force_full_output = FALSE ) {
+
+		if ( is_string( $_POST['expana-time-period'] ) AND $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
 		{
 			$from_date = $_POST['expana-from-date'];
 			$to_date =  $_POST['expana-to-date'];
 		}
 		else
 		{
-			$from_date = date('Y-m-d', strtotime('-30 days'));
-			$to_date = date('Y-m-d', strtotime('-1 day'));
-		}
+			switch ( EXPANA_DEFAULT_TIME_PERIOD )
+			{
+				case 'today':
+					$from_date = date('Y-m-d');
+					$to_date = date('Y-m-d');
+					break;
 
-		return $from_date.",".$to_date;
+				case 'yesterday':
+					$from_date = date('Y-m-d', strtotime('-1 day'));
+					$to_date = date('Y-m-d', strtotime('-1 day'));
+					break;
+
+				case 'last10':
+					$from_date = date('Y-m-d', strtotime('-10 day'));
+					$to_date = date('Y-m-d', strtotime('-1 day'));
+					break;
+
+				case 'last10':
+					$from_date = date('Y-m-d', strtotime('-30 day'));
+					$to_date = date('Y-m-d', strtotime('-1 day'));
+					break;
+
+				case 'lastweek':
+					$from_date = date('Y-m-d', strtotime('last Sunday'));
+					$to_date = date('Y-m-d', strtotime('last Saturday'));
+					break;
+
+				case 'lastmonth':
+					$from_date = date('Y-m-d', strtotime('first day of previous month'));
+					$to_date = date('Y-m-d', strtotime('last day of previous month'));
+					break;
+			}
+		}
+		
+		if ( $this->get_query_period() == 'day' AND $force_full_output == FALSE )
+		{
+			error_log($from_date);
+			return $from_date;
+		}
+		elseif ( $this->get_query_period() == 'range' OR $force_full_output == TRUE )
+		{
+			error_log($from_date.",".$to_date);
+			return $from_date.",".$to_date;
+		}
 	}
 
 	/**
@@ -2184,7 +2172,7 @@ EOS;
 
 	public function callback_dashboard_live()
 	{ ?>
-		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="350" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_dates(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_visitor_os()
@@ -2348,7 +2336,7 @@ EOS;
 
 	public function callback_dashboard_referrers()
 	{ ?>
-		<iframe width="100%" height="830" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getAll&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="830" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Referrers&actionToWidgetize=getAll&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_dates(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 	public function callback_dashboard_search_engines()
@@ -2554,7 +2542,7 @@ EOS;
 
 	public function callback_dashboard_insights()
 	{ ?>
-		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Insights&actionToWidgetize=getOverallMoversAndShakers&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_date(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+		<iframe width="100%" height="400" src="<?php echo EXP_PIWIK_PROTO; ?>://<?php echo EXP_PIWIK_HOST; ?>/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Insights&actionToWidgetize=getOverallMoversAndShakers&idSite=<?php echo $this->get_id_site(); ?>&period=<?php echo $this->get_query_period(); ?>&date=<?php echo $this->get_query_dates(); ?>&disableLink=1&widget=1&token_auth=<?php echo $this->get_token_auth(); ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
 	<?php }
 
 }
