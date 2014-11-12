@@ -1124,10 +1124,12 @@ EOS;
 					}
 				});
 
-				//todo: add if statement for potential $_POST request
-				var query_period = <?php echo $this->get_query_period(TRUE); ?>;
-				var query_dates = <?php echo $this->get_query_dates(TRUE); ?>;
+				var query_period = "<?php echo $this->get_query_period(TRUE); ?>";
+				var query_date_range = "<?php echo $this->get_query_dates(TRUE); ?>";
+				var query_dates = query_date_range.split(",");
  				jQuery("#expana-time-period").val(query_period);
+ 				jQuery("#expana-from-date").val(query_dates[0]);
+ 				jQuery("#expana-to-date").val(query_dates[1]);
 			});
 
 			jQuery("#expana-time-period").change(function (){
