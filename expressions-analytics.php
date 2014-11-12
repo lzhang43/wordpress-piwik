@@ -749,7 +749,7 @@ EOS;
 	 *
 	 * @return string
 	 */
-	public function get_query_period() {
+	public function get_query_period( $force_raw_output = FALSE ) {
 		if ( is_string( $_POST['expana-time-period'] ) )
 		{
 
@@ -779,9 +779,18 @@ EOS;
 			$period = 'day';
 		}
 
-		error_log("attn: ".$period);
+		error_log("output1: ".$force_raw_output);
 
-		return $period;
+		if ( $force_raw_output == TRUE )
+		{
+			error_log("output2: ".$time_period);
+			return $time_period;
+		}
+		else
+		{
+			error_log("output2: ".$period);
+			return $period;
+		}
 	}
 
 	/**
@@ -816,7 +825,7 @@ EOS;
 					$to_date = date('Y-m-d', strtotime('-1 day'));
 					break;
 
-				case 'last10':
+				case 'last30':
 					$from_date = date('Y-m-d', strtotime('-30 day'));
 					$to_date = date('Y-m-d', strtotime('-1 day'));
 					break;
@@ -832,15 +841,17 @@ EOS;
 					break;
 			}
 		}
+
+		error_log("output3: ".$this->get_query_period(FALSE));
 		
-		if ( $this->get_query_period() == 'day' AND $force_full_output == FALSE )
+		if ( $this->get_query_period(FALSE) == 'day' AND $force_full_output == FALSE )
 		{
-			error_log($from_date);
+			error_log("output4: ".$from_date);
 			return $from_date;
 		}
-		elseif ( $this->get_query_period() == 'range' OR $force_full_output == TRUE )
+		elseif ( $this->get_query_period(FALSE) == 'range' OR $force_full_output == TRUE )
 		{
-			error_log($from_date.",".$to_date);
+			error_log("output4: ".$from_date.",".$to_date);
 			return $from_date.",".$to_date;
 		}
 	}
@@ -1114,7 +1125,9 @@ EOS;
 				});
 
 				//todo: add if statement for potential $_POST request
- 				jQuery("#expana-time-period").val('<?php echo EXPANA_DEFAULT_TIME_PERIOD; ?>');
+				var query_period = <?php echo $this->get_query_period(TRUE); ?>;
+				var query_dates = <?php echo $this->get_query_dates(TRUE); ?>;
+ 				jQuery("#expana-time-period").val(query_period);
 			});
 
 			jQuery("#expana-time-period").change(function (){
