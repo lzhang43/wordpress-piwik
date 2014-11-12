@@ -753,7 +753,7 @@ EOS;
 		if ( is_string( $_POST['expana-time-period'] ) )
 		{
 
-			if ( $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
+			if ( $_POST['expana-time-period'] == 'datarange' AND $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
 			{
 				//Custom date range
 				$time_period = 'daterange';
