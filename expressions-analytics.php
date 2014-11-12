@@ -88,7 +88,7 @@ if ( ! defined( 'EXPANA_EXTERNAL_API_DISABLE_SSL_VERIFICATION' ) ) {
  * possible values: today, yesterday, last10, last30, lastweek, lastmonth;
  */
 if ( ! defined( 'EXPANA_DEFAULT_TIME_PERIOD' ) ) {
-	define( 'EXPANA_DEFAULT_TIME_PERIOD', 'yesterday' );
+	define( 'EXPANA_DEFAULT_TIME_PERIOD', 'last30' );
 }
 
 //Check if inside WordPress.
@@ -216,7 +216,7 @@ EOS;
 	/**
 	 * Dashboard required privileges.
 	 */
-	private $dashboard_capability = 'manage_options';		
+	private $dashboard_capability = 'manage_options';
 	
 	/**
 	 * The default settings data.
@@ -737,7 +737,7 @@ EOS;
 		}
 
 		return $this->remote_request( rtrim( $restapi, '/' ) . '/?' . http_build_query( wp_parse_args( $query, array(
-			'date'		 => $this->get_query_dates(),
+			'date'		 => $this->get_query_dates(TRUE),
 			'period'	 => $this->get_query_period(),
 			'module'     => 'API',
 			'format'     => 'JSON'
@@ -1371,7 +1371,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration'
+			'method'		=> 'VisitorInterest.getNumberOfVisitsPerVisitDuration',
+			'period'		=> 'range'
 			)); 
 
 		if ($piwik_response['content'] !== '[]') {
@@ -1474,7 +1475,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'VisitTime.getVisitInformationPerLocalTime'
+			'method'		=> 'VisitTime.getVisitInformationPerLocalTime',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
@@ -1567,7 +1569,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'DevicesDetection.getType'
+			'method'		=> 'DevicesDetection.getType',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
@@ -1668,13 +1671,15 @@ EOS;
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'DevicesDetection.getBrowserVersions',
-			'format'		=> 'Tsv'
+			'format'		=> 'Tsv',
+			'period'		=> 'range'
 			));
 
 		$piwik_response2 = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'DevicesDetection.getBrowserVersions',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response2['content'] !== '[]') {
@@ -1827,7 +1832,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'UserSettings.getResolution'
+			'method'		=> 'UserSettings.getResolution',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
@@ -1924,7 +1930,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'Referrers.getSocials'
+			'method'		=> 'Referrers.getSocials',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
@@ -2013,7 +2020,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'UserCountry.getCountry'
+			'method'		=> 'UserCountry.getCountry',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
@@ -2196,13 +2204,15 @@ EOS;
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
 			'method'		=> 'DevicesDetection.getOsVersions',
-			'format'		=> 'Tsv'
+			'format'		=> 'Tsv',
+			'period'		=> 'range'
 			));
 
 		$piwik_response2 = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'DevicesDetection.getOsVersions'
+			'method'		=> 'DevicesDetection.getOsVersions',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response2['content'] !== '[]') {
@@ -2359,7 +2369,8 @@ EOS;
 		$piwik_response = $this->query_piwik_api(NULL, array(
 			'token_auth'	=> $this->get_token_auth(),
 			'idSite' 		=> $this->get_id_site(),
-			'method'		=> 'Referrers.getSearchEngines'
+			'method'		=> 'Referrers.getSearchEngines',
+			'period'		=> 'range'
 			));
 
 		if ($piwik_response['content'] !== '[]') {
