@@ -779,16 +779,12 @@ EOS;
 			$period = 'day';
 		}
 
-		error_log("output1: ".$force_raw_output);
-
 		if ( $force_raw_output == TRUE )
 		{
-			error_log("output2: ".$time_period);
 			return $time_period;
 		}
 		else
 		{
-			error_log("output2: ".$period);
 			return $period;
 		}
 	}
@@ -841,17 +837,13 @@ EOS;
 					break;
 			}
 		}
-
-		error_log("output3: ".$this->get_query_period(FALSE));
 		
 		if ( $this->get_query_period(FALSE) == 'day' AND $force_full_output == FALSE )
 		{
-			error_log("output4: ".$from_date);
 			return $from_date;
 		}
 		elseif ( $this->get_query_period(FALSE) == 'range' OR $force_full_output == TRUE )
 		{
-			error_log("output4: ".$from_date.",".$to_date);
 			return $from_date.",".$to_date;
 		}
 	}
