@@ -1847,7 +1847,7 @@ EOS;
 
 				for (var i in resolutions.resolutions_data) {
 
-					if (i > 15) {
+					if (i > 14) {
 						break;
 					}
 					
