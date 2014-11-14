@@ -1384,13 +1384,13 @@ EOS;
 				var visit_duration_data = [];
 				var visit_duration_data_item = [];
 
-				for (var i in visit_duration.visit_duration_data) {
-					visit_duration_data_item.push(visit_duration.visit_duration_data[i].label);
-					visit_duration_data_item.push(parseFloat(visit_duration.visit_duration_data[i].nb_visits));
+				visit_duration.visit_duration_data.forEach(function(element, index, array) {
+					visit_duration_data_item.push(visit_duration.visit_duration_data[index].label);
+					visit_duration_data_item.push(parseFloat(visit_duration.visit_duration_data[index].nb_visits));
 					visit_duration_data.push(visit_duration_data_item);
 
 					visit_duration_data_item = [];
-				}
+				});
 
 			    var visit_duration_chart = $('#visit_duration_chart').highcharts({
 			        chart: {
@@ -1486,19 +1486,19 @@ EOS;
 				var visit_time_uniq_visitors = [];
 				var visit_time_visits = [];
 
-				for (var i in visit_time.visit_time_data) {
-					visit_time_label.push(visit_time.visit_time_data[i].label);
-					if (! visit_time.visit_time_data[i].nb_uniq_visitors)
+				visit_time.visit_time_data.forEach(function(element, index, array) {
+					visit_time_label.push(visit_time.visit_time_data[index].label);
+					if (! visit_time.visit_time_data[index].nb_uniq_visitors)
 					{
-						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].sum_daily_nb_uniq_visitors);
+						visit_time_uniq_visitors.push(visit_time.visit_time_data[index].sum_daily_nb_uniq_visitors);
 					}
 					else
 					{
-						visit_time_uniq_visitors.push(visit_time.visit_time_data[i].nb_uniq_visitors);
+						visit_time_uniq_visitors.push(visit_time.visit_time_data[index].nb_uniq_visitors);
 					}
 					
-					visit_time_visits.push(visit_time.visit_time_data[i].nb_visits);
-				}
+					visit_time_visits.push(visit_time.visit_time_data[index].nb_visits);
+				});
 
 				$('#visit_time_chart').highcharts({
 				    title: {
@@ -1580,22 +1580,21 @@ EOS;
 				
 				var data = [];
 
-				for (var i in devices.devices_data) {
-					
+				devices.devices_data.forEach(function(element, index, array) {
 					data_item = {};
-					data_item.name = devices.devices_data[i].label;
+					data_item.name = devices.devices_data[index].label;
 
-					if (! devices.devices_data[i].nb_uniq_visitors)
+					if (! devices.devices_data[index].nb_uniq_visitors)
 					{
-						data_item.y = devices.devices_data[i].sum_daily_nb_uniq_visitors;
+						data_item.y = devices.devices_data[index].sum_daily_nb_uniq_visitors;
 					}
 					else
 					{
-						data_item.y = devices.devices_data[i].nb_uniq_visitors;
+						data_item.y = devices.devices_data[index].nb_uniq_visitors;
 					}
 
 					data.push(data_item);
-				}
+				});
 
 				$(function () {
 				    $('#devices_chart').highcharts({
