@@ -1980,21 +1980,21 @@ EOS;
 
 				var data = [];
 
-				for (var i in social_media.social_media_data) {
+				social_media.social_media_data.forEach(function(element, index, array) {
 					data_item = {};
-					data_item.name = social_media.social_media_data[i].label;
+					data_item.name = social_media.social_media_data[index].label;
 
-					if (! social_media.social_media_data[i].nb_uniq_visitors)
+					if (! social_media.social_media_data[index].nb_uniq_visitors)
 					{
-						data_item.y = social_media.social_media_data[i].sum_daily_nb_uniq_visitors;
+						data_item.y = social_media.social_media_data[index].sum_daily_nb_uniq_visitors;
 					}
 					else
 					{
-						data_item.y = social_media.social_media_data[i].nb_uniq_visitors;
+						data_item.y = social_media.social_media_data[index].nb_uniq_visitors;
 					}
 
 					data.push(data_item);
-				}
+				});
 
 			    $('#social_media_chart').highcharts({
 			        chart: {
@@ -2065,10 +2065,10 @@ EOS;
 
 			var data = {};
 
-			for (var i in visitor_data_piwik.visitor_data) {
-				country_code = visitor_data_piwik.visitor_data[i].code;
-				data[country_code] = visitor_data_piwik.visitor_data[i].nb_visits;
-			}
+			visitor_data_piwik.visitor_data.forEach(function(element, index, array) {
+				country_code = visitor_data_piwik.visitor_data[index].code;
+				data[country_code] = visitor_data_piwik.visitor_data[index].nb_visits;
+			});
 
 			jQuery(document).ready(function() {
 				jQuery('#vmap').vectorMap({
@@ -2139,7 +2139,8 @@ EOS;
 				var visit_summary_uniq_visitors = [];
 				var visit_summary_visits = [];
 
-				for (var i in visit_summary.visit_summary_data) {
+
+				for ( i in visit_summary.visit_summary_data) {
 
 					visit_summary_label.push(i);
 					
@@ -2420,21 +2421,21 @@ EOS;
 
 				var data = [];
 
-				for (var i in search_engines.search_engines_data) {
+				search_engines.search_engines_data.forEach(function(element, index, array) {
 					data_item = {};
-					data_item.name = search_engines.search_engines_data[i].label;
+					data_item.name = search_engines.search_engines_data[index].label;
 
-					if (! search_engines.search_engines_data[i].nb_uniq_visitors)
+					if (! search_engines.search_engines_data[index].nb_uniq_visitors)
 					{
-						data_item.y = search_engines.search_engines_data[i].sum_daily_nb_uniq_visitors;
+						data_item.y = search_engines.search_engines_data[index].sum_daily_nb_uniq_visitors;
 					}
 					else
 					{
-						data_item.y = search_engines.search_engines_data[i].nb_uniq_visitors;
+						data_item.y = search_engines.search_engines_data[index].nb_uniq_visitors;
 					}
 
 					data.push(data_item);
-				}
+				});
 
 			    $('#search_engine_chart').highcharts({
 			        chart: {
@@ -2512,7 +2513,7 @@ EOS;
 				var goals_visits_converted = [];
 				var goals_conversions = [];
 
-				for (var i in goals.goals_data) {
+				for (i in goals.goals_data) {
 
 					goals_label.push(i);
 					
