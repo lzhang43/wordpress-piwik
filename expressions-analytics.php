@@ -226,6 +226,8 @@ EOS;
 		'piwik_site_id_prod'     => null,
 		'piwik_auth_token_dev'   => '',
 		'piwik_site_id_dev'      => null,
+		'piwik_auth_token_tst'   => '',
+		'piwik_site_id_tst'      => null,
 		'google_web_property_id' => ''
 	);
 	
@@ -373,6 +375,19 @@ EOS;
 				'input_value' => $setting['piwik_auth_token_dev']
 			)
 		);
+		add_settings_field(
+			'piwik_auth_token_tst',//Unique slug for field.
+			__( 'Auth Token TST' ),
+			array( $this, 'callback_settings_section_field' ),
+			$this->admin_panel_settings_field_slug,
+			$this->admin_panel_settings_field_slug . '-piwik',
+			array(
+				'label_for'   => 'piwik_auth_token_tst',
+				'input_type'  => 'text',
+				'input_class' => 'regular-text code',
+				'input_value' => $setting['piwik_auth_token_tst']
+			)
+		);
 		//Add a section to the settings.
 		//Google group.
 		add_settings_section(
@@ -487,6 +502,7 @@ EOS;
 			//Variable that are used a lot.
 			$input_piwik_auth_token_prod = trim( $input['piwik_auth_token_prod'] );
 			$input_piwik_auth_token_dev  = trim( $input['piwik_auth_token_dev'] );
+			$input_piwik_auth_token_tst  = trim( $input['piwik_auth_token_tst'] );
 			
 			//Check if the API is configured.
 			$piwik_rest_api = EXP_PIWIK_HOST;
@@ -528,6 +544,22 @@ EOS;
 							$settings['piwik_site_id_dev'] = null;
 						}
 					break;
+					case 'TST':
+						if ( $input_piwik_auth_token_tst ) {
+							//Check for changes or currently unset.
+							if ( $settings['piwik_auth_token_tst'] !== $input_piwik_auth_token_tst || ! is_int( $settings['piwik_site_id_tst'] ) ) {
+								$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_tst );
+								if ( $res['result'] === 'success' ) {
+									$settings['piwik_site_id_tst'] = $res['content'];
+								} else {
+									$piwik_error = $res['content'];
+									$settings['piwik_site_id_tst'] = null;
+								}
+							}
+						} else {
+							$settings['piwik_site_id_tst'] = null;
+						}
+					break;
 				}
 				if ( $piwik_error ) {
 					add_settings_error(
@@ -541,6 +573,7 @@ EOS;
 			
 			$settings['piwik_auth_token_prod']  = $input_piwik_auth_token_prod;
 			$settings['piwik_auth_token_dev']   = $input_piwik_auth_token_dev;
+			$settings['piwik_auth_token_tst']   = $input_piwik_auth_token_tst;
 			$settings['google_web_property_id'] = trim( $input['google_web_property_id'] );
 		}
 		return $settings;
@@ -646,6 +679,9 @@ EOS;
 			break;
 			case 'DEV':
 				$piwik_site_id = $settings['piwik_site_id_dev'];
+			break;
+			case 'TST':
+				$piwik_site_id = $settings['piwik_site_id_tst'];
 			break;
 		}
 		if ( is_int( $piwik_site_id ) ) {
@@ -963,6 +999,9 @@ EOS;
 			case 'DEV':
 				$piwik_token_auth = $settings['piwik_auth_token_dev'];
 			break;
+			case 'TST':
+				$piwik_token_auth = $settings['piwik_auth_token_tst'];
+			break;
 		}
 
 		return $piwik_token_auth;
@@ -981,6 +1020,9 @@ EOS;
 			break;
 			case 'DEV':
 				$piwik_site_id = $settings['piwik_site_id_dev'];
+			break;
+			case 'TST':
+				$piwik_site_id = $settings['piwik_site_id_tst'];
 			break;
 		}
 
