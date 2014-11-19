@@ -571,10 +571,10 @@ EOS;
 				}
 			}
 			
-			$settings['piwik_auth_token_prod']  = $input_piwik_auth_token_prod;
-			$settings['piwik_auth_token_dev']   = $input_piwik_auth_token_dev;
-			$settings['piwik_auth_token_tst']   = $input_piwik_auth_token_tst;
-			$settings['google_web_property_id'] = trim( $input['google_web_property_id'] );
+			$settings['piwik_auth_token_prod']  = htmlspecialchars( $input_piwik_auth_token_prod );
+			$settings['piwik_auth_token_dev']   = htmlspecialchars( $input_piwik_auth_token_dev );
+			$settings['piwik_auth_token_tst']   = htmlspecialchars( $input_piwik_auth_token_tst );
+			$settings['google_web_property_id'] = htmlspecialchars( $input['google_web_property_id'] );
 		}
 		return $settings;
 	}
