@@ -500,9 +500,9 @@ EOS;
 			$input = wp_parse_args( $input, $this->settings_default );
 			
 			//Variable that are used a lot.
-			$input_piwik_auth_token_prod = trim( $input['piwik_auth_token_prod'] );
-			$input_piwik_auth_token_dev  = trim( $input['piwik_auth_token_dev'] );
-			$input_piwik_auth_token_tst  = trim( $input['piwik_auth_token_tst'] );
+			$input_piwik_auth_token_prod = trim( htmlspecialchars($input['piwik_auth_token_prod']) );
+			$input_piwik_auth_token_dev  = trim( htmlspecialchars($input['piwik_auth_token_dev']) );
+			$input_piwik_auth_token_tst  = trim( htmlspecialchars($input['piwik_auth_token_tst']) );
 			
 			//Check if the API is configured.
 			$piwik_rest_api = EXP_PIWIK_HOST;
