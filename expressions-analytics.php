@@ -104,19 +104,11 @@ class ExpressionsAnalytics {
 	 * - %2$s = The REST API base for the Piwik tracker.
 	 * - %3$u = The unique site id.
 	 */
-	const TRACKING_CODE_PIWIK = <<<'EOS'
+	const TRACKING_CODE_PIWIK_START = <<<'EOS'
 <!-- Piwik -->
 <script type="text/javascript">
-var _paq=_paq||[];
-_paq.push(["setDocumentTitle",document.domain+"/"+document.title]);
-_paq.push(["setCookieDomain","%1$s"]);
-_paq.push(["setDomains",["%1$s"]]);
-_paq.push(["trackPageView"]);
-_paq.push(["enableLinkTracking"]);
 (function(d,t,u,g,s) {
 u=("https:"==d.location.protocol?"https":"http")+"://%2$s/";
-_paq.push(["setTrackerUrl",u+"piwik.php"]);
-_paq.push(["setSiteId",%3$u]);
 g=d.createElement(t);
 s=d.getElementsByTagName(t)[0];
 g.type="text/javascript";
@@ -125,8 +117,23 @@ g.async=true;
 g.src=u+"piwik.js";
 s.parentNode.insertBefore(g,s);
 })(document,"script");
+
+window.piwikAsyncInit = function () {
+try {
+
+EOS;
+
+	const TRACKING_CODE_PIWIK_BODY = <<<'EOS'
+var piwikTracker%3$u = Piwik.getTracker((("https:" == document.location.protocol) ? "https://%2$s/" : "http://%2$s/") + "piwik.php", %3$u);
+piwikTracker%3$u.trackPageView();
+piwikTracker%3$u.enableLinkTracking();
+
+EOS;
+
+	const TRACKING_CODE_PIWIK_END = <<<'EOS'
+} catch( err ) {}
+}
 </script>
-<noscript><img src="//%2$s/piwik.php?idsite=%3$u&rec=1" style="border:0" alt="" /></noscript>
 <!-- End Piwik Code -->
 
 EOS;
@@ -251,8 +258,16 @@ EOS;
 	 * 
 	 * @return string The Piwik tracking code.
 	 */
-	public function tracking_code_piwik( $track_domain, $rest_api, $site_id ) {
-		return sprintf( self::TRACKING_CODE_PIWIK, $track_domain, $rest_api, $site_id );
+	public function tracking_code_piwik_start( $track_domain, $rest_api, $site_id ) {
+		return sprintf( self::TRACKING_CODE_PIWIK_START, $track_domain, $rest_api, $site_id );
+	}
+
+	public function tracking_code_piwik_body( $track_domain, $rest_api, $site_id ) {
+		return sprintf( self::TRACKING_CODE_PIWIK_BODY, $track_domain, $rest_api, $site_id );
+	}
+
+	public function tracking_code_piwik_end() {
+		return self::TRACKING_CODE_PIWIK_END;
 	}
 	
 	/**
@@ -658,18 +673,6 @@ EOS;
 		$piwik_global_tracking_domain = EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN;
 		$piwik_rest_api = EXP_PIWIK_HOST;
 		$piwik_global_tracking_id = EXPANA_PIWIK_GLOBAL_TRACKING_ID;
-		//Global tracking Piwik.
-		if (
-			is_string( $piwik_global_tracking_domain ) && ! empty( $piwik_global_tracking_domain ) &&
-			is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) &&
-			is_int( $piwik_global_tracking_id )
-		) {
-			echo $this->tracking_code_piwik(
-				$piwik_global_tracking_domain,
-				$piwik_rest_api,
-				$piwik_global_tracking_id
-			);
-		}
 		
 		//Piwik code for the current production level.
 		$piwik_site_id = null;
@@ -687,11 +690,32 @@ EOS;
 		if ( is_int( $piwik_site_id ) ) {
 			$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
 			if ( ! empty( $site_domain ) ) {
-				echo $this->tracking_code_piwik(
+				echo $this->tracking_code_piwik_start(
 					'*.' . $site_domain,
 					$piwik_rest_api,
 					$piwik_site_id
 				);
+
+				//Global tracking Piwik.
+				if (
+					is_string( $piwik_global_tracking_domain ) && ! empty( $piwik_global_tracking_domain ) &&
+					is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) &&
+					is_int( $piwik_global_tracking_id )
+				) {
+					echo $this->tracking_code_piwik_body(
+						$piwik_global_tracking_domain,
+						$piwik_rest_api,
+						$piwik_global_tracking_id
+					);
+				}
+
+				echo $this->tracking_code_piwik_body(
+					'*.' . $site_domain,
+					$piwik_rest_api,
+					$piwik_site_id
+				);
+
+				echo $this->tracking_code_piwik_end();
 			}
 		}
 				
