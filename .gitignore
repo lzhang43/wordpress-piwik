@@ -12,3 +12,6 @@ Thumbs.db
 /.settings
 /.externalToolBuilders
 /.buildpath
+
+#Untrack old files
+/old
