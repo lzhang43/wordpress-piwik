@@ -19,6 +19,7 @@
 
     "require": {
         "php": ">=5.3",
+        "visualappeal/piwik-php-api": "dev-master",
         "guzzlehttp/guzzle": "~5.2"
     },
 

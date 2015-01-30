@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7231daa691bbf458390b862eb0ab9466",
+    "hash": "9aedd02ef9ca35a46e6aff4279704a75",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -207,6 +207,32 @@
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
             "time": "2014-12-30 13:32:42"
+        },
+        {
+            "name": "visualappeal/piwik-php-api",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/VisualAppeal/Piwik-PHP-API.git",
+                "reference": "cb044305791aec6988383abdc5ee43adddd0b53a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/VisualAppeal/Piwik-PHP-API/zipball/cb044305791aec6988383abdc5ee43adddd0b53a",
+                "reference": "cb044305791aec6988383abdc5ee43adddd0b53a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Piwik.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2014-12-13 11:54:11"
         }
     ],
     "packages-dev": [
@@ -626,7 +652,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "visualappeal/piwik-php-api": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

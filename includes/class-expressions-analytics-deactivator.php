@@ -11,7 +11,7 @@
  * @author     Michael Zhang <lzhang43@syr.edu>
  */
 
-class Plugin_Name_Deactivator {
+class Expressions_Analytics_Deactivator {
 
 	/**
 	 * The main function to be fired during plugin deactivation.
