@@ -55,16 +55,6 @@ class Expressions_Analytics_Admin {
 	 * Admin panel settings required privileges.
 	 */
 	private $admin_panel_settings_capability = 'manage_options';
-	
-	/**
-	 * The settings option key.
-	 */
-	private $settings_name = 'expana_settings';
-	
-	/**
-	 * The settings data cache.
-	 */
-	private $settings_data = null;
 
 	/**
 	 * Dashboard page label.
@@ -85,20 +75,9 @@ class Expressions_Analytics_Admin {
 	 * Dashboard required privileges.
 	 */
 	private $dashboard_capability = 'manage_options';
-	
-	/**
-	 * The default settings data.
-	 */
-	private $settings_default = array(
-		'piwik_auth_token_prod'  => '',
-		'piwik_site_id_prod'     => null,
-		'piwik_auth_token_dev'   => '',
-		'piwik_site_id_dev'      => null,
-		'piwik_auth_token_tst'   => '',
-		'piwik_site_id_tst'      => null,
-		'google_web_property_id' => ''
-	);
 
+	private $setting_service;
+	
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -111,6 +90,7 @@ class Expressions_Analytics_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$this->setting_service = new Expressions_Analytics_Setting_Service;
 
 	}
 
@@ -132,25 +112,6 @@ class Expressions_Analytics_Admin {
 	public function enqueue_scripts()
 	{
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/expressions-analytics-admin.js', array( 'jquery' ), $this->version, false );
-	}
-
-	/**
-	 * Get the plugin settings.
-	 * 
-	 * @since   2.0.0
-	 * @return array The settings.
-	 */
-	public function get_settings()
-	{
-		if ( ! is_array( $this->settings_data ) )
-		{
-			$this->settings_data = wp_parse_args(
-				(array)get_option( $this->settings_name, array() ),
-				$this->settings_default
-			);
-		}
-		
-		return $this->settings_data;
 	}
 
 	/**
@@ -176,7 +137,7 @@ class Expressions_Analytics_Admin {
 	 */
 	public function build_settings()
 	{
-		$setting = $this->get_settings();
+		$setting = $this->setting_service->get_settings();
 
 		//Register the plugin settings.
 		register_setting(
@@ -327,7 +288,7 @@ class Expressions_Analytics_Admin {
 	public function callback_settings_sanitize( $input = null )
 	{
 		//Get old settings.
-		$settings = $this->get_settings();
+		$settings = $this->setting_service->get_settings();
 
 		if ( is_array( $input ) )
 		{

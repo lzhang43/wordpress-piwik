@@ -106,6 +106,11 @@ class Expressions_Analytics {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-expressions-analytics-public.php';
 
 		/**
+		 * The class responsible for handling all settings for the plugin
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'services/class-expressions-analytics-setting-service.php';
+
+		/**
 		 * Loading composer
 		 */
 		$composer = plugin_dir_path( dirname(__FILE__) ) . 'vendor/autoload.php';
