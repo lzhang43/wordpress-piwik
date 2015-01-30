@@ -6,12 +6,12 @@
  * @link       http://spiders.syr.edu
  * @since      2.0.0
  *
- * @package    expression-analytics
- * @subpackage expression-analytics/public
+ * @package    expressions-analytics
+ * @subpackage expressions-analytics/public
  * @author     Michael Zhang <lzhang43@syr.edu>
  */
 
-class Expression_Analytics_Public {
+class Expressions_Analytics_Public {
 
 	/**
 	 * The ID of this plugin.
@@ -63,7 +63,7 @@ class Expression_Analytics_Public {
 	 */
 	public function enqueue_scripts()
 	{
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/expression-analytics-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/expressions-analytics-public.js', array( 'jquery' ), $this->version, false );
 	}
 
 }

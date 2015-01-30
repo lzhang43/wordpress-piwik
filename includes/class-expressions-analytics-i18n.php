@@ -3,18 +3,18 @@
 /**
  * This file defines the internationalization functionality
  *
- * Loads and defines the internationalization files for expression analytics
+ * Loads and defines the internationalization files for expressions analytics
  * so that it is ready for translation.
  *
  * @link       http://spiders.syr.edu
  * @since      2.0.0
  *
- * @package    expression-analytics
- * @subpackage expression-analytics/includes
+ * @package    expressions-analytics
+ * @subpackage expressions-analytics/includes
  * @author     Michael Zhang <lzhang43@syr.edu>
  */
 
-class Expression_Analytics_i18n {
+class Expressions_Analytics_i18n {
 
 	/**
 	 * The domain specified for this plugin.

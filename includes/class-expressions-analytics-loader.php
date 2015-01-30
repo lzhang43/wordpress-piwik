@@ -7,12 +7,12 @@
  * @link       http://spiders.syr.edu
  * @since      2.0.0
  *
- * @package    expression-analytics
- * @subpackage expression-analytics/includes
+ * @package    expressions-analytics
+ * @subpackage expressions-analytics/includes
  * @author     Michael Zhang <lzhang43@syr.edu>
  */
 
-class Expression_Analytics_Loader {
+class Expressions_Analytics_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

@@ -1,17 +1,18 @@
-#OS and local files.
+# System files & Artifacts
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+.phplint.cache
+build.properties
+build
+selenium-server.jar
+node_modules
+npm-debug.log
 
-#Eclipse project files.
-/.project
-/.settings
-/.externalToolBuilders
-/.buildpath
+# IDE
+.idea
+nbproject
+
+# Composer
+vendor
 
 #Untrack old files
 /old
