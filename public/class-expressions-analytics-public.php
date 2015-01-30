@@ -51,16 +51,6 @@ class Expressions_Analytics_Public {
 	 *
 	 * @since    2.0.0
 	 */
-	public function enqueue_styles()
-	{
-
-	}
-
-	/**
-	 * Register the stylesheets for the public-facing side of the site.
-	 *
-	 * @since    2.0.0
-	 */
 	public function enqueue_scripts()
 	{
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/expressions-analytics-public.js', array( 'jquery' ), $this->version, false );

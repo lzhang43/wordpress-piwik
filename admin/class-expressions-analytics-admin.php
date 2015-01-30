@@ -338,20 +338,22 @@ class Expressions_Analytics_Admin {
 			$input_piwik_auth_token_prod = htmlspecialchars( trim($input['piwik_auth_token_prod']) );
 			$input_piwik_auth_token_dev  = htmlspecialchars( trim($input['piwik_auth_token_dev']) );
 			$input_piwik_auth_token_tst  = htmlspecialchars( trim($input['piwik_auth_token_tst']) );
-			
+
 			//Check if the API is configured.
 			$piwik_rest_api = EXP_PIWIK_HOST;
 			$piwik_protocol = EXP_PIWIK_PROTO;
+
 			if ( is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) && is_string( $piwik_protocol ) && ! empty( $piwik_protocol ) ) {
 				$rest_api_url = $piwik_protocol . '://' . $piwik_rest_api;
 				$piwik_error = null;
 				//Only use the current production level.
+				//@TODO: abstrct this switch
 				switch ( EXP_PRODUCTION_LEVEL ) {
 					case 'PROD':
 						if ( $input_piwik_auth_token_prod ) {
 							//Check for changes or currently unset.
 							if ( $settings['piwik_auth_token_prod'] !== $input_piwik_auth_token_prod || ! is_int( $settings['piwik_site_id_prod'] ) ) {
-								$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_prod );
+								$res = $this->register_piwik_site( $rest_api_url, $input_piwik_auth_token_prod );
 								if ( $res['result'] === 'success' ) {
 									$settings['piwik_site_id_prod'] = $res['content'];
 								} else {
@@ -367,7 +369,7 @@ class Expressions_Analytics_Admin {
 						if ( $input_piwik_auth_token_dev ) {
 							//Check for changes or currently unset.
 							if ( $settings['piwik_auth_token_dev'] !== $input_piwik_auth_token_dev || ! is_int( $settings['piwik_site_id_dev'] ) ) {
-								$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_dev );
+								$res = $this->register_piwik_site( $rest_api_url, $input_piwik_auth_token_dev );
 								if ( $res['result'] === 'success' ) {
 									$settings['piwik_site_id_dev'] = $res['content'];
 								} else {
@@ -383,7 +385,7 @@ class Expressions_Analytics_Admin {
 						if ( $input_piwik_auth_token_tst ) {
 							//Check for changes or currently unset.
 							if ( $settings['piwik_auth_token_tst'] !== $input_piwik_auth_token_tst || ! is_int( $settings['piwik_site_id_tst'] ) ) {
-								$res = $this->piwik_api_get_site_id_from_site_url( $rest_api_url, $input_piwik_auth_token_tst );
+								$res = $this->register_piwik_site( $rest_api_url, $input_piwik_auth_token_tst );
 								if ( $res['result'] === 'success' ) {
 									$settings['piwik_site_id_tst'] = $res['content'];
 								} else {
@@ -412,6 +414,61 @@ class Expressions_Analytics_Admin {
 			$settings['google_web_property_id'] = htmlspecialchars( trim($input['google_web_property_id']) );
 		}
 		return $settings;
+	}
+
+	/**
+	 * Query the Piwik API for the site id associated with the URL and return the contents and success in an associative array.
+	 * 
+	 * @param string $resturl The URL to the REST API.
+	 * @param array $restauth The Piwik auth token.
+	 * 
+	 * @return array The associative array.
+	 */
+	public function register_piwik_site( $resturl, $restauth )
+	{
+		$siteid = null;
+		$error = null;
+
+		$piwik_rest_api = EXP_PIWIK_HOST;
+		$piwik_protocol = EXP_PIWIK_PROTO;
+
+		//@TODO: wrap the query function and move it to an helper class (maybe a service?)
+		$client = new GuzzleHttp\Client();
+
+		$url = $piwik_protocol . "://" . $piwik_rest_api . "/?module=API&format=JSON&token_auth=" . $restauth . "&method=SitesManager.getSitesIdFromSiteUrl&url=http://michael.dev/wordpress";
+		
+		$response = $client->get( $url );
+
+		if( $response->getStatusCode() !== 200 )
+		{
+			$error = __( 'Error connecting to SUWI server', 'expana' );
+		}
+
+		$content = @json_decode( $response->getBody(), true );
+
+		if ( ! is_array($content) )
+		{
+			$error = __( 'Piwik API returned an invalid response', 'expana' );
+		}
+
+		if ( empty( $content ) )
+		{
+			$error = __( 'No site associated with this URL under this auth token', 'expana' );
+		}
+
+		foreach ( $content as &$site ) {
+			//Check the ID.
+			if ( isset( $site['idsite'] ) ) {
+				$idsite = (int)$site['idsite'];
+				//Make sure the ID is not the global one.
+				if ( $idsite !== EXPANA_PIWIK_GLOBAL_TRACKING_ID ) {
+					$siteid = $idsite;
+					break;
+				}
+			}
+		}
+
+		return $siteid === null ? array( 'result' => 'error', 'content' => $error ) : array( 'result' => 'success', 'content' => $siteid );
 	}
 
 }
