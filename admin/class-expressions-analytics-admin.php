@@ -431,6 +431,7 @@ class Expressions_Analytics_Admin {
 
 		$piwik_rest_api = EXP_PIWIK_HOST;
 		$piwik_protocol = EXP_PIWIK_PROTO;
+		$piwik_global_tracking_id = EXPANA_PIWIK_GLOBAL_TRACKING_ID;
 
 		//@TODO: wrap the query function and move it to an helper class (maybe a service?)
 		$client = new GuzzleHttp\Client();
@@ -457,14 +458,11 @@ class Expressions_Analytics_Admin {
 		}
 
 		foreach ( $content as &$site ) {
-			//Check the ID.
-			if ( isset( $site['idsite'] ) ) {
-				$idsite = (int)$site['idsite'];
-				//Make sure the ID is not the global one.
-				if ( $idsite !== EXPANA_PIWIK_GLOBAL_TRACKING_ID ) {
-					$siteid = $idsite;
-					break;
-				}
+			//Check the ID and make sure the ID is not the global one
+			if ( isset( $site['idsite'] ) AND $site['idsite'] !== $piwik_global_tracking_id )
+			{
+				$siteid = $site['idsite'];
+				break;
 			}
 		}
 
