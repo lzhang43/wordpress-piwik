@@ -199,7 +199,8 @@ EOS;
 		$ga_accounts = array();
 		
 		//Add user tracking to the list.
-		if ( ! empty( $settings['google_web_property_id'] ) ) {
+		if ( ! empty( $settings['google_web_property_id'] ) )
+		{
 			$ga_accounts[$settings['google_web_property_id']] = array(
 				'namespace' => ''
 			);
@@ -207,14 +208,17 @@ EOS;
 		
 		//Add global tracking to the list.
 		$google_global_tracking_id = EXPANA_GOOGLE_GLOBAL_TRACKING_ID;
-		if ( is_string( $google_global_tracking_id ) && ! empty( $google_global_tracking_id ) ) {
+		
+		if ( is_string( $google_global_tracking_id ) && ! empty( $google_global_tracking_id ) )
+		{
 			$ga_accounts[$google_global_tracking_id] = array(
 				'namespace' => EXPANA_GOOGLE_GLOBAL_TRACKING_NAMESPACE
 			);
 		}
 		
 		//Output the tracking code.
-		if ( ! empty( $ga_accounts ) ) {
+		if ( ! empty( $ga_accounts ) )
+		{
 			echo $this->tracking_code_google( $ga_accounts );
 		}
 	}
