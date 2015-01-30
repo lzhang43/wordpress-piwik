@@ -111,6 +111,11 @@ class Expressions_Analytics {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'services/class-expressions-analytics-setting-service.php';
 
 		/**
+		 * The class responsible for handling all trackers behavior
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'services/class-expressions-analytics-tracker-service.php';
+
+		/**
 		 * Loading composer
 		 */
 		$composer = plugin_dir_path( dirname(__FILE__) ) . 'vendor/autoload.php';
@@ -174,6 +179,7 @@ class Expressions_Analytics {
 
 		$plugin_public = new Expressions_Analytics_Public( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'wp_footer', $plugin_public, 'insert_tracking_code', 9999 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 	}
