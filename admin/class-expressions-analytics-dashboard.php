@@ -16,7 +16,7 @@ class Expressions_Analytics_Dashboard {
 	/**
 	 * Displays the dashboard.
 	 *
-	 * @since 2.5.0
+	 * @since 2.0.0
 	 */
 	public function expana_dashboard()
 	{
@@ -39,7 +39,7 @@ class Expressions_Analytics_Dashboard {
 	/**
 	 * Displays the dashboard.
 	 *
-	 * @since 2.5.0
+	 * @since 2.0.0
 	 */
 	 public function expana_widgets()
 	 {
