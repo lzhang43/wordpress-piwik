@@ -95,9 +95,14 @@ class Expressions_Analytics {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-expressions-analytics-i18n.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the Dashboard.
+		 * The class responsible for defining all actions that occur in the WordPress Admin panel.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-expressions-analytics-admin.php';
+
+		/**
+		 * The class responsible for defining all actions related to the main SUWI dashboard.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-expressions-analytics-dashboard.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -162,6 +167,7 @@ class Expressions_Analytics {
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'build_settings' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'build_admin_menu' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'build_dashboard' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 

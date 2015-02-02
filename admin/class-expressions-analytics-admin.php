@@ -1,13 +1,13 @@
 <?php
 
 /**
- * The dashboard-specific functionality of the plugin.
+ * The admin-specific functionality of the plugin.
  *
  * @link       http://spiders.syr.edu
  * @since      2.0.0
  *
  * @package    expressions-analytics
- * @subpackage expressions-analytics/public
+ * @subpackage expressions-analytics/admin
  * @author     Michael Zhang <lzhang43@syr.edu>
  */
 
@@ -32,6 +32,8 @@ class Expressions_Analytics_Admin {
 	private $version;
 
 	private $setting_service;
+
+	private $dashboard;
 	
 	/**
 	 * Initialize the class and set its properties.
@@ -46,6 +48,7 @@ class Expressions_Analytics_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->setting_service = new Expressions_Analytics_Setting_Service;
+		$this->dashboard = new Expressions_Analytics_Dashboard;
 
 	}
 
@@ -93,6 +96,16 @@ class Expressions_Analytics_Admin {
 	public function build_settings()
 	{
 		return $this->setting_service->build_settings();
+	}
+
+	/**
+	 * Build dashboard page
+	 *
+	 * @since    2.0.0
+	 */
+	public function build_dashboard()
+	{
+		return $this->dashboard->build_dashboard();
 	}
 
 
