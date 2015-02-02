@@ -111,6 +111,4 @@ class Expressions_Analytics_Admin {
 		return $this->setting_service->build_dashboard();
 	}
 
-
-
 }
