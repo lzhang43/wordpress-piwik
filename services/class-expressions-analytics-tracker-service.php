@@ -96,15 +96,18 @@ EOS;
 	 * 
 	 * @return string The Piwik tracking code.
 	 */
-	private function tracking_code_piwik_start( $track_domain, $rest_api, $site_id ) {
+	private function tracking_code_piwik_start( $track_domain, $rest_api, $site_id )
+	{
 		return sprintf( self::TRACKING_CODE_PIWIK_START, $track_domain, $rest_api, $site_id );
 	}
 
-	private function tracking_code_piwik_body( $track_domain, $rest_api, $site_id ) {
+	private function tracking_code_piwik_body( $track_domain, $rest_api, $site_id )
+	{
 		return sprintf( self::TRACKING_CODE_PIWIK_BODY, $track_domain, $rest_api, $site_id );
 	}
 
-	private function tracking_code_piwik_end() {
+	private function tracking_code_piwik_end()
+	{
 		return self::TRACKING_CODE_PIWIK_END;
 	}
 	
@@ -115,16 +118,22 @@ EOS;
 	 * 
 	 * @return string The Google tracking code.
 	 */
-	private function tracking_code_google( $accounts ) {
+	private function tracking_code_google( $accounts )
+	{
 		$api_calls_str = '';
-		if ( is_array( $accounts ) ) {
-			foreach ( $accounts as $account=>&$tracking ) {
-				$ns = isset( $tracking['namespace'] ) && is_string( $tracking['namespace'] ) && ! empty( $tracking['namespace'] ) ? $tracking['namespace'] . '.' : '';
+
+		if ( is_array( $accounts ) )
+		{
+			foreach ( $accounts as $account=>&$tracking )
+			{
+				$ns = isset( $tracking['namespace'] ) AND is_string( $tracking['namespace'] ) AND ! empty( $tracking['namespace'] ) ? $tracking['namespace'] . '.' : '';
 				$api_calls_str .= $this->tracking_code_google_api_call( array( $ns . '_setAccount', $account ) );
 				$api_calls_str .= $this->tracking_code_google_api_call( array( $ns . '_trackPageview' ) );
 			}
+
 			unset( $tracking );
 		}
+
 		return empty( $api_calls_str ) ? '' : sprintf( self::TRACKING_CODE_GOOGLE, $api_calls_str );
 	}
 	
@@ -135,7 +144,8 @@ EOS;
 	 * 
 	 * @return string The API call JS string.
 	 */
-	private function tracking_code_google_api_call( $call ) {
+	private function tracking_code_google_api_call( $call )
+	{
 		return sprintf( self::TRACKING_CODE_GOOGLE_API_CALL, json_encode( $call ) );
 	}
 
@@ -144,15 +154,17 @@ EOS;
 	 *
 	 * @since 	 2.0.0
 	 */
-	public function print_tracking_code( $settings ) {
-
+	public function print_tracking_code( $settings )
+	{
 		$piwik_global_tracking_domain = EXPANA_PIWIK_GLOBAL_TRACKING_DOMAIN;
 		$piwik_rest_api = EXP_PIWIK_HOST;
 		$piwik_global_tracking_id = EXPANA_PIWIK_GLOBAL_TRACKING_ID;
 		
 		//Piwik code for the current production level.
 		$piwik_site_id = null;
-		switch ( EXP_PRODUCTION_LEVEL ) {
+
+		switch ( EXP_PRODUCTION_LEVEL )
+		{
 			case 'PROD':
 				$piwik_site_id = $settings['piwik_site_id_prod'];
 			break;
@@ -163,9 +175,16 @@ EOS;
 				$piwik_site_id = $settings['piwik_site_id_tst'];
 			break;
 		}
-		if ( is_int( $piwik_site_id ) ) {
+
+		if ( is_int( $piwik_site_id ) )
+		{
+
+			error_log("attn: " . gettype($piwik_site_id));
+
 			$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
-			if ( ! empty( $site_domain ) ) {
+
+			if ( ! empty( $site_domain ) )
+			{
 				echo $this->tracking_code_piwik_start(
 					'*.' . $site_domain,
 					$piwik_rest_api,

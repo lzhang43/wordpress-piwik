@@ -293,7 +293,7 @@ class Expressions_Analytics_Setting_Service {
 			//Check the ID and make sure the ID is not the global one
 			if ( isset( $site['idsite'] ) AND $site['idsite'] !== $piwik_global_tracking_id )
 			{
-				$siteid = $site['idsite'];
+				$siteid = (int) $site['idsite'];
 				break;
 			}
 		}
