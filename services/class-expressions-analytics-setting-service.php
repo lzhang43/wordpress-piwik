@@ -323,7 +323,7 @@ class Expressions_Analytics_Setting_Service {
 		$input = wp_parse_args( $input, $this->settings_default );
 
 		//Parse rest API url
-		$rest_api_url = $this->parse_piwik_api_url;
+		$rest_api_url = $this->parse_piwik_api_url();
 
 		//If rest API url is empty (means API is not configured in wp-config.php), do nothing
 		if ( ! $rest_api_url )
@@ -411,7 +411,7 @@ class Expressions_Analytics_Setting_Service {
 	/**
 	 * Parse Piwik REST API url
 	 * 
-	 * @return string|boolean REST API url OR false if empty
+	 * @return string|boolean REST API url OR False if empty or invalid
 	 */
 	public function parse_piwik_api_url()
 	{
