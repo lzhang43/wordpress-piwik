@@ -322,31 +322,28 @@ class Expressions_Analytics_Setting_Service {
 		//Parse the inputs
 		$input = wp_parse_args( $input, $this->settings_default );
 
-		//Retrive API configurations
-		$piwik_rest_api = EXP_PIWIK_HOST;
-		$piwik_protocol = EXP_PIWIK_PROTO;
+		//Parse rest API url
+		$rest_api_url = $this->parse_piwik_api_url;
 
-		//If API is not configured, return settings, do nothing
-		if ( empty( $piwik_rest_api ) OR empty( $piwik_protocol ) OR ! is_string( $piwik_rest_api ) OR ! is_string( $piwik_protocol ) )
+		//If rest API url is empty (means API is not configured in wp-config.php), do nothing
+		if ( ! $rest_api_url )
 		{
 			return $settings;
 		}
 
 		//Check if the current production level is valid
-		if ( ! in_array(strtolower(EXP_PRODUCTION_LEVEL), array( "dev", "tst", "prod" )) )
+		if ( ! $this->validate_production_level(strtolower(EXP_PRODUCTION_LEVEL)) )
 		{
 			return $settings;
 		}
 
-		//Parse rest API url
-		$rest_api_url = $piwik_protocol . '://' . $piwik_rest_api;
-
+		//Reset $piwik_error
 		$piwik_error = null;
 
-		//Sanitize the inputs
+		//Sanitize the auth token
 		$input_piwik_auth_token = htmlspecialchars( trim($input['piwik_auth_token_' . strtolower(EXP_PRODUCTION_LEVEL)]) );
 
-		//Remove that piwik auth token
+		//Remove that piwik auth token if tempty
 		if ( ! $input_piwik_auth_token )
 		{
 			$settings['piwik_auth_token_' . strtolower(EXP_PRODUCTION_LEVEL)] = null;
@@ -355,14 +352,16 @@ class Expressions_Analytics_Setting_Service {
 			return $settings;
 		}
 
-		//Check for changes or currently unset.
+		//Check for changes and currently unset.
 		if ( $settings['piwik_auth_token_' . strtolower(EXP_PRODUCTION_LEVEL)] == $input_piwik_auth_token AND is_int( $settings['piwik_auth_token_' . strtolower(EXP_PRODUCTION_LEVEL)] ) )
 		{
 			return $settings;
 		}
 
+		//Retrive site info from Piwik and register the site
 		$register = $this->register_piwik_site( $rest_api_url, $input_piwik_auth_token );
 
+		//Check errors
 		if ( $register['result'] == 'error' )
 		{
 			$piwik_error = $register['content'];
@@ -378,6 +377,7 @@ class Expressions_Analytics_Setting_Service {
 			return $settings;
 		}
 
+		//Finally, save settings if no error has been captured
 		$settings['piwik_site_id_' . strtolower(EXP_PRODUCTION_LEVEL)] = $register['content'];
 
 		$settings['piwik_auth_token_prod']  = htmlspecialchars( trim($input['piwik_auth_token_prod']) );
@@ -387,6 +387,44 @@ class Expressions_Analytics_Setting_Service {
 
 		return $settings;
 		
+	}
+
+
+	/**
+	 * Validate the production level value
+	 * 
+	 * @param string $production_level The current production level value.
+	 * 
+	 * @return boolean Whether or not the given value is valid
+	 */
+	public function validate_production_level( $production_level )
+	{
+		if ( ! in_array(strtolower($production_level), array( "dev", "tst", "prod" )) )
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Parse Piwik REST API url
+	 * 
+	 * @return string|boolean REST API url OR false if empty
+	 */
+	public function parse_piwik_api_url()
+	{
+		//Retrive API configurations
+		$piwik_rest_api = EXP_PIWIK_HOST;
+		$piwik_protocol = EXP_PIWIK_PROTO;
+
+		if ( empty( $piwik_rest_api ) OR empty( $piwik_protocol ) OR ! is_string( $piwik_rest_api ) OR ! is_string( $piwik_protocol ) )
+		{
+			return false;
+		}
+
+		return $piwik_protocol . '://' . $piwik_rest_api;
 	}
 
 }
