@@ -69,6 +69,11 @@ class Expressions_Analytics_Setting_Service {
 	public $dashboard_capability = 'manage_options';
 
 	/**
+	 * The dashboard instance
+	 */
+	public $pagehook;
+
+	/**
 	 * The default settings data.
 	 */
 	private $settings_default = array(
@@ -425,6 +430,59 @@ class Expressions_Analytics_Setting_Service {
 		}
 
 		return $piwik_protocol . '://' . $piwik_rest_api;
+	}
+
+	/**
+	 * Build dashboard page
+	 *
+	 * @since    2.0.0
+	 */
+	public function build_dashboard()
+	{
+		if ( ! is_int( $this->get_site_id() ) )
+		{
+			return false;
+		}
+
+		$dashboard = new Expressions_Analytics_Dashboard;
+
+		$this->pagehook = add_dashboard_page(
+			__( $this->dashboard_page_title, 'expana' ),
+			__( $this->dashboard_menu_label, 'expana' ),
+			$this->dashboard_capability,
+			$this->dashboard_page_slug,
+			array( $dashboard, 'expana_dashboard' )
+		);
+
+		add_action( 'load-'.$this->pagehook, array($dashboard, 'expana_widgets') );
+
+	}
+
+	/**
+	 * Get piwik_site_id from piwik settings (not by remote piwik server)
+	 *
+	 * @since    2.0.0
+	 */
+	public function get_site_id() {
+
+		$settings = $this->get_settings();
+
+		$piwik_site_id = null;
+
+		switch ( EXP_PRODUCTION_LEVEL )
+		{
+			case 'PROD':
+				$piwik_site_id = $settings['piwik_site_id_prod'];
+			break;
+			case 'DEV':
+				$piwik_site_id = $settings['piwik_site_id_dev'];
+			break;
+			case 'TST':
+				$piwik_site_id = $settings['piwik_site_id_tst'];
+			break;
+		}
+
+		return $piwik_site_id;
 	}
 
 }

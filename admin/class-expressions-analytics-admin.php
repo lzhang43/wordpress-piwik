@@ -48,7 +48,6 @@ class Expressions_Analytics_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->setting_service = new Expressions_Analytics_Setting_Service;
-		$this->dashboard = new Expressions_Analytics_Dashboard;
 
 	}
 
@@ -105,7 +104,7 @@ class Expressions_Analytics_Admin {
 	 */
 	public function build_dashboard()
 	{
-		return $this->dashboard->build_dashboard();
+		return $this->setting_service->build_dashboard();
 	}
 
 
