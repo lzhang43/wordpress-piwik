@@ -20,7 +20,15 @@ class Expressions_Analytics_Dashboard {
 	 */
  	private $widgets = array(
 
-				['report', 'Report'],
+				['report', 'Report', null, null],
+				['widget1', 'Widget 1', 'normal', 'default'],
+				['widget2', 'Widget 2', 'side', 'default'],
+				['widget3', 'Widget 3', 'column3', 'default'],
+				['widget4', 'Widget 4', 'normal', 'default'],
+				['widget5', 'Widget 5', 'side', 'default'],
+				['widget6', 'Widget 6', 'column3', 'default'],
+				['widget7', 'Widget 7', 'normal', 'default'],
+				['widget8', 'Widget 8', 'side', 'default'],
 
 			);
 
@@ -56,7 +64,7 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	foreach ($this->widgets as $widget)
 	 	{
-	 		$this->expana_widgets_register( $widget[0], $widget[1] );
+	 		$this->expana_widgets_register( $widget[0], $widget[1], $widget[2], $widget[3] );
 	 	}
 	 }
 
@@ -82,6 +90,94 @@ class Expressions_Analytics_Dashboard {
 	 * @since 2.0.0
 	 */
 	 public function expana_widgets_callback_report()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 1
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget1()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 2
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget2()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 3
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget3()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 4
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget4()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 5
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget5()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 6
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget6()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 7
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget7()
+	 {
+	 	echo "<div class='main'>Main</div>";
+	 	echo "<div class='sub'>Sub</div>";
+	 }
+
+	/**
+	 * Dashboard Widget: Widget 8
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_widget8()
 	 {
 	 	echo "<div class='main'>Main</div>";
 	 	echo "<div class='sub'>Sub</div>";
