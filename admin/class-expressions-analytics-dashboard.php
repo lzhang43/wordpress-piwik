@@ -14,6 +14,20 @@
 class Expressions_Analytics_Dashboard {
 
 	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    2.0.0
+	 * @var      string    $plugin_name 	The name of this plugin.
+	 * @var      string    $version			The version of this plugin.
+	 */
+	public function __construct()
+	{
+
+		$this->setting_service = new Expressions_Analytics_Setting_Service;
+
+	}
+
+	/**
 	 * Define widgets
 	 *
 	 * @since 2.0.0
@@ -91,6 +105,8 @@ class Expressions_Analytics_Dashboard {
 	 */
 	 public function expana_widgets_callback_report()
 	 {
+	 	$piwik = new \Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
+
 	 	echo "<div class='main'>Main</div>";
 	 	echo "<div class='sub'>Sub</div>";
 	 }

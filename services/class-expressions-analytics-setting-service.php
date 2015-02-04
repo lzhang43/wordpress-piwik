@@ -463,7 +463,8 @@ class Expressions_Analytics_Setting_Service {
 	 *
 	 * @since    2.0.0
 	 */
-	public function get_site_id() {
+	public function get_site_id()
+	{
 
 		$settings = $this->get_settings();
 
@@ -483,6 +484,35 @@ class Expressions_Analytics_Setting_Service {
 		}
 
 		return $piwik_site_id;
+	}
+
+	/**
+	 * Get piwik_auth_token from piwik settings
+	 *
+	 * @return   string 	$piwik_auth_token
+	 * @since    2.0.0
+	 */
+	public function get_auth_token()
+	{
+
+		$settings = $this->get_settings();
+
+		$piwik_auth_token = null;
+
+		switch ( EXP_PRODUCTION_LEVEL )
+		{
+			case 'PROD':
+				$piwik_auth_token = $settings['piwik_auth_token_prod'];
+			break;
+			case 'TST':
+				$piwik_auth_token = $settings['piwik_auth_token_tst'];
+			break;
+			case 'DEV':
+				$piwik_auth_token = $settings['piwik_auth_token_dev'];
+			break;
+		}
+
+		return $piwik_auth_token;
 	}
 
 }
