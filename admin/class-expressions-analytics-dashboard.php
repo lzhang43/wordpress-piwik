@@ -13,6 +13,8 @@
 
 class Expressions_Analytics_Dashboard {
 
+	private $piwik;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -24,6 +26,8 @@ class Expressions_Analytics_Dashboard {
 	{
 
 		$this->setting_service = new Expressions_Analytics_Setting_Service;
+		$this->report_service  = new Expressions_Analytics_Report_Service;
+		$this->suwi = $this->initPiwik();
 
 	}
 
@@ -47,6 +51,23 @@ class Expressions_Analytics_Dashboard {
 			);
 
 	/**
+	 * Initialize Piwik class
+	 *
+	 * @since 2.0.0
+	 */
+	private function initPiwik()
+	{
+		$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
+
+	 	$this->piwik->setRange('2015-1-6', Piwik::DATE_YESTERDAY); //All data from the first to the last date
+	 	$this->piwik->setPeriod(Piwik::PERIOD_DAY);
+	 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
+	 	$this->piwik->setLanguage('en');
+
+	 	return $this->piwik;
+	}
+
+	/**
 	 * Displays the dashboard.
 	 *
 	 * @since 2.0.0
@@ -67,6 +88,7 @@ class Expressions_Analytics_Dashboard {
 
 		wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 		wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
+
 	}
 
 	/**
@@ -105,10 +127,7 @@ class Expressions_Analytics_Dashboard {
 	 */
 	 public function expana_widgets_callback_report()
 	 {
-	 	$piwik = new \Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
-
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	include (plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/widget_report.php');
 	 }
 
 	/**
@@ -118,6 +137,8 @@ class Expressions_Analytics_Dashboard {
 	 */
 	 public function expana_widgets_callback_widget1()
 	 {
+	 	echo "<img src='".$this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_visits,nb_uniq_visitors" )."' />";
+
 	 	echo "<div class='main'>Main</div>";
 	 	echo "<div class='sub'>Sub</div>";
 	 }

@@ -121,6 +121,11 @@ class Expressions_Analytics {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'services/class-expressions-analytics-tracker-service.php';
 
 		/**
+		 * The class responsible for handling reporting API queries to remote SUWI server
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'services/class-expressions-analytics-report-service.php';
+
+		/**
 		 * Loading composer
 		 */
 		$composer = plugin_dir_path( dirname(__FILE__) ) . 'vendor/autoload.php';
