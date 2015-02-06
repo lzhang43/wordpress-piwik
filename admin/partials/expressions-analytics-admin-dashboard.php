@@ -20,6 +20,9 @@
 
 					<div class="welcome-panel-column">
 						<h4><?php _e( 'Report' ); ?></h4>
+						<div id="report-content">
+							
+						</div>
 					</div><!-- /.welcome-panel-column -->
 
 					<div class="welcome-panel-column">

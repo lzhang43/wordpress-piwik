@@ -23,10 +23,10 @@ class Expressions_Analytics_Report_Service {
 	 * 
 	 * @return string The URL to generate the thumbnail.
 	 */
-	public function generate_report_thumbnail( $suwi_api_url, $range, $period, $site_id, $columns )
+	public function generate_report_thumbnail( $suwi_api_url, $range, $period, $site_id, $columns, $auth_token )
 	{
 		return $suwi_api_url."/index.php?date=".$range."&module=VisitsSummary&action=getEvolutionGraph&idSite="
-				.$site_id."&period=".$period."&viewDataTable=sparkline&columns=".$columns;
+				.$site_id."&period=".$period."&viewDataTable=sparkline&columns=".$columns."&token_auth=".$auth_token;
 	}
 
 }

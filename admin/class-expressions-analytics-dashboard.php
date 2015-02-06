@@ -137,8 +137,6 @@ class Expressions_Analytics_Dashboard {
 	 */
 	 public function expana_widgets_callback_widget1()
 	 {
-	 	echo "<img src='".$this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_visits,nb_uniq_visitors" )."' />";
-
 	 	echo "<div class='main'>Main</div>";
 	 	echo "<div class='sub'>Sub</div>";
 	 }

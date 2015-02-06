@@ -73,7 +73,7 @@ class Expressions_Analytics_Admin {
 	 	wp_enqueue_script('postbox');
 		wp_enqueue_script('dashboard');
 		
-		//wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/expressions-analytics-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
 	}
 
 	/**
