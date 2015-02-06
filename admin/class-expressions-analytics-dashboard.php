@@ -38,15 +38,16 @@ class Expressions_Analytics_Dashboard {
 	 */
  	private $widgets = array(
 
-				['report', 'Report', null, null],
-				['widget1', 'Widget 1', 'normal', 'default'],
-				['widget2', 'Widget 2', 'side', 'default'],
-				['widget3', 'Widget 3', 'column3', 'default'],
-				['widget4', 'Widget 4', 'normal', 'default'],
-				['widget5', 'Widget 5', 'side', 'default'],
-				['widget6', 'Widget 6', 'column3', 'default'],
-				['widget7', 'Widget 7', 'normal', 'default'],
-				['widget8', 'Widget 8', 'side', 'default'],
+ 				//Thanks to PHP 5.3, we can't use [] here
+				array('report', 'Report', null, null),
+				array('widget1', 'Widget 1', 'normal', 'default'),
+				array('widget2', 'Widget 2', 'side', 'default'),
+				array('widget3', 'Widget 3', 'column3', 'default'),
+				array('widget4', 'Widget 4', 'normal', 'default'),
+				array('widget5', 'Widget 5', 'side', 'default'),
+				array('widget6', 'Widget 6', 'column3', 'default'),
+				array('widget7', 'Widget 7', 'normal', 'default'),
+				array('widget8', 'Widget 8', 'side', 'default'),
 
 			);
 
