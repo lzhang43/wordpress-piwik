@@ -60,6 +60,7 @@ class Expressions_Analytics_Dashboard {
 		$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
 
 	 	$this->piwik->setRange('2015-1-6', Piwik::DATE_YESTERDAY); //All data from the first to the last date
+	 	$this->piwik->setDate(Piwik::DATE_YESTERDAY);
 	 	$this->piwik->setPeriod(Piwik::PERIOD_DAY);
 	 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
 	 	$this->piwik->setLanguage('en');
@@ -118,6 +119,55 @@ class Expressions_Analytics_Dashboard {
 	 	$setting_service = new Expressions_Analytics_Setting_Service;
 
 	 	add_meta_box ( 'expana_'.$id, $name, array( $this, 'expana_widgets_callback_'.$id), $setting_service->pagehook, $column, $priority );
+	 }
+
+	 /**
+	  * An AJAX POST interface for pulling report summary
+	  *
+	  * @return $json_data 		Report summary figures and thumbnails
+	  */
+	 public function expana_ajax_report()
+	 {
+
+	 	$return = array(
+	 			
+	 			'meta' => ['code' => 200],
+
+	 			'data' => [
+
+		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_visits,nb_uniq_visitors", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisits() . ' visits, ' . $this->suwi->getUniqueVisitors() . ' unique visitors'],
+		 			
+		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_on_site", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'avg_time_on_site') . 's average visit duration'],
+	 				
+	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "bounce_rate", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'bounce_rate') . ' visits have bounced (left the website after one page)'],
+		 			
+		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_action", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_action') . ' actions (page views, downloads, outlinks and internal site searches) per visit'],
+		 			
+		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_generation", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'avg_time_generation') . ' average generation time'],
+	 				
+	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_pageviews, nb_uniq_pageviews", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_pageviews') . ' pageviews, ' . $this->suwi->getVisitsSummary(null, 'nb_uniq_pageviews') . ' unique pageviews'],
+	 				
+	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_searches, nb_keywords", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_searches') . ' total searches on your website, ' . $this->suwi->getVisitsSummary(null, 'nb_keywords') . ' unique keywords'],
+	 				
+	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_downloads, nb_uniq_downloads", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_downloads') . ' downloads,' . $this->suwi->getVisitsSummary(null, 'nb_uniq_downloads') . ' unique downloads'],
+	 				
+	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_outlinks, nb_uniq_outlinks", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_outlinks') . ' outlinks,'. $this->suwi->getVisitsSummary(null, 'nb_uniq_outlinks') . ' unique outlink'],
+	 				
+		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "max_actions", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'max_actions') . ' max actions in one visit'],
+	 			]
+	 		);
+	
+		wp_send_json($return);
 	 }
 
 	/**

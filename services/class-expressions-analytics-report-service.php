@@ -29,4 +29,10 @@ class Expressions_Analytics_Report_Service {
 				.$site_id."&period=".$period."&viewDataTable=sparkline&columns=".$columns."&token_auth=".$auth_token;
 	}
 
+
+	public function get_report_nb_visits( $unique = False )
+	{
+		return true;
+	}
+
 }
