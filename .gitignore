@@ -16,6 +16,7 @@ vendor
 
 # Compiled files
 admin/css/admin.css
+admin/js/highcharts/
 
 # Bower
 bower_components

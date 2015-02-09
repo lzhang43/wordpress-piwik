@@ -8,8 +8,11 @@ gulp.task('default', function() {
 		.pipe(sass())
 		.pipe(gulp.dest('admin/css'));
 
-	gulp.src('admin/coffeescript/*.coffee')
-		.pipe(coffee())
-		.pipe(gulp.dest('admin/js'));
+	//gulp.src('admin/coffeescript/*.coffee')
+	//	.pipe(coffee())
+	//	.pipe(gulp.dest('admin/js'));
+
+	gulp.src('bower_components/highcharts-release/*')
+		.pipe(gulp.dest('admin/js/highcharts'));
 
 });
