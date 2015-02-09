@@ -17,5 +17,8 @@ vendor
 # Compiled files
 admin/css/admin.css
 
+# Bower
+bower_components
+
 #Untrack old files
 /old

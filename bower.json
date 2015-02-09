@@ -1,0 +1,6 @@
+{
+  "name": "Expressions Analytics",
+  "dependencies": {
+    "highcharts-release": "~4.0.4"
+  }
+}
