@@ -1,3 +1,29 @@
-.welcome-panel{
+.welcome-panel {
 	padding: 0 10px;
+}
+
+.welcome-panel .welcome-panel-column {
+	width: 64%;
+}
+
+.welcome-panel .welcome-panel-column:first-child {
+	width: 35%;
+}
+
+@media screen and (max-width: 870px) {
+
+	.welcome-panel .welcome-panel-column,
+	.welcome-panel .welcome-panel-column:first-child {
+		display: block;
+		float: none;
+	}
+
+	.welcome-panel .welcome-panel-column {
+		width: 100%;
+	}
+
+	.welcome-panel .welcome-panel-column:first-child {
+		width: 100%;
+	}
+
 }

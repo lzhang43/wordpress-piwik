@@ -20,13 +20,13 @@
 
 					<div class="welcome-panel-column">
 						<h4><?php _e( 'Report' ); ?></h4>
-						<div id="report_content">
-							
-						</div>
+						<div id="report_content"></div>
 					</div><!-- /.welcome-panel-column -->
 
 					<div class="welcome-panel-column">
 						<h4><?php _e( 'Visitors' ); ?></h4>
+						<div id="visits_summary" style="height: 400px;"></div>
+						<div id="visits_datatable"></div>
 					</div><!-- /.welcome-panel-column -->
 
 			</div><!-- /.welcome-panel-column-container -->

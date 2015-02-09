@@ -12,7 +12,7 @@ gulp.task('default', function() {
 	//	.pipe(coffee())
 	//	.pipe(gulp.dest('admin/js'));
 
-	gulp.src('bower_components/highcharts-release/*')
+	gulp.src('bower_components/highcharts-release/**/*')
 		.pipe(gulp.dest('admin/js/highcharts'));
 
 });

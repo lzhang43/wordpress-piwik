@@ -73,7 +73,10 @@ class Expressions_Analytics_Admin {
 	 	wp_enqueue_script('postbox');
 		wp_enqueue_script('dashboard');
 		
-		wp_enqueue_script( 'highcharts', plugin_dir_url( __FILE__ ) . 'js/highcharts/highcharts-all.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'highcharts', plugin_dir_url( __FILE__ ) . 'js/highcharts/highcharts.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'highcharts-data', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/data.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'highcharts-exporting', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/exporting.js', array( 'jquery' ), $this->version, false );
+
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
 	}
 

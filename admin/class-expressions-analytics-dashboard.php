@@ -60,8 +60,7 @@ class Expressions_Analytics_Dashboard {
 	{
 		$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
 
-	 	$this->piwik->setRange('2015-1-6', Piwik::DATE_YESTERDAY); //All data from the first to the last date
-	 	$this->piwik->setDate(Piwik::DATE_YESTERDAY);
+	 	$this->piwik->setRange('2015-01-06', Piwik::DATE_YESTERDAY); //All data from the first to the last date
 	 	$this->piwik->setPeriod(Piwik::PERIOD_DAY);
 	 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
 	 	$this->piwik->setLanguage('en');
@@ -130,7 +129,10 @@ class Expressions_Analytics_Dashboard {
 	 public function expana_ajax_report()
 	 {
 
-	 	$return = array(
+	 	//temproraily changed period to range
+	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
+
+	 	$json_data = array(
 	 			
 	 			'meta' => ['code' => 200],
 
@@ -167,8 +169,21 @@ class Expressions_Analytics_Dashboard {
 	 				 'description' => $this->suwi->getVisitsSummary(null, 'max_actions') . ' max actions in one visit'],
 	 			]
 	 		);
+
+			//change period back to day
+			$this->suwi->setPeriod(Piwik::PERIOD_DAY);
 	
-		wp_send_json($return);
+		wp_send_json($json_data);
+	 }
+
+	 /**
+	  * An AJAX POST interface for pulling all data under VisitsSummary module
+	  *
+	  * @return $json_data 		Core web analytics metrics (visits, unique visitors, count of actions (page views & downloads & clicks on outlinks), time on site, bounces and converted visits. 
+	  */
+	 public function expana_ajax_visits_summary()
+	 {
+	 	wp_send_json($this->suwi->getVisitsSummary());
 	 }
 
 	/**
