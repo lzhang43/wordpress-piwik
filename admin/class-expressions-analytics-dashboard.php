@@ -145,23 +145,23 @@ class Expressions_Analytics_Dashboard {
 	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "bounce_rate", $this->suwi->getToken() ),
 	 				 'description' => $this->suwi->getVisitsSummary(null, 'bounce_rate') . ' visits have bounced (left the website after one page)'],
 		 			
-		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_action", $this->suwi->getToken() ),
-	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_action') . ' actions (page views, downloads, outlinks and internal site searches) per visit'],
+		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_actions_per_visit", $this->suwi->getToken() ),
+	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_actions') . ' actions per visit'],
 		 			
 		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_generation", $this->suwi->getToken() ),
-	 				 'description' => $this->suwi->getVisitsSummary(null, 'avg_time_generation') . ' average generation time'],
+	 				 'description' => $this->suwi->getActions(null, 'avg_time_generation') . 's average generation time'],
 	 				
 	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_pageviews, nb_uniq_pageviews", $this->suwi->getToken() ),
-	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_pageviews') . ' pageviews, ' . $this->suwi->getVisitsSummary(null, 'nb_uniq_pageviews') . ' unique pageviews'],
+	 				 'description' => $this->suwi->getActions(null, 'nb_pageviews') . ' pageviews, ' . $this->suwi->getActions(null, 'nb_uniq_pageviews') . ' unique pageviews'],
 	 				
 	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_searches, nb_keywords", $this->suwi->getToken() ),
-	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_searches') . ' total searches on your website, ' . $this->suwi->getVisitsSummary(null, 'nb_keywords') . ' unique keywords'],
+	 				 'description' => $this->suwi->getActions(null, 'nb_searches') . ' total searches on your website, ' . $this->suwi->getActions(null, 'nb_keywords') . ' unique keywords'],
 	 				
 	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_downloads, nb_uniq_downloads", $this->suwi->getToken() ),
-	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_downloads') . ' downloads,' . $this->suwi->getVisitsSummary(null, 'nb_uniq_downloads') . ' unique downloads'],
+	 				 'description' => $this->suwi->getActions(null, 'nb_downloads') . ' downloads, ' . $this->suwi->getActions(null, 'nb_uniq_downloads') . ' unique downloads'],
 	 				
 	 				['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_outlinks, nb_uniq_outlinks", $this->suwi->getToken() ),
-	 				 'description' => $this->suwi->getVisitsSummary(null, 'nb_outlinks') . ' outlinks,'. $this->suwi->getVisitsSummary(null, 'nb_uniq_outlinks') . ' unique outlink'],
+	 				 'description' => $this->suwi->getActions(null, 'nb_outlinks') . ' outlinks, '. $this->suwi->getActions(null, 'nb_uniq_outlinks') . ' unique outlink'],
 	 				
 		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "max_actions", $this->suwi->getToken() ),
 	 				 'description' => $this->suwi->getVisitsSummary(null, 'max_actions') . ' max actions in one visit'],
