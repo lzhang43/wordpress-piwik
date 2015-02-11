@@ -134,9 +134,9 @@ class Expressions_Analytics_Dashboard {
 
 	 	$json_data = array(
 	 			
-	 			'meta' => ['code' => 200],
+	 			'meta' => array('code' => 200),
 
-	 			'data' => [
+	 			'data' => array(
 
 		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_visits,nb_uniq_visitors", $this->suwi->getToken() ),
 	 				 'description' => $this->suwi->getVisits() . ' visits, ' . $this->suwi->getUniqueVisitors() . ' unique visitors'],
@@ -167,7 +167,7 @@ class Expressions_Analytics_Dashboard {
 	 				
 		 			['thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "max_actions", $this->suwi->getToken() ),
 	 				 'description' => $this->suwi->getVisitsSummary(null, 'max_actions') . ' max actions in one visit'],
-	 			]
+	 			)
 	 		);
 
 			//change period back to day
