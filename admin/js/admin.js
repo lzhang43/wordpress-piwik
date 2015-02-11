@@ -24,25 +24,50 @@ jQuery(function ($) {
         dataType: "JSON"
     }).success(function( response ) {
 
+            console.log( response );
+
+            // Define a list of series that will be included in the chart
+            categories = ['nb_actions', 'nb_actions_per_visit', 'nb_uniq_visitors', 'nb_users', 'nb_visits', 'nb_visits_converted'];
+
+            var date = [];
+            var nb_actions = [];
+            var nb_actions_per_visit = [];
+            var nb_uniq_visitors = [];
+            var nb_users = [];
+            var nb_visits = [];
+            var nb_visits_converted = [];
+
+            $.each(response, function (i, day) {
+                date.push(i);
+
+                $.each(categories, function (i, category)
+                {
+                    if (day[category])
+                    {
+                        eval(category).push(day[category]);
+                    }
+                    else
+                    {
+                        eval(category).push(0);
+                    }
+                });
+            });
+
+            console.log(date);
+
             $('#visits_summary').highcharts({
 
                 title: {
-                    text: "Visits Summary" //To disable the title, set the text to null
+                    text: null //To disable the title, set the text to null
                 },
 
-                subtitle: {
-                    text: "Expressions Analytics"
+                chart: {
+                    marginTop: 50
                 },
 
                 xAxis: {
-                    tickInterval: 7 * 24 * 3600 * 1000, // one week
-                    tickWidth: 0,
-                    gridLineWidth: 1,
-                    labels: {
-                        align: 'left',
-                        x: 3,
-                        y: -3
-                    }
+                    categories: date,
+                    tickInterval: 3
                 },
 
                 yAxis: [{ // left y axis
@@ -75,7 +100,7 @@ jQuery(function ($) {
                 legend: {
                     align: 'left',
                     verticalAlign: 'top',
-                    y: 20,
+                    y: 0,
                     floating: true,
                     borderWidth: 0
                 },
@@ -86,14 +111,22 @@ jQuery(function ($) {
                 },
 
                 series: [{
-                    name: 'All visits',
-                    lineWidth: 4,
-                    marker: {
-                        radius: 4
-                    }
+                    name: 'Actions',
+                    data: nb_actions
                 }, {
-                    name: 'New visitors'
+                    name: 'Actions per visit',
+                    data: nb_actions_per_visit
+                }, {
+                    name: 'Unique Visitors',
+                    data: nb_uniq_visitors
+                }, {
+                    name: 'Visits',
+                    data: nb_visits
+                }, {
+                    name: 'Visits Converted',
+                    data: nb_visits_converted
                 }]
+
             });
     });
 
