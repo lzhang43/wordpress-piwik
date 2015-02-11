@@ -2,8 +2,8 @@
 /*
 Plugin Name: Expressions Analytics
 Description: WordPress plugin for Expressions analytics.
-Author: Expressions Team, Alexander O'Mara
-Version: 1.0
+Author: Spiders, Michael Zhang
+Version: 2.0
 */
 
 /**
@@ -687,38 +687,39 @@ EOS;
 				$piwik_site_id = $settings['piwik_site_id_tst'];
 			break;
 		}
-		if ( is_int( $piwik_site_id ) ) {
-			$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
-			if ( ! empty( $site_domain ) ) {
-				echo $this->tracking_code_piwik_start(
-					'*.' . $site_domain,
+		
+		$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
+		if ( ! empty( $site_domain ) ) {
+			echo $this->tracking_code_piwik_start(
+				'*.' . $site_domain,
+				$piwik_rest_api,
+				$piwik_site_id
+			);
+
+			//Global tracking Piwik.
+			if (
+				is_string( $piwik_global_tracking_domain ) && ! empty( $piwik_global_tracking_domain ) &&
+				is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) &&
+				is_int( $piwik_global_tracking_id )
+			) {
+				echo $this->tracking_code_piwik_body(
+					$piwik_global_tracking_domain,
 					$piwik_rest_api,
-					$piwik_site_id
+					$piwik_global_tracking_id
 				);
+			}
 
-				//Global tracking Piwik.
-				if (
-					is_string( $piwik_global_tracking_domain ) && ! empty( $piwik_global_tracking_domain ) &&
-					is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) &&
-					is_int( $piwik_global_tracking_id )
-				) {
-					echo $this->tracking_code_piwik_body(
-						$piwik_global_tracking_domain,
-						$piwik_rest_api,
-						$piwik_global_tracking_id
-					);
-				}
-
+			if ( is_int( $piwik_site_id ) ) {
 				echo $this->tracking_code_piwik_body(
 					'*.' . $site_domain,
 					$piwik_rest_api,
 					$piwik_site_id
 				);
-
-				echo $this->tracking_code_piwik_end();
 			}
+
+			echo $this->tracking_code_piwik_end();
 		}
-				
+
 		//Google tracking.
 		$ga_accounts = array();
 		
@@ -857,7 +858,7 @@ EOS;
 	*/
 	public function get_query_dates( $force_full_output = FALSE ) {
 
-		if ( is_string( $_POST['expana-time-period'] ) AND $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
+		if ( isset( $_POST['expana-time-period'] ) AND $this->validate_date( $_POST['expana-from-date'] ) AND $this->validate_date( $_POST['expana-to-date'] ) )
 		{
 			$from_date = $_POST['expana-from-date'];
 			$to_date =  $_POST['expana-to-date'];
