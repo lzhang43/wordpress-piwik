@@ -2,6 +2,10 @@
 	padding: 0 10px;
 }
 
+.welcome-panel-content {
+	max-width: none;
+}
+
 .welcome-panel .welcome-panel-column {
 	width: 64%;
 }
@@ -27,3 +31,26 @@
 	}
 
 }
+
+#report_content {
+
+	section {
+		min-height: 20px;
+		border-bottom: 1px rgb(192, 192, 192) solid;
+		margin-bottom: 5px;
+		margin-right: 20px;
+	}
+
+	section span {
+		margin-left: 20px;
+	}
+	
+}
+
+#loading_report {
+	text-align: center;
+	margin-top: 50px;
+	margin-left: -80px;
+	font-size: 36px;
+}
+

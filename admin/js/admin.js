@@ -6,15 +6,10 @@ jQuery(function ($) {
         type: "POST",
         dataType: "json"
     }).success(function( response ) {
-        if (response.meta.code !== 200) {
-            alert("Error: " + response.meta.error_message);
-        }
-        else
-        {
-            $.each(response.data, function(index, item) {
-                $("#report_content").append("<section><img src='" + item.thumbnail + "' /><span>" + item.description + "</span></section>");
-            })
-        }
+        $('#loading_report').hide();
+        $.each(response.data, function(index, item) {
+            $("#report_content").append("<section><img src='" + item.thumbnail + "' /><span>" + item.description + "</span></section>");
+        })
     });
 
     $.ajax({
