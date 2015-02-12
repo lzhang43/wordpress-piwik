@@ -271,11 +271,13 @@ class Expressions_Analytics_Setting_Service {
 		$piwik_global_tracking_id = EXPANA_PIWIK_GLOBAL_TRACKING_ID;
 
 		//@TODO: wrap the query function and move it to an helper class (maybe a service?)
-		$client = new GuzzleHttp\Client();
+		$client = new Guzzle\Http\Client();
 
 		$url = $piwik_protocol . "://" . $piwik_rest_api . "/?module=API&format=JSON&token_auth=" . $restauth . "&method=SitesManager.getSitesIdFromSiteUrl&url=http://michael.dev/wordpress";
 		
-		$response = $client->get( $url );
+		$request = $client->get( $url );
+
+		$response = $request->send();
 
 		if( $response->getStatusCode() !== 200 )
 		{
