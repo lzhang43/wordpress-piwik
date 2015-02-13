@@ -476,6 +476,22 @@ class Expressions_Analytics_Setting_Service {
 	}
 
 	/**
+	 * Get current production level
+	 *
+	 * @return 	string|boolean   $production_level or false, if the production level is invalid
+	 * @since 	2.0.0
+	 */
+	public function get_production_level()
+	{
+		if ( $this->validate_production_level(EXP_PRODUCTION_LEVEL) )
+		{
+			return EXP_PRODUCTION_LEVEL;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get piwik_site_id from piwik settings (not by remote piwik server)
 	 *
 	 * @since    2.0.0

@@ -14,7 +14,13 @@
 
 	<h2>Expressions Analytics Dashboard</h2>
 
-	<p> </p>
+	<p class="expana-meta-info">
+		Version: <?php echo $this->version; ?> | 
+		Production Level: <?php echo $this->setting_service->get_production_level(); ?> | 
+		SUWI Server: <?php echo $this->setting_service->parse_piwik_api_url(); ?> | 
+		Site ID: <?php echo $this->setting_service->get_site_id(); ?> | 
+		Current Date Range: <?php //@TODO: output date range info here ?>
+	</p>
 
 	<div id="welcome-panel" class="welcome-panel">
 		<div class="welcome-panel-content">
