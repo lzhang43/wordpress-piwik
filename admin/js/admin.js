@@ -38,7 +38,7 @@ jQuery(function ($) {
     });
 
     $.ajax({
-        url: "http://michael.dev/wordpress/wp-admin/admin-ajax.php",
+        url: "admin-ajax.php",
         data: { action: "expana_ajax_report" },
         type: "POST",
         dataType: "json"
@@ -50,7 +50,7 @@ jQuery(function ($) {
     });
 
     $.ajax({
-        url: "http://michael.dev/wordpress/wp-admin/admin-ajax.php",
+        url: "admin-ajax.php",
         data: { action: "expana_ajax_visits_summary" },
         type: "POST",
         dataType: "JSON"
