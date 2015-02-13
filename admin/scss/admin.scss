@@ -202,3 +202,7 @@ label {
 .hide {
 	display: none !important;
 }
+
+.highcharts-container > svg > text:last-of-type {
+	display: none;
+}

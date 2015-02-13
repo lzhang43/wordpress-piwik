@@ -6,6 +6,8 @@ jQuery(function ($) {
         $(".date-range-selectors button.date-range-button").removeClass("current");
         $(this).addClass("current");
 
+        $("#date_range").text( $(this).text() );
+
         if( $(this).attr("id") == "expana_custom" )
         {
             $(".date-range-inputs").show();
@@ -14,6 +16,10 @@ jQuery(function ($) {
         {
             $(".date-range-inputs").hide();
         }
+    });
+
+    $("#date-range-filter").on("click", function(e) {
+        e.preventDefault();
     });
 
     $( "#expana-from-date" ).datepicker({
