@@ -14,6 +14,52 @@
 	width: 35%;
 }
 
+.date-range-selectors {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+
+.date-range-button {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    background-color: #fff;
+    border-color: #ccc;
+    color: #333;
+}
+
+.date-range-button:not(:last-child) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    margin-right: -2px;
+}
+
+.date-range-button:not(:first-child) {
+	margin-left: -2px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.date-range-button:hover,
+.date-range-button:active {
+	background-color: #f1f1f1;
+}
+
+.date-range-button:focus,
+.date-range-button.current {
+	background-color: #e6e6e6;
+	border-color: #adadad;
+	z-index: 99;
+}
+
 @media screen and (max-width: 870px) {
 
 	.welcome-panel .welcome-panel-column,

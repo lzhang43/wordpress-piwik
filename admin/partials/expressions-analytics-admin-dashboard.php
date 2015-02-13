@@ -36,6 +36,16 @@
 		</div><!-- /.welcome-panel-content -->
 	</div><!-- /#welcome-panel -->
 
+	<div id="dashboard-date-range">
+		<div aria-label="Dashboard Date Range" role="group" class="date-range-selectors">
+			<button class="date-range-button" type="button">Last 90 days</button>
+			<button class="date-range-button current" type="button">Last 30 days</button>
+			<button class="date-range-button" type="button">Last 7 days</button>
+			<button class="date-range-button" type="button">Yesterday</button>
+			<button class="date-range-button" type="button">Custom</button>
+		</div>
+	</div>
+
 	<div id="dashboard-widgets-wrap">
 		<div id="dashboard-widgets" class="metabox-holder<?php echo $columns_css; ?>">
 
