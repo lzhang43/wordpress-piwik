@@ -42,7 +42,6 @@ class Expressions_Analytics_Dashboard {
  	private $widgets = array(
 
  				//Thanks to PHP 5.3, we can't use [] here
-				array('report', 'Report', null, null),
 				array('widget1', 'Widget 1', 'normal', 'default'),
 				array('widget2', 'Widget 2', 'side', 'default'),
 				array('widget3', 'Widget 3', 'column3', 'default'),
@@ -188,17 +187,7 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getVisitsSummary());
 	 }
-
-	/**
-	 * Dashboard Widget: Report
-	 *
-	 * @since 2.0.0
-	 */
-	 public function expana_widgets_callback_report()
-	 {
-	 	include (plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/widget_report.php');
-	 }
-
+	 
 	/**
 	 * Dashboard Widget: Widget 1
 	 *
