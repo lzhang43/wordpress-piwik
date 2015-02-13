@@ -176,40 +176,39 @@ EOS;
 			break;
 		}
 
-		if ( is_int( $piwik_site_id ) )
+		$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
+
+		if ( ! empty( $site_domain ) )
 		{
+			echo $this->tracking_code_piwik_start(
+				'*.' . $site_domain,
+				$piwik_rest_api,
+				$piwik_site_id
+			);
 
-			$site_domain = @parse_url( get_site_url(), PHP_URL_HOST );
-
-			if ( ! empty( $site_domain ) )
-			{
-				echo $this->tracking_code_piwik_start(
-					'*.' . $site_domain,
+			//Global tracking Piwik.
+			if (
+				is_string( $piwik_global_tracking_domain ) AND ! empty( $piwik_global_tracking_domain ) AND
+				is_string( $piwik_rest_api ) AND ! empty( $piwik_rest_api ) AND
+				is_int( $piwik_global_tracking_id )
+			) {
+				echo $this->tracking_code_piwik_body(
+					$piwik_global_tracking_domain,
 					$piwik_rest_api,
-					$piwik_site_id
+					$piwik_global_tracking_id
 				);
+			}
 
-				//Global tracking Piwik.
-				if (
-					is_string( $piwik_global_tracking_domain ) && ! empty( $piwik_global_tracking_domain ) &&
-					is_string( $piwik_rest_api ) && ! empty( $piwik_rest_api ) &&
-					is_int( $piwik_global_tracking_id )
-				) {
-					echo $this->tracking_code_piwik_body(
-						$piwik_global_tracking_domain,
-						$piwik_rest_api,
-						$piwik_global_tracking_id
-					);
-				}
-
+			if ( is_int( $piwik_site_id ) AND ( $piwik_site_id !== $piwik_global_tracking_id ) )
+			{
 				echo $this->tracking_code_piwik_body(
 					'*.' . $site_domain,
 					$piwik_rest_api,
 					$piwik_site_id
 				);
-
-				echo $this->tracking_code_piwik_end();
 			}
+
+			echo $this->tracking_code_piwik_end();
 		}
 				
 		//Google tracking.
