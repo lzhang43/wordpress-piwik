@@ -87,6 +87,21 @@ class Expressions_Analytics_Setting_Service {
 	);
 
 	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @since    2.0.0
+	 * @var      string    $plugin_name 	The name of this plugin.
+	 * @var      string    $version			The version of this plugin.
+	 */
+	public function __construct( $plugin_name, $version )
+	{
+
+		$this->plugin_name = $plugin_name;
+		$this->version = $version;
+
+	}
+
+	/**
 	 * Get the plugin settings.
 	 * 
 	 * @since   2.0.0
@@ -446,7 +461,7 @@ class Expressions_Analytics_Setting_Service {
 			return false;
 		}
 
-		$dashboard = new Expressions_Analytics_Dashboard;
+		$dashboard = new Expressions_Analytics_Dashboard($this->plugin_name, $this->version);
 
 		$this->pagehook = add_dashboard_page(
 			__( $this->dashboard_page_title, 'expana' ),

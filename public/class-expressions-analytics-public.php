@@ -43,8 +43,8 @@ class Expressions_Analytics_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->setting_service = new Expressions_Analytics_Setting_Service;
-		$this->tracker_service = new Expressions_Analytics_Tracker_Service;
+		$this->setting_service = new Expressions_Analytics_Setting_Service( $this->plugin_name, $this->version );
+		$this->tracker_service = new Expressions_Analytics_Tracker_Service( $this->plugin_name, $this->version );
 
 	}
 

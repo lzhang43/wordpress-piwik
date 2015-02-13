@@ -47,7 +47,7 @@ class Expressions_Analytics_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->setting_service = new Expressions_Analytics_Setting_Service;
+		$this->setting_service = new Expressions_Analytics_Setting_Service( $this->plugin_name, $this->version );
 
 	}
 

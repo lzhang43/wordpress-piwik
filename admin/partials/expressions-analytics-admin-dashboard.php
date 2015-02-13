@@ -14,6 +14,8 @@
 
 	<h2>Expressions Analytics Dashboard</h2>
 
+	<p> </p>
+
 	<div id="welcome-panel" class="welcome-panel">
 		<div class="welcome-panel-content">
 			<div class="welcome-panel-column-container">

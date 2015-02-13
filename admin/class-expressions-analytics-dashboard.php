@@ -22,11 +22,14 @@ class Expressions_Analytics_Dashboard {
 	 * @var      string    $plugin_name 	The name of this plugin.
 	 * @var      string    $version			The version of this plugin.
 	 */
-	public function __construct()
+	public function __construct( $plugin_name, $version )
 	{
 
-		$this->setting_service = new Expressions_Analytics_Setting_Service;
-		$this->report_service  = new Expressions_Analytics_Report_Service;
+		$this->plugin_name = $plugin_name;
+		$this->version = $version;
+
+		$this->setting_service = new Expressions_Analytics_Setting_Service( $this->plugin_name, $this->version );
+		$this->report_service  = new Expressions_Analytics_Report_Service( $this->plugin_name, $this->version );
 		$this->suwi = $this->initPiwik();
 
 	}
@@ -116,7 +119,7 @@ class Expressions_Analytics_Dashboard {
 	 */
 	 private function expana_widgets_register( $id, $name, $column = 'normal', $priority = 'core' )
 	 {
-	 	$setting_service = new Expressions_Analytics_Setting_Service;
+	 	$setting_service = new Expressions_Analytics_Setting_Service( $this->plugin_name, $this->version );
 
 	 	add_meta_box ( 'expana_'.$id, $name, array( $this, 'expana_widgets_callback_'.$id), $setting_service->pagehook, $column, $priority );
 	 }
