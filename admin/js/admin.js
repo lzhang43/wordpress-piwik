@@ -50,6 +50,8 @@ jQuery(function ($) {
         dataType: "JSON"
     }).success(function( response ) {
 
+        $('#loading_visits_summary').hide();
+
         // Define a list of series that will be included in the chart
         categories = ['nb_actions', 'nb_actions_per_visit', 'nb_uniq_visitors', 'nb_users', 'nb_visits', 'nb_visits_converted'];
 

@@ -19,7 +19,7 @@
 		Production Level: <?php echo $this->setting_service->get_production_level(); ?> | 
 		SUWI Server: <?php echo $this->setting_service->parse_piwik_api_url(); ?> | 
 		Site ID: <?php echo $this->setting_service->get_site_id(); ?> | 
-		Current Date Range: <?php //@TODO: output date range info here ?>
+		Current Date Range: <span id="date_range">Last 30 days</span><?php //@TODO: output date range info here ?>
 	</p>
 
 	<div id="welcome-panel" class="welcome-panel">
@@ -28,14 +28,17 @@
 
 					<div class="welcome-panel-column">
 						<h4><?php _e( 'Report' ); ?></h4>
-						<div id="loading_report">
-							Loading
+						<div id="loading_report" class="loading">
+							<i class="fa fa-refresh fa-spin"></i>
 						</div>
 						<div id="report_content"></div>
 					</div><!-- /.welcome-panel-column -->
 
 					<div class="welcome-panel-column">
 						<h4><?php _e( 'Visitors' ); ?></h4>
+						<div id="loading_visits_summary" class="loading">
+							<i class="fa fa-refresh fa-spin"></i>
+						</div>
 						<div id="visits_summary" style="height: 400px;"></div>
 						<div id="visits_datatable"></div>
 					</div><!-- /.welcome-panel-column -->
