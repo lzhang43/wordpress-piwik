@@ -59,6 +59,7 @@ class Expressions_Analytics_Admin {
 	public function enqueue_styles()
 	{
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'jquery-ui_style', plugin_dir_url( __FILE__ ) . 'js/jquery-ui/themes/smoothness/jquery-ui.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style('dashicons');
 	}
 
@@ -76,6 +77,7 @@ class Expressions_Analytics_Admin {
 		wp_enqueue_script( 'highcharts', plugin_dir_url( __FILE__ ) . 'js/highcharts/highcharts.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-data', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/data.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-exporting', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/exporting.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui/jquery-ui.min.js', array( 'jquery' ), $this->version, false );
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
 	}

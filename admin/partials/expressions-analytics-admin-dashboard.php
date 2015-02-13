@@ -46,11 +46,31 @@
 
 	<div id="dashboard-date-range">
 		<div aria-label="Dashboard Date Range" role="group" class="date-range-selectors">
-			<button class="date-range-button" type="button">Last 90 days</button>
-			<button class="date-range-button current" type="button">Last 30 days</button>
-			<button class="date-range-button" type="button">Last 7 days</button>
-			<button class="date-range-button" type="button">Yesterday</button>
-			<button class="date-range-button" type="button">Custom</button>
+			<button id="expana_last90" class="date-range-button" type="button">Last 90 days</button>
+			<button id="expana_last30" class="date-range-button current" type="button">Last 30 days</button>
+			<button id="expana_last7" class="date-range-button" type="button">Last 7 days</button>
+			<button id="expana_yesterday" class="date-range-button" type="button">Yesterday</button>
+			<button id="expana_custom" class="date-range-button" type="button">Custom</button>
+		</div>
+
+		<div class="date-range-inputs">
+			<form class="form-inline">
+				<div class="form-group">
+					<label class="sr-only" for="date-from">From</label>
+					<div class="input-group">
+						<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+						<input type="date" class="form-control" id="expana-from-date" placeholder="From">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="date-to">To</label>
+					<div class="input-group">
+						<div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+						<input type="date" class="form-control" id="expana-to-date" placeholder="To">
+					</div>
+				</div>
+				<button type="submit" id="date-range-filter" class="date-range-button">Filter</button>
+			</form>
 		</div>
 	</div>
 
