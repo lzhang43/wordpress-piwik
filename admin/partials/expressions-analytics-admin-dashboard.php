@@ -19,6 +19,7 @@
 		Production Level: <?php echo $this->setting_service->get_production_level(); ?> | 
 		SUWI Server: <?php echo $this->setting_service->parse_piwik_api_url(); ?> | 
 		Site ID: <?php echo $this->setting_service->get_site_id(); ?> | 
+		Created at: <span id="created_at">Loading</span> | 
 		Current Date Range: <span id="date_range">Last 30 days</span><?php //@TODO: output date range info here ?>
 	</p>
 

@@ -181,6 +181,17 @@ class Expressions_Analytics_Dashboard {
 	 /**
 	  * An AJAX POST interface for pulling all data under VisitsSummary module
 	  *
+	  * @return $json_data 		Site information, including timezone, created date, and etc.
+	  */
+	 public function expana_ajax_site_info()
+	 {
+	 	wp_send_json($this->suwi->getSiteInformation());
+	 }
+
+
+	 /**
+	  * An AJAX POST interface for pulling all data under VisitsSummary module
+	  *
 	  * @return $json_data 		Core web analytics metrics (visits, unique visitors, count of actions (page views & downloads & clicks on outlinks), time on site, bounces and converted visits. 
 	  */
 	 public function expana_ajax_visits_summary()

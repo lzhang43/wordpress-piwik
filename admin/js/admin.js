@@ -41,6 +41,21 @@ jQuery(function ($) {
         constrainInput: true
     });
 
+    // Loading website info
+    function load_site_info() {
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_site_info" },
+            type: "POST",
+            dataType: "json"
+        }).success(function( response ) {
+            $("#created_at").text(response[0].ts_created);
+            $(".time_zone").text(response[0].timezone);
+        })
+    }
+
+    load_site_info();
+
     // Generate report
     $.ajax({
         url: "admin-ajax.php",
