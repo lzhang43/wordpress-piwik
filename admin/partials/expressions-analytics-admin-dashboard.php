@@ -31,7 +31,7 @@
 						<div id="loading_report" class="loading">
 							<i class="fa fa-cog fa-spin"></i>
 						</div>
-						<div id="report_content"></div>
+						<div id="report_content" style="height: 400px;"></div>
 					</div><!-- /.welcome-panel-column -->
 
 					<div class="welcome-panel-column">

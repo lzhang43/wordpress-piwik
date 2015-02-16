@@ -1,7 +1,10 @@
 jQuery(function ($) {
 
+    // hide everything that's not currently in use or is still loading
     $(".date-range-inputs").hide();
+    $("#live").hide();
 
+    // handle onclick event for date range selectors
     $( ".date-range-selectors button.date-range-button" ).on("click", function() {
         $(".date-range-selectors button.date-range-button").removeClass("current");
         $(this).addClass("current");
@@ -22,6 +25,7 @@ jQuery(function ($) {
         e.preventDefault();
     });
 
+    // Initialize datepickers
     $( "#expana-from-date" ).datepicker({
         dateFormat: 'yy-mm-dd',
         changeMonth: true,
@@ -37,6 +41,7 @@ jQuery(function ($) {
         constrainInput: true
     });
 
+    // Generate report
     $.ajax({
         url: "admin-ajax.php",
         data: { action: "expana_ajax_report" },
@@ -49,6 +54,7 @@ jQuery(function ($) {
         })
     });
 
+    // Initialize Visits Summary widget
     $.ajax({
         url: "admin-ajax.php",
         data: { action: "expana_ajax_visits_summary" },
@@ -159,5 +165,28 @@ jQuery(function ($) {
 
         });
     });
+
+    //Define Live widget initialization & set refresh interval
+    function init_live() {
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_live" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+            $("#live_visitor_counter").text(response[0].visitors);
+            $("#live_visits").text(response[0].visits);
+            $("#live_actions").text(response[0].actions);
+            $("#live_converted").text(response[0].visitsConverted);
+            $("#live").show();
+            $("#loading_live").hide();
+        });
+
+       // schedule a repeat
+       setTimeout(init_live, 1000 * 15); //15 seconds = 1000 ms * 10 seconds
+    }
+
+    // Initialize Live widget
+    init_live();
 
 });

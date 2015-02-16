@@ -42,7 +42,7 @@ class Expressions_Analytics_Dashboard {
  	private $widgets = array(
 
  				//Thanks to PHP 5.3, we can't use [] here
-				array('widget1', 'Widget 1', 'normal', 'default'),
+				array('Live', 'Live', 'normal', 'default'),
 				array('widget2', 'Widget 2', 'side', 'default'),
 				array('widget3', 'Widget 3', 'column3', 'default'),
 				array('widget4', 'Widget 4', 'normal', 'default'),
@@ -187,16 +187,26 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getVisitsSummary());
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling real time visits counters
+	  *
+	  * @return $json_data 		The Live API returns visit level information about visitors.
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_live()
+	 {
+	 	wp_send_json($this->suwi->getCounters(30));
+	 }
 	 
 	/**
-	 * Dashboard Widget: Widget 1
+	 * Dashboard Widget: Live
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget1()
+	 public function expana_widgets_callback_live()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_live.php");
 	 }
 
 	/**
