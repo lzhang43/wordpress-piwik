@@ -42,8 +42,8 @@ class Expressions_Analytics_Dashboard {
  	private $widgets = array(
 
  				//Thanks to PHP 5.3, we can't use [] here
-				array('Live', 'Live', 'normal', 'default'),
-				array('widget2', 'Widget 2', 'side', 'default'),
+				array('live', 'Live', 'normal', 'default'),
+				array('visits_by_time', 'Visits By Time', 'side', 'default'),
 				array('widget3', 'Widget 3', 'column3', 'default'),
 				array('widget4', 'Widget 4', 'normal', 'default'),
 				array('widget5', 'Widget 5', 'side', 'default'),
@@ -198,6 +198,23 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getCounters(30));
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling visits by time data
+	  *
+	  * @return $json_data 		The Live API returns reports by Hour (Server time), and by Hour Local Time of visitors.
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_visits_by_time()
+	 {
+	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
+
+	 	$return = $this->suwi->getVisitServerTime();
+
+	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
+
+	 	wp_send_json($return);
+	 }
 	 
 	/**
 	 * Dashboard Widget: Live
@@ -214,10 +231,9 @@ class Expressions_Analytics_Dashboard {
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget2()
+	 public function expana_widgets_callback_visits_by_time()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_visits_by_time.php");
 	 }
 
 	/**

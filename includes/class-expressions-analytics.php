@@ -181,6 +181,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'wp_ajax_expana_ajax_report', $plugin_dashboard, 'expana_ajax_report' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_visits_summary', $plugin_dashboard, 'expana_ajax_visits_summary' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_live', $plugin_dashboard, 'expana_ajax_live' );
+		$this->loader->add_action( 'wp_ajax_expana_ajax_visits_by_time', $plugin_dashboard, 'expana_ajax_visits_by_time' );
 
 	}
 

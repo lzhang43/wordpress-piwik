@@ -62,8 +62,6 @@ jQuery(function ($) {
         dataType: "JSON"
     }).success(function( response ) {
 
-        $('#loading_visits_summary').hide();
-
         // Define a list of series that will be included in the chart
         categories = ['nb_actions', 'nb_actions_per_visit', 'nb_uniq_visitors', 'nb_users', 'nb_visits', 'nb_visits_converted'];
 
@@ -164,9 +162,12 @@ jQuery(function ($) {
             }]
 
         });
+
+        $('#loading_visits_summary').hide();
+
     });
 
-    //Define Live widget initialization & set refresh interval
+    // Define Live widget initialization & set refresh interval
     function init_live() {
         $.ajax({
             url: "admin-ajax.php",
@@ -182,11 +183,109 @@ jQuery(function ($) {
             $("#loading_live").hide();
         });
 
-       // schedule a repeat
+       // Schedule a repeat
        setTimeout(init_live, 1000 * 15); //15 seconds = 1000 ms * 10 seconds
     }
 
     // Initialize Live widget
     init_live();
+
+
+    // Define Visits By Time widget initialization
+    function init_visits_by_time() {
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_visits_by_time" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            console.log(response);
+
+            // Define a list of series that will be included in the chart
+            categories = ['label', 'nb_actions', 'nb_visits', 'sum_daily_nb_uniq_visitors'];
+
+            var label = [];
+            var nb_actions = [];
+            var nb_visits = [];
+            var sum_daily_nb_uniq_visitors = [];
+
+            $.each(response, function (i, hour) {
+                $.each(categories, function (i, category)
+                {
+                    if (hour[category])
+                    {
+                        eval(category).push(hour[category]);
+                    }
+                    else
+                    {
+                        eval(category).push(0);
+                    }
+                });
+            });
+
+            // Draw the chart
+            $('#visits_by_time').highcharts({
+                chart: {
+                    type: 'bar',
+                    marginTop: 50
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    categories: label,
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Visits',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'horizontal',
+                    align: 'left',
+                    floating: true,
+                    verticalAlign: 'top'
+                },
+                tooltip: {
+                    shared: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Actions',
+                    data: nb_actions
+                }, {
+                    name: 'Visits',
+                    data: nb_visits
+                }, {
+                    name: 'Unique Visitors',
+                    data: sum_daily_nb_uniq_visitors
+                }]
+            });
+
+            $('#loading_visits_by_time').hide();
+
+        }); // success
+    }
+
+    // Initilize Visits By Time chart
+    init_visits_by_time();
 
 });
