@@ -375,4 +375,44 @@ jQuery(function ($) {
 
     // Initilize Resolutions chart
     init_resolutions();
+
+    // Define OS widget initialization
+    function init_os() {
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_os" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            var brands = {},
+                brandsData = [],
+                versions = {},
+                drilldownSeries = [];
+                knownBrands = [ 'Windows Phone', 'Windows', 'iOS', 'Mac', 'Android', 'Ubuntu', 'BlackBerry OS', 'Symbian OS', 'Chrome OS' ];
+
+            $.each(response, function (i, os) {
+                var brand,
+                    version;
+
+                    console.log(os);
+
+                    // Remove special edition notes
+                    os.name = os.name.split(' -')[0];
+
+                    // Split into brand and version. First check if os.name matches knownBrands
+
+                        // If Yes, remove the OS name and the rest of the string is version info
+
+                        // If Not, use regular exp. Just assume os.version matches /([0-9]+[\.0-9x]*)/
+
+                    // Create the main data
+
+                    // Create the version data
+            });
+        });
+    }
+
+    // Initilize OS chart
+    init_os();
 });

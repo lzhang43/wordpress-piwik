@@ -184,6 +184,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'wp_ajax_expana_ajax_live', $plugin_dashboard, 'expana_ajax_live' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_visits_by_time', $plugin_dashboard, 'expana_ajax_visits_by_time' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_resolutions', $plugin_dashboard, 'expana_ajax_resolutions' );
+		$this->loader->add_action( 'wp_ajax_expana_ajax_os', $plugin_dashboard, 'expana_ajax_os' );
 
 	}
 

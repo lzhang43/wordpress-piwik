@@ -47,7 +47,7 @@ class Expressions_Analytics_Dashboard {
 				array('live', 'Live', 'normal', 'default'),
 				array('visits_by_time', 'Visits By Time', 'side', 'default'),
 				array('resolutions', 'Resolutions', 'column3', 'default'),
-				array('widget4', 'Widget 4', 'normal', 'default'),
+				array('os', 'Operating Systems', 'normal', 'default'),
 				array('widget5', 'Widget 5', 'side', 'default'),
 				array('widget6', 'Widget 6', 'column3', 'default'),
 				array('widget7', 'Widget 7', 'normal', 'default'),
@@ -244,7 +244,7 @@ class Expressions_Analytics_Dashboard {
 	 /**
 	  * An AJAX POST interface for pulling resolutions data
 	  *
-	  * @return $json_data 		The Live API returns reports by Hour (Server time), and by Hour Local Time of visitors.
+	  * @return $json_data
 	  * @since  2.0.0
 	  */
 	 public function expana_ajax_resolutions()
@@ -252,6 +252,23 @@ class Expressions_Analytics_Dashboard {
 	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
 
 	 	$return = $this->suwi->getResolution();
+
+	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
+
+	 	wp_send_json($return);
+	 }
+
+	 /**
+	  * An AJAX POST interface for pulling Operating systems data
+	  *
+	  * @return $json_data
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_os()
+	 {
+	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
+
+	 	$return = $this->suwi->getOsVersions();
 
 	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
 
@@ -293,10 +310,9 @@ class Expressions_Analytics_Dashboard {
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget4()
+	 public function expana_widgets_callback_os()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_os.php");
 	 }
 
 	/**
