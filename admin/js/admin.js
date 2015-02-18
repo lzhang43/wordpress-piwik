@@ -310,6 +310,69 @@ jQuery(function ($) {
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
+            data = [];
+
+            $.each(response, function (i, resolution) {
+
+                if (i > 15)
+                {
+                    return false; //only output 15 most popular resolutions
+                }
+
+                entry = {};
+                entry.name = resolution.label;
+
+                if (! resolution.nb_uniq_visitors)
+                {
+                    entry.y = resolution.sum_daily_nb_uniq_visitors;
+                }
+                else
+                {
+                    entry.y = resolution.nb_uniq_visitors;
+                }
+
+                if ( i == 0 )
+                {
+                    entry.sliced = true;
+                    entry.selected = true;
+                }
+
+                data.push(entry);
+            });
+
+            $('#resolutions').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: null
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: 'Resolutions',
+                    data: data
+                }]
+            });
+
+            $('#loading_resolutions').hide();
         });
     }
+
+    // Initilize Resolutions chart
+    init_resolutions();
 });

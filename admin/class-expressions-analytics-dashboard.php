@@ -64,12 +64,22 @@ class Expressions_Analytics_Dashboard {
 	{
 		$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
 
-	 	$this->piwik->setRange('2015-01-09', Piwik::DATE_YESTERDAY); //All data from the first to the last date
+	 	$this->piwik->setRange($this->generateDate(), Piwik::DATE_YESTERDAY); //All data from the first to the last date
 	 	$this->piwik->setPeriod(Piwik::PERIOD_DAY);
 	 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
 	 	$this->piwik->setLanguage('en');
 
 	 	return $this->piwik;
+	}
+
+	/**
+	 * Date generator
+	 *
+	 * @since 2.0.0
+	 */
+	private function generateDate( $date = '' )
+	{
+		return date('Y-m-d', strtotime('-30 days'));
 	}
 
 	/**
@@ -198,6 +208,8 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_visits_summary()
 	 {
+	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
+
 	 	wp_send_json($this->suwi->getVisitsSummary());
 	 }
 
