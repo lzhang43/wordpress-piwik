@@ -215,8 +215,6 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
-            console.log(response);
-
             // Define a list of series that will be included in the chart
             categories = ['label', 'nb_actions', 'nb_visits', 'sum_daily_nb_uniq_visitors'];
 
@@ -303,4 +301,15 @@ jQuery(function ($) {
     // Initilize Visits By Time chart
     init_visits_by_time();
 
+
+    // Define Resolutions widget initialization
+    function init_resolutions() {
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_resolutions" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+        });
+    }
 });

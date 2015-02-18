@@ -162,12 +162,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VisualAppeal/Piwik-PHP-API.git",
-                "reference": "cb044305791aec6988383abdc5ee43adddd0b53a"
+                "reference": "2f845a043c9b5b0efcf4ee61bd9821452240ede2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VisualAppeal/Piwik-PHP-API/zipball/cb044305791aec6988383abdc5ee43adddd0b53a",
-                "reference": "cb044305791aec6988383abdc5ee43adddd0b53a",
+                "url": "https://api.github.com/repos/VisualAppeal/Piwik-PHP-API/zipball/2f845a043c9b5b0efcf4ee61bd9821452240ede2",
+                "reference": "2f845a043c9b5b0efcf4ee61bd9821452240ede2",
                 "shasum": ""
             },
             "require": {
@@ -175,12 +175,16 @@
             },
             "type": "library",
             "autoload": {
-                "files": [
-                    "Piwik.php"
-                ]
+                "psr-4": {
+                    "VisualAppeal\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2014-12-13 11:54:11"
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "API wrapper for piwik",
+            "time": "2015-02-13 19:07:05"
         }
     ],
     "packages-dev": [

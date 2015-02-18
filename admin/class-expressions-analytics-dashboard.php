@@ -1,5 +1,7 @@
 <?php
 
+use \VisualAppeal\Piwik as Piwik;
+
 /**
  * The dashboard-specific functionality of the plugin.
  *
@@ -13,7 +15,7 @@
 
 class Expressions_Analytics_Dashboard {
 
-	private $piwik;
+	private $suwi;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -44,7 +46,7 @@ class Expressions_Analytics_Dashboard {
  				//Thanks to PHP 5.3, we can't use [] here
 				array('live', 'Live', 'normal', 'default'),
 				array('visits_by_time', 'Visits By Time', 'side', 'default'),
-				array('widget3', 'Widget 3', 'column3', 'default'),
+				array('resolutions', 'Resolutions', 'column3', 'default'),
 				array('widget4', 'Widget 4', 'normal', 'default'),
 				array('widget5', 'Widget 5', 'side', 'default'),
 				array('widget6', 'Widget 6', 'column3', 'default'),
@@ -211,7 +213,7 @@ class Expressions_Analytics_Dashboard {
 	 }
 
 	 /**
-	  * An AJAX POST interface for pulling visits by time data
+	  * An AJAX POST interface for pulling visits data by hours
 	  *
 	  * @return $json_data 		The Live API returns reports by Hour (Server time), and by Hour Local Time of visitors.
 	  * @since  2.0.0
@@ -221,6 +223,23 @@ class Expressions_Analytics_Dashboard {
 	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
 
 	 	$return = $this->suwi->getVisitServerTime();
+
+	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
+
+	 	wp_send_json($return);
+	 }
+
+	 /**
+	  * An AJAX POST interface for pulling resolutions data
+	  *
+	  * @return $json_data 		The Live API returns reports by Hour (Server time), and by Hour Local Time of visitors.
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_resolutions()
+	 {
+	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
+
+	 	$return = $this->suwi->getResolution();
 
 	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
 
@@ -238,7 +257,7 @@ class Expressions_Analytics_Dashboard {
 	 }
 
 	/**
-	 * Dashboard Widget: Widget 2
+	 * Dashboard Widget: Visits By Time
 	 *
 	 * @since 2.0.0
 	 */
@@ -252,10 +271,9 @@ class Expressions_Analytics_Dashboard {
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget3()
+	 public function expana_widgets_callback_resolutions()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_resolutions.php");
 	 }
 
 	/**
