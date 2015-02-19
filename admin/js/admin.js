@@ -394,8 +394,6 @@ jQuery(function ($) {
             // forEach OS entires returned by Piwik API
             $.each(response, function (i, os) {
 
-                    console.log(os);
-
                     // Remove special edition notes
                     os.name = os.label.split(' -')[0];
 
@@ -447,8 +445,6 @@ jQuery(function ($) {
                         brands[os.brand] += os.sum_daily_nb_uniq_visitors;
                     }
 
-                    console.log(os.version);
-
                     // Create the version data
                     if (os.version) {
                         if (! versions[os.brand]) {
@@ -474,9 +470,6 @@ jQuery(function ($) {
                     data: value
                 });
             });
-
-            console.log(brandsData);
-            console.log(drilldownSeries);
 
             $('#os').highcharts({
                 chart: {
