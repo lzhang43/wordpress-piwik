@@ -230,9 +230,7 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_visits_by_time()
 	 {
-	 	$return = $this->suwi->getVisitServerTime();
-
-	 	wp_send_json($return);
+	 	wp_send_json($this->suwi->getVisitServerTime());
 	 }
 
 	 /**
@@ -243,9 +241,7 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_resolutions()
 	 {
-	 	$return = $this->suwi->getResolution();
-
-	 	wp_send_json($return);
+	 	wp_send_json($this->suwi->getResolution());
 	 }
 
 	 /**
@@ -256,9 +252,7 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_os()
 	 {
-	 	$return = $this->suwi->getOsVersions();
-
-	 	wp_send_json($return);
+	 	wp_send_json($this->suwi->getOsVersions());
 	 }
 
 	 /**
@@ -269,9 +263,7 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_browsers()
 	 {
-	 	$return = $this->suwi->getBrowserVersions();
-
-	 	wp_send_json($return);
+	 	wp_send_json($this->suwi->getBrowserVersions());
 	 }
 	 
 	/**
