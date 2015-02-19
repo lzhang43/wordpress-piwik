@@ -538,10 +538,8 @@ jQuery(function ($) {
                 drilldownSeries = [];
                 knownBrands = [ 'Chrome', 'Firefox', 'Opera', 'Safari' ];
 
-            // forEach OS entires returned by Piwik API
+            // forEach browser entires returned by Piwik API
             $.each(response, function (i, browser) {
-
-                console.log(browser);
 
                     // Remove special edition notes
                     browser.name = browser.label.split(' -')[0];
@@ -561,7 +559,7 @@ jQuery(function ($) {
                             // Remove brand name from browser.name, so the rest of the string is its version info
                             browser.version = browser.name.replace(browser.brand, '').trim();
 
-                            // Sometimes, there's nothing left. e.g. Ubuntu
+                            // Sometimes, there's nothing left. e.g. Chrome
                             if(browser.version == '')
                             {
                                 browser.version = 'Unknown Version';
