@@ -389,27 +389,140 @@ jQuery(function ($) {
                 brandsData = [],
                 versions = {},
                 drilldownSeries = [];
-                knownBrands = [ 'Windows Phone', 'Windows', 'iOS', 'Mac', 'Android', 'Ubuntu', 'BlackBerry OS', 'Symbian OS', 'Chrome OS' ];
+                knownBrands = [ 'Windows Phone', 'Windows', 'iOS', 'Mac', 'Android', 'Ubuntu', 'BlackBerry OS', 'Symbian OS', 'Chrome OS', 'PlayStation' ];
 
+            // forEach OS entires returned by Piwik API
             $.each(response, function (i, os) {
-                var brand,
-                    version;
 
                     console.log(os);
 
                     // Remove special edition notes
-                    os.name = os.name.split(' -')[0];
+                    os.name = os.label.split(' -')[0];
 
                     // Split into brand and version. First check if os.name matches knownBrands
+                    $.each(knownBrands, function (j, knownBrand) {
 
-                        // If Yes, remove the OS name and the rest of the string is version info
+                        // indexOf() method returns the first index at which a given element can be found in the array, or -1
+                        isKnown = os.name.indexOf(knownBrand);
 
-                        // If Not, use regular exp. Just assume os.version matches /([0-9]+[\.0-9x]*)/
+                        // Check if os.name matches any of the known brands
+                        if (isKnown > -1)
+                        {
+                            // If matches, store the brand name
+                            os.brand = knownBrand;
+
+                            // Remove brand name from os.name, so the rest of the string is its version info
+                            os.version = os.name.replace(os.brand, '').trim();
+
+                            // Sometimes, there's nothing left. e.g. Ubuntu
+                            if(os.version == '')
+                            {
+                                os.version = 'Unknown Version';
+                            }
+
+                            // break the loop
+                            return false;
+                        }
+
+                    });
+
+                    // No matches in known brand, we have to use regular exp.
+                    if (! os.brand)
+                    {
+                        // Assume os.version matches /([0-9]+[\.0-9x]*)/
+                        version = os.name.match(/([0-9]+[\.0-9x]*)/);
+
+                        // Obtain the first element in the array returned by os.name.match
+                        if (version) {
+                            os.version = version[0].trim();
+                        }
+
+                        os.brand = os.name.replace(os.version, '').trim();
+                    }
 
                     // Create the main data
+                    if (! brands[os.brand]) {
+                        brands[os.brand] = os.sum_daily_nb_uniq_visitors;
+                    } else {
+                        brands[os.brand] += os.sum_daily_nb_uniq_visitors;
+                    }
+
+                    console.log(os.version);
 
                     // Create the version data
+                    if (os.version) {
+                        if (! versions[os.brand]) {
+                            versions[os.brand] = [];
+                        }
+                        versions[os.brand].push([os.version, os.sum_daily_nb_uniq_visitors]);
+                    }
             });
+
+            // Build bransData and drilldownSeries for HighCharts
+            $.each(brands, function (name, y) {
+                brandsData.push({
+                    name: name,
+                    y: y,
+                    drilldown: versions[name] ? name : null
+                });
+            });
+
+            $.each(versions, function (key, value) {
+                drilldownSeries.push({
+                    name: key,
+                    id: key,
+                    data: value
+                });
+            });
+
+            console.log(brandsData);
+            console.log(drilldownSeries);
+
+            $('#os').highcharts({
+                chart: {
+                    type: 'column',
+                    marginTop: 40
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Unique Visitors'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.0f}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+                },
+
+                series: [{
+                    name: 'Brands',
+                    colorByPoint: true,
+                    data: brandsData
+                }],
+                drilldown: {
+                    series: drilldownSeries
+                }
+            });
+
+            $('#loading_os').hide();
         });
     }
 
