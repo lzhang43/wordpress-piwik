@@ -48,7 +48,7 @@ class Expressions_Analytics_Dashboard {
 				array('visits_by_time', 'Visits By Time', 'side', 'default'),
 				array('resolutions', 'Resolutions', 'column3', 'default'),
 				array('os', 'Operating Systems', 'normal', 'default'),
-				array('widget5', 'Widget 5', 'side', 'default'),
+				array('browsers', 'Browsers', 'side', 'default'),
 				array('widget6', 'Widget 6', 'column3', 'default'),
 				array('widget7', 'Widget 7', 'normal', 'default'),
 				array('widget8', 'Widget 8', 'side', 'default'),
@@ -274,6 +274,23 @@ class Expressions_Analytics_Dashboard {
 
 	 	wp_send_json($return);
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling browsers data
+	  *
+	  * @return $json_data
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_browsers()
+	 {
+	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
+
+	 	$return = $this->suwi->getBrowserVersions();
+
+	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
+
+	 	wp_send_json($return);
+	 }
 	 
 	/**
 	 * Dashboard Widget: Live
@@ -296,7 +313,7 @@ class Expressions_Analytics_Dashboard {
 	 }
 
 	/**
-	 * Dashboard Widget: Widget 3
+	 * Dashboard Widget: Resolutions
 	 *
 	 * @since 2.0.0
 	 */
@@ -306,7 +323,7 @@ class Expressions_Analytics_Dashboard {
 	 }
 
 	/**
-	 * Dashboard Widget: Widget 4
+	 * Dashboard Widget: OS
 	 *
 	 * @since 2.0.0
 	 */
@@ -316,14 +333,13 @@ class Expressions_Analytics_Dashboard {
 	 }
 
 	/**
-	 * Dashboard Widget: Widget 5
+	 * Dashboard Widget: Browsers
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget5()
+	 public function expana_widgets_callback_browsers()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_browsers.php");
 	 }
 
 	/**

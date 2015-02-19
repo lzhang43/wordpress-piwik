@@ -521,4 +521,153 @@ jQuery(function ($) {
 
     // Initilize OS chart
     init_os();
+
+
+    // Define Browsers widget initialization
+    function init_browsers() {
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_browsers" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            var brands = {},
+                brandsData = [],
+                versions = {},
+                drilldownSeries = [];
+                knownBrands = [ 'Chrome', 'Firefox', 'Opera', 'Safari' ];
+
+            // forEach OS entires returned by Piwik API
+            $.each(response, function (i, browser) {
+
+                console.log(browser);
+
+                    // Remove special edition notes
+                    browser.name = browser.label.split(' -')[0];
+
+                    // Split into brand and version. First check if browser.name matches knownBrands
+                    $.each(knownBrands, function (j, knownBrand) {
+
+                        // indexOf() method returns the first index at which a given element can be found in the array, or -1
+                        isKnown = browser.name.indexOf(knownBrand);
+
+                        // Check if browser.name matches any of the known brands
+                        if (isKnown > -1)
+                        {
+                            // If matches, store the brand name
+                            browser.brand = knownBrand;
+
+                            // Remove brand name from browser.name, so the rest of the string is its version info
+                            browser.version = browser.name.replace(browser.brand, '').trim();
+
+                            // Sometimes, there's nothing left. e.g. Ubuntu
+                            if(browser.version == '')
+                            {
+                                browser.version = 'Unknown Version';
+                            }
+
+                            // break the loop
+                            return false;
+                        }
+
+                    });
+
+                    // No matches in known brand, we have to use regular exp.
+                    if (! browser.brand)
+                    {
+                        // Assume browser.version matches /([0-9]+[\.0-9x]*)/
+                        version = browser.name.match(/([0-9]+[\.0-9x]*)/);
+
+                        // Obtain the first element in the array returned by browser.name.match
+                        if (version) {
+                            browser.version = version[0].trim();
+                        }
+
+                        browser.brand = browser.name.replace(browser.version, '').trim();
+                    }
+
+                    // Create the main data
+                    if (! brands[browser.brand]) {
+                        brands[browser.brand] = browser.sum_daily_nb_uniq_visitors;
+                    } else {
+                        brands[browser.brand] += browser.sum_daily_nb_uniq_visitors;
+                    }
+
+                    // Create the version data
+                    if (browser.version) {
+                        if (! versions[browser.brand]) {
+                            versions[browser.brand] = [];
+                        }
+                        versions[browser.brand].push([browser.version, browser.sum_daily_nb_uniq_visitors]);
+                    }
+            });
+
+            // Build bransData and drilldownSeries for HighCharts
+            $.each(brands, function (name, y) {
+                brandsData.push({
+                    name: name,
+                    y: y,
+                    drilldown: versions[name] ? name : null
+                });
+            });
+
+            $.each(versions, function (key, value) {
+                drilldownSeries.push({
+                    name: key,
+                    id: key,
+                    data: value
+                });
+            });
+
+            $('#browsers').highcharts({
+                chart: {
+                    type: 'column',
+                    marginTop: 40
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Unique Visitors'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.0f}'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+                },
+
+                series: [{
+                    name: 'Brands',
+                    colorByPoint: true,
+                    data: brandsData
+                }],
+                drilldown: {
+                    series: drilldownSeries
+                }
+            });
+
+            $('#loading_browsers').hide();
+        });
+    }
+
+    // Initilize OS chart
+    init_browsers();
 });

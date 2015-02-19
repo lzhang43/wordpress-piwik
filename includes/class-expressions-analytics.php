@@ -176,6 +176,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		// Register AJAX POST interfaces
 		$plugin_dashboard = new Expressions_Analytics_Dashboard( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_ajax_expana_ajax_site_info', $plugin_dashboard, 'expana_ajax_site_info' );
@@ -185,6 +186,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'wp_ajax_expana_ajax_visits_by_time', $plugin_dashboard, 'expana_ajax_visits_by_time' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_resolutions', $plugin_dashboard, 'expana_ajax_resolutions' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_os', $plugin_dashboard, 'expana_ajax_os' );
+		$this->loader->add_action( 'wp_ajax_expana_ajax_browsers', $plugin_dashboard, 'expana_ajax_browsers' );
 
 	}
 
