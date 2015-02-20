@@ -20,10 +20,12 @@ jQuery(function ($) {
         $("#date_range").text( $(this).text() );
 
         // Check if the button being clicked is for "custom date range"
-        if( $(this).attr("id") == "expana_custom" )
+        if( $(this).data("range") == "custom" )
         {
             // Dispaly custom date range input fields. Do nothing, waiting for query dates
             $(".date-range-inputs").show();
+            // Also enable buttons in case the user want to go back
+            $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
         }
         else
         {
