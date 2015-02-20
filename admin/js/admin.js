@@ -6,19 +6,29 @@ jQuery(function ($) {
 
     // handle onclick event for date range selectors
     $( ".date-range-selectors button.date-range-button" ).on("click", function() {
+
+        // Disable all buttons
+        $( ".date-range-selectors button.date-range-button" ).prop("disabled", true);
+
+        // Remove "current" class from all buttons
         $(".date-range-selectors button.date-range-button").removeClass("current");
+
+        // Add "current" class to the button being clicked
         $(this).addClass("current");
 
+        // Change #date_range information (only for display purposes)
         $("#date_range").text( $(this).text() );
 
+        // Check if the button being clicked is for "custom date range"
         if( $(this).attr("id") == "expana_custom" )
         {
+            // Dispaly custom date range input fields. Do nothing, waiting for query dates
             $(".date-range-inputs").show();
         }
         else
         {
+            // Not custom date range, hide input fields and start changing date range
             $(".date-range-inputs").hide();
-
             changeDateRange( $(this).data("range") );
         }
     });
@@ -684,8 +694,7 @@ jQuery(function ($) {
     // Define OS widget initialization
     function changeDateRange( range ) {
 
-        // Lock buttons & display loading animation
-        $( ".date-range-selectors button.date-range-button" ).prop("disabled", true);
+        // Display loading animation
         $( ".loading_redraw" ).show();
 
         // Destory Charts that will be redrawed
@@ -702,8 +711,6 @@ jQuery(function ($) {
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
-
-            console.log(response);
 
             // Redraw these charts
             init_visits_by_time();
