@@ -54,6 +54,16 @@ jQuery(function ($) {
             $("#created_at").text(response[0].ts_created);
             $(".time_zone").text(response[0].timezone);
         })
+
+        // Add class "current"
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_get_date" },
+            type: "POST",
+            dataType: "json"
+        }).success(function( response ) {
+            $(".date-range-button[data-range=" + response + "]").addClass("current");
+        })
     }
 
     load_site_info();

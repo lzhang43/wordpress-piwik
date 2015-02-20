@@ -50,9 +50,9 @@
 
 	<div id="dashboard-date-range">
 		<div aria-label="Dashboard Date Range" role="group" class="date-range-selectors">
-			<button id="expana_last90" class="date-range-button" data-range="last90days" type="button">Last 90 days</button>
-			<button id="expana_last30" class="date-range-button current" data-range="last30days" type="button">Last 30 days</button>
-			<button id="expana_last7" class="date-range-button" data-range="last7days" type="button">Last 7 days</button>
+			<button id="expana_last90" class="date-range-button" data-range="last90" type="button">Last 90 days</button>
+			<button id="expana_last30" class="date-range-button" data-range="last30" type="button">Last 30 days</button>
+			<button id="expana_last7" class="date-range-button" data-range="last7" type="button">Last 7 days</button>
 			<button id="expana_yesterday" class="date-range-button" data-range="yesterday" type="button">Yesterday</button>
 			<button id="expana_custom" class="date-range-button" data-range="custom" type="button">Custom</button>
 		</div>

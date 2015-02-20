@@ -85,15 +85,15 @@ class Expressions_Analytics_Dashboard {
 
 		switch ($range)
 		{
-			case "last90days":
+			case "last90":
 				update_option( 'suwi_query_period', 'range' );
 				update_option( 'suwi_query_date', 'last90' );
 				break;
-			case "last30days":
+			case "last30":
 				update_option( 'suwi_query_period', 'range' );
 				update_option( 'suwi_query_date', 'last30' );
 				break;
-			case "last7days":
+			case "last7":
 				update_option( 'suwi_query_period', 'range' );
 				update_option( 'suwi_query_date', 'last7' );
 				break;
@@ -113,7 +113,7 @@ class Expressions_Analytics_Dashboard {
 		wp_send_json("success");
 	}
 
-	public function expana_get_period()
+	public function expana_ajax_get_period()
 	{
 		wp_send_json(get_option( 'suwi_query_period', 'range' ));
 	}
