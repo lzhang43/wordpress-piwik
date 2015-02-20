@@ -534,8 +534,6 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
-            console.log(response);
-
             var brands = {},
                 brandsData = [],
                 versions = {},
@@ -676,8 +674,6 @@ jQuery(function ($) {
     // Define OS widget initialization
     function changeDateRange( range ) {
 
-        console.log(range);
-
         // Lock buttons & display loading animation
         $( ".date-range-selectors button.date-range-button" ).prop("disabled", true);
         $( ".loading_redraw" ).show();
@@ -697,20 +693,16 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
+            console.log(response);
 
             // Redraw these charts
-            setTimeout(function() {
-                init_visits_by_time();
-                init_os();
-                init_resolutions();
-                init_browsers();
-
-            }, 500);
+            init_visits_by_time();
+            init_os();
+            init_resolutions();
+            init_browsers();
 
             // Enable buttons (loading animation will be hide by init_charts function upon completion)
             $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
-
-            console.log(response);
         });
     }
 

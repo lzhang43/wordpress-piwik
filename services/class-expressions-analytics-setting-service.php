@@ -83,7 +83,9 @@ class Expressions_Analytics_Setting_Service {
 		'piwik_site_id_dev'      => null,
 		'piwik_auth_token_tst'   => '',
 		'piwik_site_id_tst'      => null,
-		'google_web_property_id' => ''
+		'google_web_property_id' => '',
+		'suwi_query_date'	 	 => 'last30',
+		'suwi_query_period'		 => 'range'
 	);
 
 	/**
@@ -99,6 +101,17 @@ class Expressions_Analytics_Setting_Service {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+	}
+
+	/**
+	 * Register option to store the last query date range
+	 *
+	 * @since 	2.0.0
+	 */
+	public function register_date_range_option()
+	{
+		// Check the sanitize function here
+		register_setting( 'my_options_group', 'my_option_name', 'trim' );
 	}
 
 	/**

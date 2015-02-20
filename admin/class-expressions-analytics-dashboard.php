@@ -62,49 +62,65 @@ class Expressions_Analytics_Dashboard {
 	 */
 	private function initPiwik()
 	{
-		if (! $this->piwik)
-		{
-			$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
+		$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
 
-		 	$this->piwik->setRange($this->generateDate(), Piwik::DATE_YESTERDAY); //All data from the first to the last date
-		 	$this->piwik->setPeriod(Piwik::PERIOD_RANGE);
-		 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
-		 	$this->piwik->setLanguage('en');
-
-		 	error_log("attn2: Init");
-		 }
+		//$this->piwik->setRange($this->generateDate(), Piwik::DATE_YESTERDAY); //All data from the first to the last date
+		$this->piwik->setDate(get_option( 'suwi_query_date', 'last30' ));
+		$this->piwik->setPeriod(get_option( 'suwi_query_period', 'range' ));
+		$this->piwik->setFormat(Piwik::FORMAT_JSON);
+		$this->piwik->setLanguage('en');
 
 	 	return $this->piwik;
 	}
 
-	/**
+/**
 	 * AJAX POST interface for date range changes
 	 *
 	 * @since 2.0.0
 	 */
 	public function expana_ajax_change_date_range()
 	{
+		$period = trim($_POST['period']);
 		$range = trim($_POST['range']);
 
 		switch ($range)
 		{
 			case "last90days":
-				$this->suwi->setRange($this->generateDate(90), Piwik::DATE_YESTERDAY);
+				update_option( 'suwi_query_period', 'range' );
+				update_option( 'suwi_query_date', 'last90' );
 				break;
 			case "last30days":
-				$this->suwi->setRange($this->generateDate(), Piwik::DATE_YESTERDAY);
+				update_option( 'suwi_query_period', 'range' );
+				update_option( 'suwi_query_date', 'last30' );
 				break;
 			case "last7days":
-				$this->suwi->setRange($this->generateDate(7), Piwik::DATE_YESTERDAY);
+				update_option( 'suwi_query_period', 'range' );
+				update_option( 'suwi_query_date', 'last7' );
 				break;
 			case "yesterday":
-				$this->suwi->setRange(Piwik::DATE_YESTERDAY, Piwik::DATE_YESTERDAY);
+				update_option( 'suwi_query_period', 'day' );
+				update_option( 'suwi_query_date', 'yesterday' );
+				break;
+			case "custom":
+				update_option( 'suwi_query_period', "range" );
+				update_option( 'suwi_query_date', $period );
 				break;
 			default:
-				$this->suwi->setRange($this->generateDate(), Piwik::DATE_YESTERDAY);
+				update_option( 'suwi_query_period', 'range' );
+				update_option( 'suwi_query_date', 'last30' );
 		}
 
-		wp_send_json($this->suwi->getRange());
+		wp_send_json("success");
+	}
+
+	public function expana_get_period()
+	{
+		wp_send_json(get_option( 'suwi_query_period', 'range' ));
+	}
+
+	public function expana_ajax_get_date()
+	{
+		wp_send_json(get_option( 'suwi_query_date', 'last30' ));
 	}
 
 	/**
@@ -178,40 +194,43 @@ class Expressions_Analytics_Dashboard {
 	 public function expana_ajax_report()
 	 {
 
+	 	$this->suwi->setDate("last30");
+	 	$this->suwi->setPeriod("range");
+
 	 	$json_data = array(
 	 			
  			'meta' => array('code' => 200),
 
  			'data' => array(
 
-	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_visits,nb_uniq_visitors", $this->suwi->getToken() ),
+	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_visits,nb_uniq_visitors", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getVisits() . '</strong> visits, <strong>' . $this->suwi->getUniqueVisitors() . '</strong> unique visitors'),
 	 			
-	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_on_site", $this->suwi->getToken() ),
+	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_on_site", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getVisitsSummary(null, 'avg_time_on_site') . 's</strong> average visit duration'),
  				
- 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "bounce_rate", $this->suwi->getToken() ),
+ 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "bounce_rate", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getVisitsSummary(null, 'bounce_rate') . '</strong> visits have bounced (left the website after one page)'),
 	 			
-	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_actions_per_visit", $this->suwi->getToken() ),
+	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_actions_per_visit", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getVisitsSummary(null, 'nb_actions_per_visit') . '</strong> actions per visit'),
 	 			
-	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_generation", $this->suwi->getToken() ),
+	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "avg_time_generation", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getActions(null, 'avg_generation_time') . 's</strong> average generation time'),
  				
- 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_pageviews, nb_uniq_pageviews", $this->suwi->getToken() ),
+ 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_pageviews, nb_uniq_pageviews", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getApi(null, 'nb_pageviews') . '</strong> pageviews, <strong>' . $this->suwi->getApi(null, 'nb_uniq_pageviews') . '</strong> unique pageviews'),
  				
- 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_searches, nb_keywords", $this->suwi->getToken() ),
+ 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_searches, nb_keywords", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getApi(null, 'nb_searches') . '</strong> total searches on your website, <strong>' . $this->suwi->getApi(null, 'nb_keywords') . '</strong> unique keywords'),
  				
- 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_downloads, nb_uniq_downloads", $this->suwi->getToken() ),
+ 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_downloads, nb_uniq_downloads", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getApi(null, 'nb_downloads') . '</strong> downloads, <strong>' . $this->suwi->getApi(null, 'nb_uniq_downloads') . '</strong> unique downloads'),
  				
- 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_outlinks, nb_uniq_outlinks", $this->suwi->getToken() ),
+ 				array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "nb_outlinks, nb_uniq_outlinks", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getApi(null, 'nb_outlinks') . '</strong> outlinks, <strong>'. $this->suwi->getApi(null, 'nb_uniq_outlinks') . '</strong> unique outlink'),
  				
-	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getRange(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "max_actions", $this->suwi->getToken() ),
+	 			array('thumbnail' => $this->report_service->generate_report_thumbnail( $this->setting_service->parse_piwik_api_url(), $this->suwi->getDate(), $this->suwi->getPeriod(), $this->suwi->getSiteId(), "max_actions", $this->suwi->getToken() ),
  				 'description' => "<strong>" . $this->suwi->getVisitsSummary(null, 'max_actions') . '</strong> max actions in one visit'),
  			)
 	 	);
@@ -237,13 +256,11 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_visits_summary()
 	 {
-	 	// temporarily change period to day
+	 	// Override default settings in the constructor
 	 	$this->suwi->setPeriod(Piwik::PERIOD_DAY);
+	 	$this->suwi->setDate("last30");
 
 	 	wp_send_json($this->suwi->getVisitsSummary());
-
-	 	// change it back to range
-	 	$this->suwi->setPeriod(Piwik::PERIOD_RANGE);
 	 }
 
 	 /**
