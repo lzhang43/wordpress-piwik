@@ -187,6 +187,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'wp_ajax_expana_ajax_resolutions', $plugin_dashboard, 'expana_ajax_resolutions' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_os', $plugin_dashboard, 'expana_ajax_os' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_browsers', $plugin_dashboard, 'expana_ajax_browsers' );
+		$this->loader->add_action( 'wp_ajax_expana_change_date_range', $plugin_dashboard, 'expana_ajax_change_date_range' );
 
 	}
 

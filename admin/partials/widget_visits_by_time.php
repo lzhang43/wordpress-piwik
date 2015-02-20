@@ -1,4 +1,4 @@
-<div id="loading_visits_by_time" class="loading">
+<div id="loading_visits_by_time" class="loading loading_redraw">
 	<i class="fa fa-cog fa-spin"></i>
 </div>
 

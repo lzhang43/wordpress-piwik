@@ -18,6 +18,8 @@ jQuery(function ($) {
         else
         {
             $(".date-range-inputs").hide();
+
+            changeDateRange( $(this).data("range") );
         }
     });
 
@@ -532,6 +534,8 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
+            console.log(response);
+
             var brands = {},
                 brandsData = [],
                 versions = {},
@@ -668,4 +672,46 @@ jQuery(function ($) {
 
     // Initilize OS chart
     init_browsers();
+
+    // Define OS widget initialization
+    function changeDateRange( range ) {
+
+        console.log(range);
+
+        // Lock buttons & display loading animation
+        $( ".date-range-selectors button.date-range-button" ).prop("disabled", true);
+        $( ".loading_redraw" ).show();
+
+        // Destory Charts that will be redrawed
+        $('#visits_by_time').highcharts().destroy();
+        $('#os').highcharts().destroy();
+        $('#resolutions').highcharts().destroy();
+        $('#browsers').highcharts().destroy();
+
+        // AJAX POST request to set new date range
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_change_date_range",
+                    range: range },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+
+            // Redraw these charts
+            setTimeout(function() {
+                init_visits_by_time();
+                init_os();
+                init_resolutions();
+                init_browsers();
+
+            }, 500);
+
+            // Enable buttons (loading animation will be hide by init_charts function upon completion)
+            $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
+
+            console.log(response);
+        });
+    }
+
 });

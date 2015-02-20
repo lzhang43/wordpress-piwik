@@ -1,4 +1,4 @@
-<div id="loading_resolutions" class="loading">
+<div id="loading_resolutions" class="loading loading_redraw">
 	<i class="fa fa-cog fa-spin"></i>
 </div>
 

@@ -62,14 +62,49 @@ class Expressions_Analytics_Dashboard {
 	 */
 	private function initPiwik()
 	{
-		$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
+		if (! $this->piwik)
+		{
+			$this->piwik = new Piwik($this->setting_service->parse_piwik_api_url(), $this->setting_service->get_auth_token(), $this->setting_service->get_site_id());
 
-	 	$this->piwik->setRange($this->generateDate(), Piwik::DATE_YESTERDAY); //All data from the first to the last date
-	 	$this->piwik->setPeriod(Piwik::PERIOD_RANGE);
-	 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
-	 	$this->piwik->setLanguage('en');
+		 	$this->piwik->setRange($this->generateDate(), Piwik::DATE_YESTERDAY); //All data from the first to the last date
+		 	$this->piwik->setPeriod(Piwik::PERIOD_RANGE);
+		 	$this->piwik->setFormat(Piwik::FORMAT_JSON);
+		 	$this->piwik->setLanguage('en');
+
+		 	error_log("attn2: Init");
+		 }
 
 	 	return $this->piwik;
+	}
+
+	/**
+	 * AJAX POST interface for date range changes
+	 *
+	 * @since 2.0.0
+	 */
+	public function expana_ajax_change_date_range()
+	{
+		$range = trim($_POST['range']);
+
+		switch ($range)
+		{
+			case "last90days":
+				$this->suwi->setRange($this->generateDate(90), Piwik::DATE_YESTERDAY);
+				break;
+			case "last30days":
+				$this->suwi->setRange($this->generateDate(), Piwik::DATE_YESTERDAY);
+				break;
+			case "last7days":
+				$this->suwi->setRange($this->generateDate(7), Piwik::DATE_YESTERDAY);
+				break;
+			case "yesterday":
+				$this->suwi->setRange(Piwik::DATE_YESTERDAY, Piwik::DATE_YESTERDAY);
+				break;
+			default:
+				$this->suwi->setRange($this->generateDate(), Piwik::DATE_YESTERDAY);
+		}
+
+		wp_send_json($this->suwi->getRange());
 	}
 
 	/**
@@ -77,9 +112,9 @@ class Expressions_Analytics_Dashboard {
 	 *
 	 * @since 2.0.0
 	 */
-	private function generateDate( $date = '' )
+	private function generateDate( $days = 30 )
 	{
-		return date('Y-m-d', strtotime('-30 days'));
+		return date('Y-m-d', strtotime('-' . $days . ' days'));
 	}
 
 	/**
