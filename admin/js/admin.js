@@ -96,7 +96,18 @@ jQuery(function ($) {
             type: "POST",
             dataType: "json"
         }).success(function( response ) {
-            $(".date-range-button[data-range=" + response + "]").addClass("current");
+            if (response == "last90" || response == "last30" || response == "last7" || response == "yesterday")
+            {
+                $(".date-range-button[data-range=" + response + "]").addClass("current");
+            }
+            else
+            {
+                $("#expana_custom").addClass("current");
+                $(".date-range-inputs").show();
+                var dates = response.split(",");
+                $("#expana-from-date").datepicker("setDate", dates[0]);
+                $("#expana-to-date").datepicker("setDate", dates[1]);
+            }
         })
     }
 
