@@ -64,7 +64,7 @@
 						<input type="date" class="form-control" id="expana-to-date" placeholder="To">
 					</div>
 				</div>
-				<button type="submit" id="date-range-filter" class="date-range-button">Filter</button>
+				<input type="submit" id="date-range-filter" class="date-range-button" value="Filter">
 			</form>
 		</div>
 	</div>

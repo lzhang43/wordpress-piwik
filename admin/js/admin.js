@@ -57,6 +57,8 @@ jQuery(function ($) {
 
     $("#date-range-filter").on("click", function(e) {
         e.preventDefault();
+
+        changeDateRange( "custom" );
     });
 
     // Initialize datepickers
@@ -762,8 +764,21 @@ jQuery(function ($) {
     // Initilize OS chart
     init_browsers();
 
-    // Define OS widget initialization
     function changeDateRange( range ) {
+
+        var dates = null;
+
+        if (range == "custom")
+        {
+            dates = validateDateRange();
+        }
+
+        if(dates === false)
+        {
+            return false;
+        }
+        
+        console.log(dates);
 
         // Hide no_data div (if any)
         $( ".no_data" ).hide();
@@ -781,7 +796,8 @@ jQuery(function ($) {
         $.ajax({
             url: "admin-ajax.php",
             data: { action: "expana_change_date_range",
-                    range: range },
+                    range: range,
+                    dates: dates },
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
@@ -795,6 +811,20 @@ jQuery(function ($) {
             // Enable buttons (loading animation will be hide by init_charts function upon completion)
             $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
         });
+    }
+
+    function validateDateRange() {
+
+        var from_date = $("#expana-from-date").datepicker("getDate");
+            to_date = $("#expana-to-date").datepicker("getDate");
+
+        if( ! from_date || ! to_date )
+        {
+            alert("Invalid dates");
+            return false;
+        }
+
+        return $.datepicker.formatDate('yy-mm-dd', from_date) + "," + $.datepicker.formatDate('yy-mm-dd', to_date);
     }
 
 });

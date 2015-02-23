@@ -80,7 +80,7 @@ class Expressions_Analytics_Dashboard {
 	 */
 	public function expana_ajax_change_date_range()
 	{
-		$period = trim($_POST['period']);
+		$dates = trim($_POST['dates']);
 		$range = trim($_POST['range']);
 
 		switch ($range)
@@ -103,7 +103,7 @@ class Expressions_Analytics_Dashboard {
 				break;
 			case "custom":
 				update_option( 'suwi_query_period', "range" );
-				update_option( 'suwi_query_date', $period );
+				update_option( 'suwi_query_date', $dates );
 				break;
 			default:
 				update_option( 'suwi_query_period', 'range' );
