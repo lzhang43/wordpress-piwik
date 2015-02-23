@@ -1,7 +1,3 @@
-<div id="loading_live" class="loading">
-	<i class="fa fa-cog fa-spin"></i>
-</div>
-
 <div id="live" style="height: 180px;">
 	<div class="live_visitor_counter_container">
 		<span id="live_visitor_counter">Loading</span>

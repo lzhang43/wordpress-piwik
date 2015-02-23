@@ -27,7 +27,7 @@
 		<div class="welcome-panel-content">
 			<div class="welcome-panel-column-container">
 
-					<div class="welcome-panel-column">
+					<div id="report" class="welcome-panel-column">
 						<h4><?php _e( 'Report' ); ?></h4>
 						<div id="loading_report" class="loading">
 							<i class="fa fa-cog fa-spin"></i>
@@ -35,7 +35,7 @@
 						<div id="report_content" style="height: 400px;"></div>
 					</div><!-- /.welcome-panel-column -->
 
-					<div class="welcome-panel-column">
+					<div id="visits_summary" class="welcome-panel-column">
 						<h4><?php _e( 'Visitors' ); ?></h4>
 						<div id="loading_visits_summary" class="loading">
 							<i class="fa fa-cog fa-spin"></i>

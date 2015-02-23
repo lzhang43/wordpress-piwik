@@ -1,8 +1,28 @@
 jQuery(function ($) {
 
+    var loading = '<div class="loading loading_redraw">' +
+                        '<i class="fa fa-cog fa-spin"></i>' +
+                  '</div>';
+
+        no_data = '<div class="no_data">' + 
+                        '<div class="no_data_cross">' +
+                            '<span class="x_mark">' +
+                                '<span class="line left"></span>' +
+                                '<span class="line right"></span>' +
+                            '</span>' +
+                        '</div>' +
+
+                        '<h2>No Data Available</h2>' +
+                        '<p>Try another date range?</p>' +
+                    '</div>';
+
+    // Append loading animation and no-data div
+    $(".inside").prepend(loading, no_data);
+
     // hide everything that's not currently in use or is still loading
     $(".date-range-inputs").hide();
-    $("#live").hide();
+    $("#expana_live").hide();
+    $(".no_data").hide();
 
     // handle onclick event for date range selectors
     $( ".date-range-selectors button.date-range-button" ).on("click", function() {
@@ -87,7 +107,7 @@ jQuery(function ($) {
         type: "POST",
         dataType: "json"
     }).success(function( response ) {
-        $('#loading_report').hide();
+        $('#report .loading').hide();
         $.each(response.data, function(index, item) {
             $("#report_content").append("<section><img src='" + item.thumbnail + "' /><span>" + item.description + "</span></section>");
         })
@@ -202,7 +222,7 @@ jQuery(function ($) {
 
         });
 
-        $('#loading_visits_summary').hide();
+        $('#visits_summary .loading').hide();
 
     });
 
@@ -219,7 +239,7 @@ jQuery(function ($) {
             $("#live_actions").text(response[0].actions);
             $("#live_converted").text(response[0].visitsConverted);
             $("#live").show();
-            $("#loading_live").hide();
+            $("#expana_live .loading").hide();
         });
 
        // Schedule a repeat
@@ -317,7 +337,7 @@ jQuery(function ($) {
                 }]
             });
 
-            $('#loading_visits_by_time').hide();
+            $('#expana_visits_by_time .loading').hide();
 
         }); // success
     }
@@ -393,7 +413,7 @@ jQuery(function ($) {
                 }]
             });
 
-            $('#loading_resolutions').hide();
+            $('#expana_resolutions .loading').hide();
         });
     }
 
@@ -539,7 +559,7 @@ jQuery(function ($) {
                 }
             });
 
-            $('#loading_os').hide();
+            $('#expana_os .loading').hide();
         });
     }
 
@@ -555,6 +575,18 @@ jQuery(function ($) {
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
+
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_browsers .loading').hide();
+                
+                $('#expana_browsers .no_data').show();
+
+                // Exit
+                return false;
+            }
 
             var brands = {},
                 brandsData = [],
@@ -686,7 +718,7 @@ jQuery(function ($) {
                 }
             });
 
-            $('#loading_browsers').hide();
+            $('#expana_browsers .loading').hide();
         });
     }
 
