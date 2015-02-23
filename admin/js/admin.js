@@ -107,7 +107,7 @@ jQuery(function ($) {
         type: "POST",
         dataType: "json"
     }).success(function( response ) {
-        $('#report .loading').hide();
+        $('#expana_report .loading').hide();
         $.each(response.data, function(index, item) {
             $("#report_content").append("<section><img src='" + item.thumbnail + "' /><span>" + item.description + "</span></section>");
         })
@@ -222,7 +222,7 @@ jQuery(function ($) {
 
         });
 
-        $('#visits_summary .loading').hide();
+        $('#expana_visits_summary .loading').hide();
 
     });
 

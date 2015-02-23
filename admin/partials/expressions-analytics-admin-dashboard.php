@@ -27,21 +27,12 @@
 		<div class="welcome-panel-content">
 			<div class="welcome-panel-column-container">
 
-					<div id="report" class="welcome-panel-column">
-						<h4><?php _e( 'Report' ); ?></h4>
-						<div id="loading_report" class="loading">
-							<i class="fa fa-cog fa-spin"></i>
-						</div>
-						<div id="report_content" style="height: 400px;"></div>
+					<div id="expana_report" class="welcome-panel-column">
+						<?php require('widget_report.php'); ?>
 					</div><!-- /.welcome-panel-column -->
 
-					<div id="visits_summary" class="welcome-panel-column">
-						<h4><?php _e( 'Visitors' ); ?></h4>
-						<div id="loading_visits_summary" class="loading">
-							<i class="fa fa-cog fa-spin"></i>
-						</div>
-						<div id="visits_summary" style="height: 400px;"></div>
-						<div id="visits_datatable"></div>
+					<div id="expana_visits_summary" class="welcome-panel-column">
+						<?php require('widget_visits_summary.php'); ?>
 					</div><!-- /.welcome-panel-column -->
 
 			</div><!-- /.welcome-panel-column-container -->
