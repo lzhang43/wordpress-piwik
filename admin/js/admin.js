@@ -259,6 +259,18 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_visits_by_time .loading').hide();
+                
+                $('#expana_visits_by_time .no_data').show();
+
+                // Exit
+                return false;
+            }
+
             // Define a list of series that will be included in the chart
             categories = ['label', 'nb_actions', 'nb_visits', 'sum_daily_nb_uniq_visitors'];
 
@@ -354,6 +366,19 @@ jQuery(function ($) {
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
+            
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_resolutions .loading').hide();
+                
+                $('#expana_resolutions .no_data').show();
+
+                // Exit
+                return false;
+            }
+
             data = [];
 
             $.each(response, function (i, resolution) {
@@ -428,6 +453,18 @@ jQuery(function ($) {
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
+
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_os .loading').hide();
+                
+                $('#expana_os .no_data').show();
+
+                // Exit
+                return false;
+            }
 
             var brands = {},
                 brandsData = [],
