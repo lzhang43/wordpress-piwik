@@ -366,7 +366,7 @@ jQuery(function ($) {
             type: "POST",
             dataType: "JSON"
         }).success(function( response ) {
-            
+
             // Check if the response is empty
             if ( $.isEmptyObject(response) )
             {
@@ -765,14 +765,17 @@ jQuery(function ($) {
     // Define OS widget initialization
     function changeDateRange( range ) {
 
+        // Hide no_data div (if any)
+        $( ".no_data" ).hide();
+
         // Display loading animation
         $( ".loading_redraw" ).show();
 
         // Destory Charts that will be redrawed
-        $('#visits_by_time').highcharts().destroy();
-        $('#os').highcharts().destroy();
-        $('#resolutions').highcharts().destroy();
-        $('#browsers').highcharts().destroy();
+        $('#visits_by_time').empty();
+        $('#os').empty();
+        $('#resolutions').empty();
+        $('#browsers').empty();
 
         // AJAX POST request to set new date range
         $.ajax({
