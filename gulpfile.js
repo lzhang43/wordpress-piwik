@@ -14,6 +14,9 @@ gulp.task('default', function() {
 	gulp.src('bower_components/highcharts-release/**/*')
 		.pipe(gulp.dest('admin/js/highcharts'));
 
+	gulp.src('bower_components/highmaps-release/**/*')
+		.pipe(gulp.dest('admin/js/highmaps'));
+
 	gulp.src('admin/scss/*.scss')
 		.pipe(sass())
 		.pipe(gulp.dest('admin/css'));

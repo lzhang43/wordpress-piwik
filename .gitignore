@@ -17,6 +17,7 @@ vendor
 # Compiled files
 admin/css/admin.css
 admin/js/highcharts/
+admin/js/highmaps/
 admin/js/jquery-ui/
 
 # Bower

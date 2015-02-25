@@ -2,9 +2,9 @@
   "name": "Expressions Analytics",
   "dependencies": {
     "highcharts-release": "~4.0.4",
+    "highmaps-release": "~1.1.1",
     "bootstrap-sass-official": "~3.3.2",
     "jquery-ui":  "~1.11.3",
-    "font-awesome-sass": "~4.3.0",
-    
+    "font-awesome-sass": "~4.3.0"
   }
 }

@@ -775,6 +775,79 @@ jQuery(function ($) {
     // Initilize OS chart
     init_browsers();
 
+    function init_visits_map_us() {
+
+        var response = [];
+
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_maps_us" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            var statesData = [];
+            var name;
+
+            $.each(response, function(i, item) {
+
+                name = item.label.split(',')[0].trim();
+
+                if (name !== 'Unknown')
+                {
+                    statesData.push({
+                        name: name,
+                        y: item.nb_visits
+                    });
+                }
+
+            });
+
+            $.getJSON('../wp-content/plugins/expressions-analytics/admin/js/usa.geo.json', function (geojson) {
+
+                // Initiate the chart
+                var map_init = $('#map_us').highcharts('Map', {
+
+                    title : {
+                        text : null
+                    },
+
+                    mapNavigation: {
+                        enabled: false,
+                        buttonOptions: {
+                            verticalAlign: 'bottom'
+                        }
+                    },
+
+                    colorAxis: {
+                    },
+
+                    series : [{
+                        data : statesData,
+                        mapData: geojson,
+                        joinBy: ['NAME', 'name'],
+                        name: 'Random data',
+                        states: {
+                            hover: {
+                                color: '#BADA55'
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.properties.postal}'
+                        }
+                    }]
+                });
+
+            });
+
+        });
+
+        $('#expana_map_us .loading').hide();
+    }
+
+    init_visits_map_us();
+
     function changeDateRange( range ) {
 
         var dates = null;

@@ -80,6 +80,9 @@ class Expressions_Analytics_Admin {
 		wp_enqueue_script( 'highcharts-data', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/data.js', array( 'highcharts' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-exporting', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/exporting.js', array( 'highcharts' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-drilldown', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/drilldown.js', array( 'highcharts' ), $this->version, false );
+		wp_enqueue_script( 'highmaps', plugin_dir_url( __FILE__ ) . 'js/highmaps/modules/map.js', array( 'jquery' ), $this->version, false );
+		//wp_enqueue_script( 'highmaps-data', plugin_dir_url( __FILE__ ) . 'js/highmaps/modules/data.js', array( 'highmaps' ), $this->version, false );
+		//wp_enqueue_script( 'highmaps-exporting', plugin_dir_url( __FILE__ ) . 'js/highmaps/modules/exporting.js', array( 'highmaps' ), $this->version, false );
 		wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui/jquery-ui.min.js', array( 'jquery' ), $this->version, false );
 
 		// application JS files

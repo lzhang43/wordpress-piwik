@@ -49,7 +49,7 @@ class Expressions_Analytics_Dashboard {
 				array('resolutions', 'Resolutions', 'column3', 'default'),
 				array('os', 'Operating Systems', 'normal', 'default'),
 				array('browsers', 'Browsers', 'side', 'default'),
-				array('widget6', 'Widget 6', 'column3', 'default'),
+				array('map_us', 'Visitor Map (US)', 'column3', 'default'),
 				array('widget7', 'Widget 7', 'normal', 'default'),
 				array('widget8', 'Widget 8', 'side', 'default'),
 
@@ -317,6 +317,17 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getBrowserVersions());
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling visitors map data
+	  *
+	  * @return $json_data
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_maps_us()
+	 {
+	 	wp_send_json($this->suwi->getRegion("countryCode==us"));
+	 }
 	 
 	/**
 	 * Dashboard Widget: Live
@@ -373,10 +384,9 @@ class Expressions_Analytics_Dashboard {
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget6()
+	 public function expana_widgets_callback_map_us()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_map_us.php");
 	 }
 
 	/**
