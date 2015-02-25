@@ -486,6 +486,8 @@ class Expressions_Analytics_Setting_Service {
 
 		add_action( 'load-'.$this->pagehook, array($dashboard, 'expana_widgets') );
 
+		return $this->pagehook;
+
 	}
 
 	/**
