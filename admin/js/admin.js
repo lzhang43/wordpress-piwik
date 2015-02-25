@@ -17,7 +17,7 @@ jQuery(function ($) {
                     '</div>';
 
     // Append loading animation and no-data div
-    $(".inside").prepend(loading, no_data);
+    $("#expana_dashboard .inside").prepend(loading, no_data);
 
     // hide everything that's not currently in use or is still loading
     $(".date-range-inputs").hide();

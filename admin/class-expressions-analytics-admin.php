@@ -70,13 +70,20 @@ class Expressions_Analytics_Admin {
 	 */
 	public function enqueue_scripts()
 	{
+		// Built-in WordPress libraries
+		wp_enqueue_script( 'common' );
+		wp_enqueue_script( 'postbox' );
+		wp_enqueue_script( 'dashboard' );
+
+		// 3rd-party libraries
 		wp_enqueue_script( 'highcharts', plugin_dir_url( __FILE__ ) . 'js/highcharts/highcharts.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-data', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/data.js', array( 'highcharts' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-exporting', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/exporting.js', array( 'highcharts' ), $this->version, false );
 		wp_enqueue_script( 'highcharts-drilldown', plugin_dir_url( __FILE__ ) . 'js/highcharts/modules/drilldown.js', array( 'highcharts' ), $this->version, false );
 		wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui/jquery-ui.min.js', array( 'jquery' ), $this->version, false );
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'common, postbox, dashboard, highcharts' ), $this->version, true );
+		// application JS files
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'highcharts' ), $this->version, true );
 	}
 
 	/**

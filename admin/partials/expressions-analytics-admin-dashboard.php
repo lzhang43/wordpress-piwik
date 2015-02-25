@@ -10,7 +10,7 @@
  * @author     Michael Zhang <lzhang43@syr.edu>
 */
 ?>
-<div class="wrap">
+<div id="expana_dashboard" class="wrap">
 
 	<h2>Expressions Analytics Dashboard</h2>
 
