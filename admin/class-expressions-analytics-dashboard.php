@@ -50,7 +50,7 @@ class Expressions_Analytics_Dashboard {
 				array('os', 'Operating Systems', 'normal', 'default'),
 				array('browsers', 'Browsers', 'side', 'default'),
 				array('map_us', 'Visitor Map (US)', 'column3', 'default'),
-				array('widget7', 'Widget 7', 'normal', 'default'),
+				array('map_world', 'Visitor Map (Worldwide)', 'normal', 'default'),
 				array('widget8', 'Widget 8', 'side', 'default'),
 
 			);
@@ -328,6 +328,17 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getRegion("countryCode==us"));
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling visitors map data
+	  *
+	  * @return $json_data
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_maps_world()
+	 {
+	 	wp_send_json($this->suwi->getCountry());
+	 }
 	 
 	/**
 	 * Dashboard Widget: Live
@@ -394,10 +405,9 @@ class Expressions_Analytics_Dashboard {
 	 *
 	 * @since 2.0.0
 	 */
-	 public function expana_widgets_callback_widget7()
+	 public function expana_widgets_callback_map_world()
 	 {
-	 	echo "<div class='main'>Main</div>";
-	 	echo "<div class='sub'>Sub</div>";
+	 	require("partials/widget_map_world.php");
 	 }
 
 	/**

@@ -191,6 +191,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'wp_ajax_expana_ajax_get_date', $plugin_dashboard, 'expana_ajax_get_date' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_get_period', $plugin_dashboard, 'expana_ajax_get_period' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_maps_us', $plugin_dashboard, 'expana_ajax_maps_us' );
+		$this->loader->add_action( 'wp_ajax_expana_ajax_maps_world', $plugin_dashboard, 'expana_ajax_maps_world' );
 
 	}
 

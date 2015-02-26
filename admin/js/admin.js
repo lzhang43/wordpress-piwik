@@ -796,7 +796,6 @@ jQuery(function ($) {
                 return false;
             }
 
-
             var statesData = [];
 
             $.each(response, function(i, item) {
@@ -814,6 +813,8 @@ jQuery(function ($) {
             });
 
            var mapData = Highcharts.geojson(Highcharts.maps['countries/us/us-all']);
+
+            console.log(mapData);
 
             // Initiate the chart
             $('#map_us').highcharts('Map', {
@@ -860,12 +861,98 @@ jQuery(function ($) {
                 }]
             });
 
-        });
+            $('#expana_map_us .loading').hide();
 
-        $('#expana_map_us .loading').hide();
+        });
+        
     }
 
     init_visits_map_us();
+
+    function init_visits_map_world() {
+
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_maps_world" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_map_world .loading').hide();
+                
+                $('#expana_map_world .no_data').show();
+
+                // Exit
+                return false;
+            }
+
+            var countriesData = [];
+
+            $.each(response, function(i, item) {
+
+                name = item.label;
+
+                countriesData.push({
+                    name: name,
+                    value: item.nb_visits
+                });
+
+            });
+
+            var mapData = Highcharts.maps['custom/world'];
+
+            console.log(mapData);
+
+            // Initiate the chart
+            var map_world = $('#map_world').highcharts('Map', {
+
+                title : {
+                    text : null
+                },
+
+                legend: {
+                    align: 'right',
+                    floating: true,
+                    title: {
+                        text: 'Unique Visitors'
+                    }
+                },
+
+                mapNavigation: {
+                    enabled: true,
+                    buttonOptions: {
+                        align: 'left',
+                        floating: true,
+                        verticalAlign: 'top'
+                    }
+                },
+
+                colorAxis: {
+                },
+
+                series : [{
+                    data : countriesData,
+                    mapData: mapData,
+                    joinBy: ['name', 'name'],
+                    name: 'Unique Visitors',
+                    states: {
+                        hover: {
+                            color: '#A9FF96'
+                        }
+                    }
+                }]
+            });
+
+            $('#expana_map_world .loading').hide();
+
+        });
+    }
+
+    init_visits_map_world();
 
     function changeDateRange( range ) {
 

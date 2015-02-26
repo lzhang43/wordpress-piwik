@@ -84,6 +84,7 @@ class Expressions_Analytics_Admin {
 		//wp_enqueue_script( 'highmaps-data', plugin_dir_url( __FILE__ ) . 'js/highmaps/modules/data.js', array( 'highmaps' ), $this->version, false );
 		//wp_enqueue_script( 'highmaps-exporting', plugin_dir_url( __FILE__ ) . 'js/highmaps/modules/exporting.js', array( 'highmaps' ), $this->version, false );
 		wp_enqueue_script( 'highmaps-mapdata-us-all', plugin_dir_url( __FILE__ ) . 'js/countries/us/us-all.js', array(), $this->version, false );
+		wp_enqueue_script( 'highmaps-mapdata-world', plugin_dir_url( __FILE__ ) . 'js/custom/world.js', array(), $this->version, false );
 		wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui/jquery-ui.min.js', array( 'jquery' ), $this->version, false );
 
 		// application JS files
