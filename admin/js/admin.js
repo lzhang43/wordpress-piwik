@@ -777,8 +777,6 @@ jQuery(function ($) {
 
     function init_visits_map_us() {
 
-        var response = [];
-
         $.ajax({
             url: "admin-ajax.php",
             data: { action: "expana_ajax_maps_us" },
@@ -786,8 +784,20 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_map_us .loading').hide();
+                
+                $('#expana_map_us .no_data').show();
+
+                // Exit
+                return false;
+            }
+
+
             var statesData = [];
-            var name;
 
             $.each(response, function(i, item) {
 
@@ -797,48 +807,46 @@ jQuery(function ($) {
                 {
                     statesData.push({
                         name: name,
-                        y: item.nb_visits
+                        value: item.nb_visits
                     });
                 }
 
             });
 
-            $.getJSON('../wp-content/plugins/expressions-analytics/admin/js/usa.geo.json', function (geojson) {
+           var mapData = Highcharts.geojson(Highcharts.maps['countries/us/us-all']);
 
-                // Initiate the chart
-                var map_init = $('#map_us').highcharts('Map', {
+            // Initiate the chart
+            $('#map_us').highcharts('Map', {
 
-                    title : {
-                        text : null
-                    },
+                title : {
+                    text : null
+                },
 
-                    mapNavigation: {
-                        enabled: false,
-                        buttonOptions: {
-                            verticalAlign: 'bottom'
+                mapNavigation: {
+                    enabled: false,
+                    buttonOptions: {
+                        verticalAlign: 'bottom'
+                    }
+                },
+
+                colorAxis: {
+                },
+
+                series : [{
+                    data : statesData,
+                    mapData: mapData,
+                    joinBy: ['name', 'name'],
+                    name: 'Unique Visitors',
+                    states: {
+                        hover: {
+                            color: '#BADA55'
                         }
                     },
-
-                    colorAxis: {
-                    },
-
-                    series : [{
-                        data : statesData,
-                        mapData: geojson,
-                        joinBy: ['NAME', 'name'],
-                        name: 'Random data',
-                        states: {
-                            hover: {
-                                color: '#BADA55'
-                            }
-                        },
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.properties.postal}'
-                        }
-                    }]
-                });
-
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.properties.postal}'
+                    }
+                }]
             });
 
         });
@@ -861,8 +869,6 @@ jQuery(function ($) {
         {
             return false;
         }
-        
-        console.log(dates);
 
         // Hide no_data div (if any)
         $( ".no_data" ).hide();
@@ -875,6 +881,7 @@ jQuery(function ($) {
         $('#os').empty();
         $('#resolutions').empty();
         $('#browsers').empty();
+        $('#map_us').empty();
 
         // AJAX POST request to set new date range
         $.ajax({
@@ -891,6 +898,7 @@ jQuery(function ($) {
             init_os();
             init_resolutions();
             init_browsers();
+            init_visits_map_us();
 
             // Enable buttons (loading animation will be hide by init_charts function upon completion)
             $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
