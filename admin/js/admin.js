@@ -822,10 +822,20 @@ jQuery(function ($) {
                     text : null
                 },
 
+                legend: {
+                    align: 'right',
+                    floating: true,
+                    title: {
+                        text: 'Unique Visitors'
+                    }
+                },
+
                 mapNavigation: {
-                    enabled: false,
+                    enabled: true,
                     buttonOptions: {
-                        verticalAlign: 'bottom'
+                        align: 'left',
+                        floating: true,
+                        verticalAlign: 'top'
                     }
                 },
 
@@ -839,12 +849,13 @@ jQuery(function ($) {
                     name: 'Unique Visitors',
                     states: {
                         hover: {
-                            color: '#BADA55'
+                            color: '#A9FF96'
                         }
                     },
                     dataLabels: {
                         enabled: true,
-                        format: '{point.properties.postal}'
+                        format: '{point.properties.postal-code}',
+                        color: '#ffffff'
                     }
                 }]
             });
