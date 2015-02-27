@@ -226,20 +226,22 @@ jQuery(function ($) {
             },
 
             series: [{
-                name: 'Actions',
-                data: nb_actions
-            }, {
-                name: 'Actions per visit',
-                data: nb_actions_per_visit
+                name: 'Visits',
+                data: nb_visits
             }, {
                 name: 'Unique Visitors',
                 data: nb_uniq_visitors
             }, {
-                name: 'Visits',
-                data: nb_visits
-            }, {
                 name: 'Visits Converted',
                 data: nb_visits_converted
+            }, {
+                name: 'Actions',
+                data: nb_actions,
+                visible: false
+            }, {
+                name: 'Actions per visit',
+                data: nb_actions_per_visit,
+                visible: false
             }]
 
         });
