@@ -545,9 +545,17 @@ jQuery(function ($) {
 
                     // Create the main data
                     if (! brands[os.brand]) {
-                        brands[os.brand] = os.sum_daily_nb_uniq_visitors;
+                        if(os.sum_daily_nb_uniq_visitors > 0) {
+                            brands[os.brand] = os.sum_daily_nb_uniq_visitors;
+                        } else {
+                            brands[os.brand] = os.nb_uniq_visitors;
+                        }
                     } else {
-                        brands[os.brand] += os.sum_daily_nb_uniq_visitors;
+                        if(os.sum_daily_nb_uniq_visitors > 0) {
+                            brands[os.brand] += os.sum_daily_nb_uniq_visitors;
+                        } else {
+                            brands[os.brand] += os.nb_uniq_visitors;
+                        }
                     }
 
                     // Create the version data
@@ -714,9 +722,17 @@ jQuery(function ($) {
 
                     // Create the main data
                     if (! brands[browser.brand]) {
-                        brands[browser.brand] = browser.sum_daily_nb_uniq_visitors;
+                        if(browser.sum_daily_nb_uniq_visitors > 0) {
+                            brands[browser.brand] = browser.sum_daily_nb_uniq_visitors;
+                        } else {
+                            brands[browser.brand] = browser.nb_uniq_visitors;
+                        }
                     } else {
-                        brands[browser.brand] += browser.sum_daily_nb_uniq_visitors;
+                        if(browser.sum_daily_nb_uniq_visitors > 0) {
+                            brands[browser.brand] += browser.sum_daily_nb_uniq_visitors;
+                        } else {
+                            brands[browser.brand] += browser.nb_uniq_visitors;
+                        }
                     }
 
                     // Create the version data
