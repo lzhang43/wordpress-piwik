@@ -61,22 +61,6 @@ jQuery(function ($) {
         changeDateRange( "custom" );
     });
 
-    // Initialize datepickers
-    $( "#expana-from-date" ).datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeMonth: true,
-        changeYear: true,
-        maxDate: 'D',
-        constrainInput: true
-    });
-
-    $( "#expana-to-date" ).datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeMonth: true,
-        changeYear: true,
-        constrainInput: true
-    });
-
     // Loading website info
     function load_site_info() {
         $.ajax({
@@ -87,27 +71,52 @@ jQuery(function ($) {
         }).success(function( response ) {
             $("#created_at").text(response[0].ts_created);
             $(".time_zone").text(response[0].timezone);
-        })
 
-        // Add class "current"
-        $.ajax({
-            url: "admin-ajax.php",
-            data: { action: "expana_ajax_get_date" },
-            type: "POST",
-            dataType: "json"
-        }).success(function( response ) {
-            if (response == "last90" || response == "last30" || response == "last7" || response == "yesterday")
-            {
-                $(".date-range-button[data-range=" + response + "]").addClass("current");
-            }
-            else
-            {
-                $("#expana_custom").addClass("current");
-                $(".date-range-inputs").show();
-                var dates = response.split(",");
-                $("#expana-from-date").datepicker("setDate", dates[0]);
-                $("#expana-to-date").datepicker("setDate", dates[1]);
-            }
+            // Initialize datepickers
+            $( "#expana-from-date" ).datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                minDate: response[0].ts_created,
+                maxDate: 'D',
+                constrainInput: true,
+                onSelect: function( selectedDate ) {
+                    jQuery( "#expana-to-date" ).datepicker( "option", "minDate", selectedDate );
+                }
+            });
+
+            $( "#expana-to-date" ).datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                minDate: response[0].ts_created,
+                maxDate: 'D',
+                constrainInput: true,
+                onSelect: function( selectedDate ) {
+                    jQuery( "#expana-from-date" ).datepicker( "option", "maxDate", selectedDate );
+                }
+            });
+
+            // Add class "current"
+            $.ajax({
+                url: "admin-ajax.php",
+                data: { action: "expana_ajax_get_date" },
+                type: "POST",
+                dataType: "json"
+            }).success(function( response ) {
+                if (response == "last90" || response == "last30" || response == "last7" || response == "yesterday")
+                {
+                    $(".date-range-button[data-range=" + response + "]").addClass("current");
+                }
+                else
+                {
+                    $("#expana_custom").addClass("current");
+                    $(".date-range-inputs").show();
+                    var dates = response.split(",");
+                    $("#expana-from-date").datepicker("setDate", dates[0]);
+                    $("#expana-to-date").datepicker("setDate", dates[1]);
+                }
+            })
         })
     }
 
