@@ -548,6 +548,8 @@ jQuery(function ($) {
                     }
             });
 
+            var i = 0;
+
             // Build bransData and drilldownSeries for HighCharts
             $.each(brands, function (name, y) {
                 brandsData.push({
@@ -555,6 +557,14 @@ jQuery(function ($) {
                     y: y,
                     drilldown: versions[name] ? name : null
                 });
+
+                ++i;
+
+                // Only output the first 10 brands to avoid data overlap
+                if(i >=10)
+                {
+                    return false;
+                }
             });
 
             $.each(versions, function (key, value) {
@@ -707,6 +717,8 @@ jQuery(function ($) {
                     }
             });
 
+            var i = 0;
+
             // Build bransData and drilldownSeries for HighCharts
             $.each(brands, function (name, y) {
                 brandsData.push({
@@ -714,6 +726,15 @@ jQuery(function ($) {
                     y: y,
                     drilldown: versions[name] ? name : null
                 });
+
+
+                ++i;
+
+                // Only output the first 10 brands to avoid data overlap
+                if(i >= 10)
+                {
+                    return false;
+                }
             });
 
             $.each(versions, function (key, value) {
@@ -806,15 +827,13 @@ jQuery(function ($) {
                 {
                     statesData.push({
                         name: name,
-                        value: item.nb_visits
+                        value: item.sum_daily_nb_uniq_visitors
                     });
                 }
 
             });
 
            var mapData = Highcharts.geojson(Highcharts.maps['countries/us/us-all']);
-
-            console.log(mapData);
 
             // Initiate the chart
             $('#map_us').highcharts('Map', {
@@ -837,7 +856,8 @@ jQuery(function ($) {
                         align: 'left',
                         floating: true,
                         verticalAlign: 'top'
-                    }
+                    },
+                    enableMouseWheelZoom: false
                 },
 
                 colorAxis: {
@@ -896,19 +916,24 @@ jQuery(function ($) {
 
                 name = item.label;
 
+                // Check if it's the United States
+                if(name == "United States")
+                {
+                    // GeoJson uses the name "United States of America"
+                    name = "United States of America";
+                }
+
                 countriesData.push({
                     name: name,
-                    value: item.nb_visits
+                    value: item.sum_daily_nb_uniq_visitors
                 });
 
             });
 
             var mapData = Highcharts.maps['custom/world'];
 
-            console.log(mapData);
-
             // Initiate the chart
-            var map_world = $('#map_world').highcharts('Map', {
+            $('#map_world').highcharts('Map', {
 
                 title : {
                     text : null
@@ -928,7 +953,8 @@ jQuery(function ($) {
                         align: 'left',
                         floating: true,
                         verticalAlign: 'top'
-                    }
+                    },
+                    enableMouseWheelZoom: false
                 },
 
                 colorAxis: {
@@ -980,6 +1006,7 @@ jQuery(function ($) {
         $('#resolutions').empty();
         $('#browsers').empty();
         $('#map_us').empty();
+        $('#map_world').empty();
 
         // AJAX POST request to set new date range
         $.ajax({
@@ -997,6 +1024,7 @@ jQuery(function ($) {
             init_resolutions();
             init_browsers();
             init_visits_map_us();
+            init_visits_map_world();
 
             // Enable buttons (loading animation will be hide by init_charts function upon completion)
             $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
