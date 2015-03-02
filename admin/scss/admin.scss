@@ -316,3 +316,25 @@ label {
     max-width: 800px; 
     margin: 0 auto; 
 }
+
+#popular_pages_list {
+    border: 0;
+}
+
+#popular_pages_list tbody tr:hover {
+    background-color: rgba(245, 245, 245, 1);
+}
+
+#popular_pages_list thead tr > th:not(:first-child),
+#popular_pages_list tbody tr > td:not(:first-child) {
+    text-align: right;
+}
+
+#popular_pages_list tbody tr > td:first-child a {
+    color: rgba(85, 85, 85, 0.7);
+    outline: 0;
+}
+
+#popular_pages_list tbody tr > td:first-child a:hover {
+    color: rgba(85, 85, 85, 1);
+}

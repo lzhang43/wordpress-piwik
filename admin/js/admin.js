@@ -16,6 +16,8 @@ jQuery(function ($) {
                         '<p>Try another date range?</p>' +
                     '</div>';
 
+        site_url = '';
+
     // Append loading animation and no-data div
     $("#expana_dashboard .inside").prepend(loading, no_data);
 
@@ -71,6 +73,7 @@ jQuery(function ($) {
         }).success(function( response ) {
             $("#created_at").text(response[0].ts_created);
             $(".time_zone").text(response[0].timezone);
+            site_url = response[0].main_url;
 
             // Initialize datepickers
             $( "#expana-from-date" ).datepicker({
@@ -1083,6 +1086,54 @@ jQuery(function ($) {
 
     init_device_type();
 
+    function init_top_pages() {
+
+        // Hide the table
+        $('#popular_pages').hide();
+
+        // Empty exsiting entries
+        $('#popular_pages table tbody').empty();
+
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_top_pages" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            $.each(response, function (i, entry) {
+
+                console.log(entry);
+
+                $('#popular_pages table > tbody:last').append('<tr><td>' + entry.label + ' <a href=' + site_url + '/' + entry.label + ' target="_blank"><i class="fa fa-external-link"></i></a></td><td>' + entry.nb_hits + '</td><td>' + entry.nb_visits + '</td><td>' + entry.avg_time_on_page + 's</td></tr>');
+
+                if ( i > 20 )
+                {
+                    return false;
+                }
+
+            });
+
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_top_pages .loading').hide();
+                
+                $('#expana_top_pages .no_data').show();
+
+                // Exit
+                return false;
+            }
+
+            $('#expana_top_pages .loading').hide();
+            $('#popular_pages').show();
+
+        });
+    }
+
+    init_top_pages();
+
     function changeDateRange( range ) {
 
         var dates = null;
@@ -1130,6 +1181,7 @@ jQuery(function ($) {
             init_visits_map_us();
             init_visits_map_world();
             init_device_type();
+            init_top_pages();
 
             // Enable buttons (loading animation will be hide by init_charts function upon completion)
             $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);

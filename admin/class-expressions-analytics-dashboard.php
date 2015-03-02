@@ -52,6 +52,7 @@ class Expressions_Analytics_Dashboard {
 				array('map_us', 'Visitor Map (US)', 'column3', 'default'),
 				array('map_world', 'Visitor Map (Worldwide)', 'normal', 'default'),
 				array('device_type', 'Device Type', 'side', 'default'),
+				array('top_pages', 'Popular Pages', 'normal', 'default')
 
 			);
 
@@ -350,6 +351,17 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getDeviceType());
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling popular pages data
+	  *
+	  * @return $json_data
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_top_pages()
+	 {
+	 	wp_send_json($this->suwi->getPageUrls());
+	 }
 	 
 	/**
 	 * Dashboard Widget: Live
@@ -429,6 +441,16 @@ class Expressions_Analytics_Dashboard {
 	 public function expana_widgets_callback_device_type()
 	 {
 	 	require("partials/widget_device_type.php");
+	 }
+
+	/**
+	 * Dashboard Widget: Popular Pages
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_top_pages()
+	 {
+	 	require("partials/widget_top_pages.php");
 	 }
 
 }
