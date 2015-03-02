@@ -23,7 +23,7 @@ jQuery(function ($) {
 
     // hide everything that's not currently in use or is still loading
     $(".date-range-inputs").hide();
-    $("#expana_live").hide();
+    $("#live").hide();
     $(".no_data").hide();
 
     // handle onclick event for date range selectors
@@ -266,7 +266,7 @@ jQuery(function ($) {
             $("#live_actions").text(response[0].actions);
             $("#live_converted").text(response[0].visitsConverted);
             $("#live").show();
-            $("#expana_live .loading").hide();
+            $("#expana_live .loading").hide().removeClass('loading_redraw');
         });
 
        // Schedule a repeat
