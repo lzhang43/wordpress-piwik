@@ -1007,6 +1007,82 @@ jQuery(function ($) {
 
     init_visits_map_world();
 
+    function init_device_type() {
+
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_device_type" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_device_type .loading').hide();
+                
+                $('#expana_device_type .no_data').show();
+
+                // Exit
+                return false;
+            }
+
+            data = [];
+
+            $.each(response, function (i, type) {
+
+                entry = {};
+                entry.name = type.label;
+                entry.y = type.nb_visits;
+
+                if ( i == 0 )
+                {
+                    entry.sliced = true;
+                    entry.selected = true;
+                }
+
+                data.push(entry);
+            });
+
+            $('#device_type').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: null
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: 'Device type',
+                    data: data
+                }]
+            });
+
+            $('#expana_device_type .loading').hide();
+        });
+    }
+
+    init_device_type();
+
     function changeDateRange( range ) {
 
         var dates = null;
@@ -1034,6 +1110,7 @@ jQuery(function ($) {
         $('#browsers').empty();
         $('#map_us').empty();
         $('#map_world').empty();
+        $('#device_type').empty();
 
         // AJAX POST request to set new date range
         $.ajax({
@@ -1052,6 +1129,7 @@ jQuery(function ($) {
             init_browsers();
             init_visits_map_us();
             init_visits_map_world();
+            init_device_type();
 
             // Enable buttons (loading animation will be hide by init_charts function upon completion)
             $( ".date-range-selectors button.date-range-button" ).prop("disabled", false);
