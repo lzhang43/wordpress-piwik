@@ -1,7 +1,7 @@
 jQuery(function ($) {
 
     var loading = '<div class="loading loading_redraw">' +
-                        '<i class="fa fa-cog fa-spin"></i>' +
+                        '<i class="fa fa-spinner fa-pulse"></i>' +
                   '</div>';
 
         no_data = '<div class="no_data">' + 
