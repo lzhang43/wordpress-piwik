@@ -1147,8 +1147,6 @@ jQuery(function ($) {
             dataType: "JSON"
         }).success(function( response ) {
 
-            console.log(response);
-
             $.each(response, function (i, referrer) {
 
                 $('#referrers table > tbody:last').append('<tr><td>(' + referrer.referer_type + ') ' + referrer.label + '</td><td>' + referrer.nb_visits + '</td><td>' + referrer.nb_actions + '</td></tr>');
@@ -1179,6 +1177,28 @@ jQuery(function ($) {
     }
 
     init_referrers();
+
+    function init_seo_rankings() {
+
+        console.log(site_url);
+
+        $.ajax({
+            url: "admin-ajax.php",
+            data: {
+                    action: "expana_ajax_seo_rankings",
+                    url: site_url
+                },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            console.log(response);
+
+            $('#expana_seo_rankings .loading').hide().removeClass('loading_redraw');
+        });
+    }
+
+    init_seo_rankings();
 
     function changeDateRange( range ) {
 

@@ -195,6 +195,7 @@ class Expressions_Analytics {
 		$this->loader->add_action( 'wp_ajax_expana_ajax_device_type', $plugin_dashboard, 'expana_ajax_device_type' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_top_pages', $plugin_dashboard, 'expana_ajax_top_pages' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_referrers', $plugin_dashboard, 'expana_ajax_referrers' );
+		$this->loader->add_action( 'wp_ajax_expana_ajax_seo_rankings', $plugin_dashboard, 'expana_ajax_seo_rankings' );
 
 	}
 
