@@ -317,24 +317,30 @@ label {
     margin: 0 auto; 
 }
 
+#referrers_list,
 #popular_pages_list {
     border: 0;
 }
 
+#referrers_list tbody tr:hover,
 #popular_pages_list tbody tr:hover {
     background-color: rgba(245, 245, 245, 1);
 }
 
+#referrers_list thead tr > th:not(:first-child),
+#referrers_list tbody tr > td:not(:first-child),
 #popular_pages_list thead tr > th:not(:first-child),
 #popular_pages_list tbody tr > td:not(:first-child) {
     text-align: right;
 }
 
+#referrers_list tbody tr > td:first-child a,
 #popular_pages_list tbody tr > td:first-child a {
     color: rgba(85, 85, 85, 0.7);
     outline: 0;
 }
 
-#popular_pages_list tbody tr > td:first-child a:hover {
+#referrers_list tbody tr > td:first-child a:hover,
+#referrers_list tbody tr > td:first-child a:hover {
     color: rgba(85, 85, 85, 1);
 }

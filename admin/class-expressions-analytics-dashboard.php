@@ -52,7 +52,8 @@ class Expressions_Analytics_Dashboard {
 				array('map_us', 'Visitor Map (US)', 'column3', 'default'),
 				array('map_world', 'Visitor Map (Worldwide)', 'normal', 'default'),
 				array('device_type', 'Device Type', 'side', 'default'),
-				array('top_pages', 'Popular Pages', 'normal', 'default')
+				array('top_pages', 'Popular Pages', 'normal', 'default'),
+				array('referrers', 'Referrers', 'side', 'default')
 
 			);
 
@@ -362,6 +363,17 @@ class Expressions_Analytics_Dashboard {
 	 {
 	 	wp_send_json($this->suwi->getPageUrls());
 	 }
+
+	 /**
+	  * An AJAX POST interface for pulling referrers data
+	  *
+	  * @return $json_data
+	  * @since  2.0.0
+	  */
+	 public function expana_ajax_referrers()
+	 {
+	 	wp_send_json($this->suwi->getAllReferrers());
+	 }
 	 
 	/**
 	 * Dashboard Widget: Live
@@ -451,6 +463,16 @@ class Expressions_Analytics_Dashboard {
 	 public function expana_widgets_callback_top_pages()
 	 {
 	 	require("partials/widget_top_pages.php");
+	 }
+
+	/**
+	 * Dashboard Widget: Referrers
+	 *
+	 * @since 2.0.0
+	 */
+	 public function expana_widgets_callback_referrers()
+	 {
+	 	require("partials/widget_referrers.php");
 	 }
 
 }

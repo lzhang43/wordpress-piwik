@@ -1103,8 +1103,6 @@ jQuery(function ($) {
 
             $.each(response, function (i, entry) {
 
-                console.log(entry);
-
                 $('#popular_pages table > tbody:last').append('<tr><td>' + entry.label + ' <a href=' + site_url + '/' + entry.label + ' target="_blank"><i class="fa fa-external-link"></i></a></td><td>' + entry.nb_hits + '</td><td>' + entry.nb_visits + '</td><td>' + entry.avg_time_on_page + 's</td></tr>');
 
                 if ( i > 20 )
@@ -1133,6 +1131,54 @@ jQuery(function ($) {
     }
 
     init_top_pages();
+
+    function init_referrers() {
+
+        // Hide the table
+        $('#referrers').hide();
+
+        // Empty exsiting entries
+        $('#referrers table tbody').empty();
+
+        $.ajax({
+            url: "admin-ajax.php",
+            data: { action: "expana_ajax_referrers" },
+            type: "POST",
+            dataType: "JSON"
+        }).success(function( response ) {
+
+            console.log(response);
+
+            $.each(response, function (i, referrer) {
+
+                $('#referrers table > tbody:last').append('<tr><td>(' + referrer.referer_type + ') ' + referrer.label + '</td><td>' + referrer.nb_visits + '</td><td>' + referrer.nb_actions + '</td></tr>');
+
+                if ( i > 20 )
+                {
+                    return false;
+                }
+
+            });
+
+            // Check if the response is empty
+            if ( $.isEmptyObject(response) )
+            {
+                // Hide the loading animation
+                $('#expana_referrers .loading').hide();
+                
+                $('#expana_referrers .no_data').show();
+
+                // Exit
+                return false;
+            }
+
+            $('#expana_referrers .loading').hide();
+            $('#referrers').show();
+
+        });
+    }
+
+    init_referrers();
 
     function changeDateRange( range ) {
 
