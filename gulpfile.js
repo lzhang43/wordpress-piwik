@@ -4,9 +4,9 @@ var coffee 	= require('gulp-coffee');
 
 gulp.task('default', function() {
 
-	//gulp.src('admin/coffeescript/*.coffee')
-	//	.pipe(coffee())
-	//	.pipe(gulp.dest('admin/js'));
+	gulp.src('admin/coffeescript/*.coffee')
+		.pipe(coffee())
+		.pipe(gulp.dest('admin/js'));
 	
 	gulp.src('bower_components/jquery-ui/**/*')
 		.pipe(gulp.dest('admin/js/jquery-ui'));

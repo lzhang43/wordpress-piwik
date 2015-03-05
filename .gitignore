@@ -19,6 +19,7 @@ admin/css/admin.css
 admin/js/highcharts/
 admin/js/highmaps/
 admin/js/jquery-ui/
+admin/js/admin-working.js
 
 # Bower
 bower_components
