@@ -1,62 +1,61 @@
 (($) ->
 
-# Elements to be appended to eahc .inside div
-loading =   """
-            <div class="loading loading_redraw">
-                <i class="fa fa-spinner fa-pulse"></i>
-            </div>
-            """
+site_url
 
-no_data =   """
-            <div class="no_data">
-                <div class="no_data_cross">
-                    <span class="x_mark">
-                    <span class="line left"></span>
-                    <span class="line right"></span>
-                    </span>
+load_elements = ->
+    # Elements to be appended to eahc .inside div
+    loading =   """
+                <div class="loading loading_redraw">
+                    <i class="fa fa-spinner fa-pulse"></i>
                 </div>
-                <h2>No Data Available</h2>
-                <p>Try another date range?</p>
-            </div>
-            """
+                """
 
-# Append loading animation and no-data div
-$( '#expana_dashboard .inside' ).prepend(loading, no_data);
+    no_data =   """
+                <div class="no_data">
+                    <div class="no_data_cross">
+                        <span class="x_mark">
+                        <span class="line left"></span>
+                        <span class="line right"></span>
+                        </span>
+                    </div>
+                    <h2>No Data Available</h2>
+                    <p>Try another date range?</p>
+                </div>
+                """
 
-# hide everything that's not currently in use or is still loading
-$( '.date-range-inputs' ).hide();
-$( '#live' ).hide();
-$( '.no_data' ).hide();
+    # Append loading animation and no-data div
+    $( '#expana_dashboard .inside' ).prepend(loading, no_data);
 
-# handle onclick event for date range selectors
-$( '.date-range-selectors button.date-range-button' ).on 'click', ->
+    # hide everything that's not currently in use or is still loading
+    $( '.date-range-inputs' ).hide();
+    $( '#live' ).hide();
+    $( '.no_data' ).hide();
 
-    # Disable all buttons
-    $( ".date-range-selectors button.date-range-button" ).prop 'disabled', true
+    # handle onclick event for date range selectors
+    $( '.date-range-selectors button.date-range-button' ).on 'click', ->
 
-    # Remove "current" class from all buttons
-    $( '.date-range-selectors button.date-range-button' ).removeClass 'current'
+        # Disable all buttons
+        $( ".date-range-selectors button.date-range-button" ).prop 'disabled', true
 
-    # Add "current" class to the button being clicked
-    $(@).addClass 'current'
+        # Remove "current" class from all buttons
+        $( '.date-range-selectors button.date-range-button' ).removeClass 'current'
 
-    # Change #date_range information (only for display purposes)
-    $( '#date_range' ).text( $(@).text() )
+        # Add "current" class to the button being clicked
+        $(@).addClass 'current'
 
-    # Check if the button being clicked is for "custom date range"
-    if $(@).data( 'range' ) is "custom"
-        # Dispaly custom date range input fields. Do nothing, waiting for query dates
-        $( '.date-range-inputs' ).show
-        # Also enable buttons in case the user want to go back
-        $( ".date-range-selectors button.date-range-button" ).prop 'disabled', false
-    else
-        # Not custom date range, hide input fields and start changing date range
-        $( '.date-range-inputs' ).hide
-        changeDateRange $(this).data( 'range' )
+        # Change #date_range information (only for display purposes)
+        $( '#date_range' ).text( $(@).text() )
 
-$( 'date-range-filter' ).on 'click', (event) ->
-    event.preventDefault()
-    changeDateRange "custom"
+        # Check if the button being clicked is for "custom date range"
+        if $(@).data( 'range' ) is "custom"
+            # Dispaly custom date range input fields. Do nothing, waiting for query dates
+            $( '.date-range-inputs' ).show
+            # Also enable buttons in case the user want to go back
+            $( ".date-range-selectors button.date-range-button" ).prop 'disabled', false
+        else
+            # Not custom date range, hide input fields and start changing date range
+            $( '.date-range-inputs' ).hide
+            changeDateRange $(this).data( 'range' )
 
 load_site_info = ->
     $.ajax
@@ -105,5 +104,100 @@ load_site_info = ->
                 dates = response.split ","
                 $( "#expana-from-date" ).datepicker "setDate", dates[0]
                 $( "#expana-to-date" ).datepicker "setDate", dates[1]
+
+init_report = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_report" }
+        type: "POST"
+        dataType: "json"
+    .success (response) ->
+        $( "#expana_report .loading" ).hide()
+        $.each response.data, (index, item) ->
+            $( "#report_content" ).append "<section><img src='#{item.thumbnail}' /><span>#{item.description}</span></section>"
+
+init_visits_summary = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_visits_summary" }
+        type: "POST"
+        dataType: "JSON"
+    .success (response) ->
+        # Define a list of series that will be included in the chart
+        categories = ['nb_actions', 'nb_actions_per_visit', 'nb_uniq_visitors', 'nb_users', 'nb_visits', 'nb_visits_converted']
+
+        $.each response, (i, day) ->
+            date.push(i)
+            $.each categories (j, category) ->
+                if day[category]
+                    eval(category).push(day[category]);
+                else
+                    eval(category).push(0);
+
+        $( "#visits_summary" ).highcharts
+            title:
+                text: null #To disable the title, set the text to null
+            chart:
+                marginTop: 50
+            xAxis:
+                categories: date
+                tickInterval: 3
+            yAxis: [{ # left y axis
+                    title:
+                        text: null
+                    labels:
+                        align: 'left'
+                        x: 3
+                        y: 16
+                        format: '{value:.,0f}'
+                    showFirstLabel: false
+                    },
+                    { # right y axis
+                        linkedTo: 0
+                        gridLineWidth: 0
+                        opposite: true
+                        title:
+                            text: null
+                        labels:
+                            align: 'right'
+                            x: -3
+                            y: 16
+                            format: '{value:.,0f}'
+                        showFirstLabel: false
+                    }]
+            legend:
+                align: 'left'
+                verticalAlign: 'top'
+                y: 0
+                floating: true
+                borderWidth: 0
+            tooltip:
+                shared: true
+                crosshairs: true
+            series: [{
+                        name: 'Visits'
+                        data: nb_visits
+                    }, {
+                        name: 'Unique Visitors'
+                        data: nb_uniq_visitors
+                    }, {
+                        name: 'Visits Converted'
+                        data: nb_visits_converted
+                    }, {
+                        name: 'Actions'
+                        data: nb_actions
+                        visible: false
+                    }, {
+                        name: 'Actions per visit'
+                        data: nb_actions_per_visit
+                        visible: false
+                    }]
+
+        $( "#expana_visits_summary .loading" ).hide()
+
+custom_selector = ->
+$( 'date-range-filter' ).on 'click', (event) ->
+    event.preventDefault()
+    changeDateRange "custom"
 
 ) jQuery
