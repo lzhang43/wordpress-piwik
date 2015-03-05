@@ -21,7 +21,7 @@ no_data =   """
             """
 
 # Append loading animation and no-data div
-$('#expana_dashboard .inside').prepend(loading, no_data);
+$( '#expana_dashboard .inside' ).prepend(loading, no_data);
 
 # hide everything that's not currently in use or is still loading
 $( '.date-range-inputs' ).hide();
@@ -53,5 +53,57 @@ $( '.date-range-selectors button.date-range-button' ).on 'click', ->
         # Not custom date range, hide input fields and start changing date range
         $( '.date-range-inputs' ).hide
         changeDateRange $(this).data( 'range' )
-  
+
+$( 'date-range-filter' ).on 'click', (event) ->
+    event.preventDefault()
+    changeDateRange "custom"
+
+load_site_info = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_site_info" }
+        type: "POST"
+        dataType: "json"
+    .success (response) ->
+        $( "#created_at" ).text response[0].ts_created
+        $( ".time_zone" ).text response[0].timezone
+        site_url = response[0].main_url
+
+        # Initialize datepickers
+        $( "#expana-from-date" ).datepicker
+            dateFormat: 'yy-mm-dd'
+            changeMonth: true
+            changeYear: true
+            minDate: response[0].ts_created
+            maxDate: 'D'
+            constrainInput: true
+            onSelect: (selectedDate) ->
+                $( "#expana-to-date" ).datepicker( "option", "minDate", selectedDate )
+
+        $( "#expana-to-date" ).datepicker
+            dateFormat: 'yy-mm-dd'
+            changeMonth: true
+            changeYear: true
+            minDate: response[0].ts_created
+            maxDate: 'D'
+            constrainInput: true
+            onSelect: (selectedDate) ->
+                $( "#expana-from-date" ).datepicker( "option", "maxDate", selectedDate )
+
+        # Add class "current"
+        $.ajax
+            url: "admin-ajax.php"
+            data: { action: "expana_ajax_get_date" }
+            type: "POST"
+            dataType: "json"
+        .success (response) ->
+            if response is "last90" or response is "last30" or response is "last7" or response is "yesterday"
+                $( ".date-range-button[data-range=" + response + "]" ).addClass "current"
+            else
+                $( "#expana_custom" ).addClass "current"
+                $( ".date-range-inputs" ).show()
+                dates = response.split ","
+                $( "#expana-from-date" ).datepicker "setDate", dates[0]
+                $( "#expana-to-date" ).datepicker "setDate", dates[1]
+
 ) jQuery
