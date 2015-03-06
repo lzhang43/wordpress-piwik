@@ -88,7 +88,7 @@ class Expressions_Analytics_Admin {
 		wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui/jquery-ui.min.js', array( 'jquery' ), $this->version, false );
 
 		// application JS files
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'highcharts' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin-working.js', array( 'highcharts' ), $this->version, true );
 	}
 
 	/**
