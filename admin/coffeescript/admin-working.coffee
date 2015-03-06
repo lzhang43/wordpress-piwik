@@ -195,6 +195,90 @@ init_visits_summary = ->
 
         $( "#expana_visits_summary .loading" ).hide()
 
+# Define Live widget initialization & set refresh interval
+init_live = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_live" }
+        type: "POST"
+        dataType: "JSON"
+    .success response ->
+        $( "#live_visitor_counter" ).text(response[0].visitors)
+        $( "#live_visits" ).text(response[0].visits)
+        $( "#live_actions" ).text(response[0].actions)
+        $( "#live_converted" ).text(response[0].visitsConverted)
+        $( "#live" ).show()
+        $( "#expana_live .loading" ).hide().removeClass('loading_redraw')
+   # Schedule a repeat
+   setTimeout(init_live, 1000 * 15); #15 seconds = 1000 ms * 10 seconds
+
+# Define Visits By Time widget initialization
+init_visits_by_time = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_visits_by_time" }
+        type: "POST"
+        dataType: "JSON"
+    .success response ->
+        if ( $.isEmptyObject response ) # Check if the response is empty
+            $('#expana_visits_by_time .loading').hide() # Hide the loading animation
+            $('#expana_visits_by_time .no_data').show()
+            return false; # Exit
+
+        # Define a list of series that will be included in the chart
+        categories = ['label', 'nb_actions', 'nb_visits', 'sum_daily_nb_uniq_visitors'];
+
+        $.each response (i, hour) ->
+            $.each categories (i, category) ->
+                if hour[category]
+                    eval(category).push(hour[category])
+                else
+                    eval(category).push(0)
+
+        # Draw the chart
+        $('#visits_by_time').highcharts
+            chart:
+                type: 'bar'
+                marginTop: 50
+            title:
+                text: null
+            xAxis:
+                categories: label
+                title:
+                    text: null
+            yAxis:
+                min: 0
+                title:
+                    text: 'Visits'
+                    align: 'high'
+                labels:
+                    overflow: 'justify'
+            plotOptions:
+                bar:
+                    dataLabels:
+                        enabled: true
+            legend:
+                layout: 'horizontal'
+                align: 'left'
+                floating: true
+                verticalAlign: 'top'
+            tooltip:
+                shared: true
+            credits:
+                enabled: false
+            series: [{
+                        name: 'Actions'
+                        data: nb_actions
+                    }, {
+                        name: 'Visits'
+                        data: nb_visits
+                    }, {
+                        name: 'Unique Visitors'
+                        data: sum_daily_nb_uniq_visitors
+                    }]
+
+        $('#expana_visits_by_time .loading').hide()
+
 custom_selector = ->
 $( 'date-range-filter' ).on 'click', (event) ->
     event.preventDefault()
