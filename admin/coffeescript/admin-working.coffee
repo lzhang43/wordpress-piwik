@@ -279,6 +279,251 @@ init_visits_by_time = ->
 
         $('#expana_visits_by_time .loading').hide()
 
+# Define Resolutions widget initialization
+init_resolutions = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_resolutions" }
+        type: "POST"
+        dataType: "JSON"
+    .success response ->
+        if $.isEmptyObject response # Check if the response is empty
+            $('#expana_resolutions .loading').hide()
+            $('#expana_resolutions .no_data').show()
+            return false;
+
+        $.each response (i, resolution) ->
+            if i > 15
+                return false; # only output 15 most popular resolutions
+            entry.name = resolution.label;
+
+            if not resolution.nb_uniq_visitors
+                entry.y = resolution.sum_daily_nb_uniq_visitors
+            else
+                entry.y = resolution.nb_uniq_visitors
+
+            if i is 0 
+                entry.sliced = true
+                entry.selected = true
+
+            data.push(entry)
+
+        $( "#resolutions" ).highcharts
+            chart:
+                plotBackgroundColor: null
+                plotBorderWidth: null
+                plotShadow: false
+            title:
+                text: null
+            tooltip:
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            plotOptions:
+                pie:
+                    allowPointSelect: true
+                    cursor: 'pointer'
+                    dataLabels:
+                        enabled: false
+                    showInLegend: true
+            series: [{
+                type: 'pie'
+                name: 'Resolutions'
+                data: data
+            }]
+
+        $( "#expana_resolutions .loading" ).hide()
+
+# Define OS widget initialization
+init_os = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_os" }
+        type: "POST"
+        dataType: "JSON"
+    .success response ->
+        if $.isEmptyObject response
+            $('#expana_os .loading').hide()
+            $('#expana_os .no_data').show()
+            return false;
+
+        knownBrands = [ 'Windows Phone', 'Windows', 'iOS', 'Mac', 'Android', 'Ubuntu', 'BlackBerry OS', 'Symbian OS', 'Chrome OS', 'PlayStation' ];
+
+        $.each response (i, os) -> # forEach OS entires returned by Piwik API
+                os.name = os.label.split(' -')[0] # Remove special edition notes
+                $.each knownBrands (j, knownBrand) -> # Split into brand and version. First check if os.name matches knownBrands
+                    isKnown = os.name.indexOf knownBrand # indexOf() method returns the first index at which a given element can be found in the array, or -1
+                    if isKnown > -1 # Check if os.name matches any of the known brands
+                        os.brand = knownBrand # If matches, store the brand name
+                        os.version = os.name.replace(os.brand, '').trim() # Remove brand name from os.name, so the rest of the string is its version info
+                        if not os.version # Sometimes, there's nothing left. e.g. Ubuntu
+                            os.version = 'Unknown Version'
+                        return false # break the loop
+
+                if not os.brand # No matches in known brand, we have to use regular exp.
+                    version = os.name.match(/([0-9]+[\.0-9x]*)/) # Assume os.version matches /([0-9]+[\.0-9x]*)/
+                    if version
+                        os.version = version[0].trim() # Obtain the first element in the array returned by os.name.match
+                    os.brand = os.name.replace(os.version, '').trim()
+
+                if not brands[os.brand] # Create the main data
+                    if os.sum_daily_nb_uniq_visitors > 0
+                        brands[os.brand] = os.sum_daily_nb_uniq_visitors
+                    else
+                        brands[os.brand] = os.nb_uniq_visitors
+                else
+                    if os.sum_daily_nb_uniq_visitors > 0
+                        brands[os.brand] += os.sum_daily_nb_uniq_visitors
+                    else
+                        brands[os.brand] += os.nb_uniq_visitors
+
+                if os.version # Create the version data
+                    if not versions[os.brand]
+                        versions[os.brand] = []
+                    versions[os.brand].push [os.version, os.sum_daily_nb_uniq_visitors]
+
+        i = 0
+        $.each brands (name, y) -> # Build bransData and drilldownSeries for HighCharts
+            brandsData.push
+                name: name
+                y: y
+                drilldown: versions[name] ? name : null
+            ++i
+            if i >= 10 # Only output the first 10 brands to avoid data overlap
+                return false;
+
+        $.each versions (key, value) ->
+            drilldownSeries.push
+                name: key
+                id: key
+                data: value
+
+        $( "#os" ).highcharts
+            chart:
+                type: 'column'
+                marginTop: 40
+            title:
+                text: null
+            xAxis:
+                type: 'category'
+            yAxis:
+                title:
+                    text: 'Unique Visitors'
+            legend:
+                enabled: false
+            plotOptions:
+                series:
+                    borderWidth: 0
+                    dataLabels:
+                        enabled: true
+                        format: '{point.y:.0f}'
+            tooltip:
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            series:
+                name: 'Brands'
+                colorByPoint: true
+                data: brandsData
+            drilldown:
+                series: drilldownSeries
+
+        $('#expana_os .loading').hide()
+
+# Define Browsers widget initialization
+init_browsers = ->
+    $.ajax
+        url: "admin-ajax.php",
+        data: { action: "expana_ajax_browsers" },
+        type: "POST",
+        dataType: "JSON"
+    .success response ->
+        if $.isEmptyObject response
+            $( "#expana_browsers .loading" ).hide()
+            $( "#expana_browsers .no_data" ).show()
+            return false
+
+        knownBrands = [ 'Chrome', 'Firefox', 'Opera', 'Safari' ]
+
+        $.each response (i, browser) -> # forEach browser entires returned by Piwik API
+                browser.name = browser.label.split(' -')[0] # Remove special edition notes
+                $.each knownBrands (j, knownBrand) -> # Split into brand and version. First check if browser.name matches knownBrands
+                    isKnown = browser.name.indexOf knownBrand # indexOf() method returns the first index at which a given element can be found in the array, or -1
+                    if isKnown > -1 # Check if browser.name matches any of the known brands
+                        browser.brand = knownBrand # If matches, store the brand name
+                        browser.version = browser.name.replace(browser.brand, '').trim() # Remove brand name from browser.name, so the rest of the string is its version info
+                        if not browser.version # Sometimes, there's nothing left. e.g. Chrome
+                            browser.version = 'Unknown Version'
+                        return false # break the loop
+                
+                if not browser.brand # No matches in known brand, we have to use regular exp.
+                    version = browser.name.match(/([0-9]+[\.0-9x]*)/) # Assume browser.version matches /([0-9]+[\.0-9x]*)/
+                    if version
+                        browser.version = version[0].trim() # Obtain the first element in the array returned by browser.name.match
+                    browser.brand = browser.name.replace(browser.version, '').trim()
+
+                if not brands[browser.brand] # Create the main data
+                    if browser.sum_daily_nb_uniq_visitors > 0
+                        brands[browser.brand] = browser.sum_daily_nb_uniq_visitors
+                    else
+                        brands[browser.brand] = browser.nb_uniq_visitors
+                else
+                    if browser.sum_daily_nb_uniq_visitors > 0
+                        brands[browser.brand] += browser.sum_daily_nb_uniq_visitors
+                    else
+                        brands[browser.brand] += browser.nb_uniq_visitors;
+
+                if browser.version # Create the version data
+                    if not versions[browser.brand]
+                        versions[browser.brand] = []
+                    versions[browser.brand].push([browser.version, browser.sum_daily_nb_uniq_visitors])
+
+        i = 0
+
+        $.each brands (name, y) -> # Build bransData and drilldownSeries for HighCharts
+            brandsData.push
+                name: name
+                y: y
+                drilldown: versions[name] ? name : null
+            ++i
+            if i >= 10 # Only output the first 10 brands to avoid data overlap
+                return false
+
+        $.each versions (key, value) ->
+            drilldownSeries.push
+                name: key
+                id: key
+                data: value
+
+        $( "#browsers" ).highcharts
+            chart:
+                type: 'column'
+                marginTop: 40
+            title:
+                text: null
+            xAxis:
+                type: 'category'
+            yAxis:
+                title:
+                    text: 'Unique Visitors'
+            legend:
+                enabled: false
+            plotOptions:
+                series:
+                    borderWidth: 0
+                    dataLabels:
+                        enabled: true
+                        format: '{point.y:.0f}'
+            tooltip:
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
+            series: [{
+                name: 'Brands'
+                colorByPoint: true
+                data: brandsData
+            }]
+            drilldown:
+                series: drilldownSeries
+
+        $('#expana_browsers .loading').hide()
+
 custom_selector = ->
 $( 'date-range-filter' ).on 'click', (event) ->
     event.preventDefault()
