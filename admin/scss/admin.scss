@@ -344,3 +344,28 @@ label {
 #popular_pages_list tbody tr > td:first-child a:hover {
     color: rgba(85, 85, 85, 1);
 }
+
+#seo_ranking_list {
+    width: 80%;
+    margin: 10px auto 0;
+    font-size: 14px;
+
+    ul {
+        padding: 5px 10px;
+        margin: 2px 0;
+        position: relative;
+
+        span:first-of-type {
+            position: absolute;
+            left: 30px; // Font icons have different width, so use position absolute to align them
+        }
+
+        span:last-child {
+            float: right;
+        }
+    }
+
+    ul:hover {
+        background-color: rgba(245, 245, 245, 1);
+    }
+}
