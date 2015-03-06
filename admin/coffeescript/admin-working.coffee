@@ -23,12 +23,12 @@
                     """
 
         # Append loading animation and no-data div
-        $( '#expana_dashboard .inside' ).prepend(loading, no_data);
+        $( '#expana_dashboard .inside' ).prepend(loading, no_data)
 
         # hide everything that's not currently in use or is still loading
-        $( '.date-range-inputs' ).hide();
-        $( '#live' ).hide();
-        $( '.no_data' ).hide();
+        $( '.date-range-inputs' ).hide()
+        $( '#live' ).hide()
+        $( '.no_data' ).hide()
 
         # handle onclick event for date range selectors
         $( '.date-range-selectors button.date-range-button' ).on 'click', ->
@@ -62,7 +62,7 @@
             data: { action: "expana_ajax_site_info" }
             type: "POST"
             dataType: "json"
-        .success (response) =>
+        .success (response) ->
             $( "#created_at" ).text response[0].ts_created
             $( ".time_zone" ).text response[0].timezone
             site_url = response[0].main_url
@@ -94,7 +94,7 @@
                 data: { action: "expana_ajax_get_date" }
                 type: "POST"
                 dataType: "json"
-            .success (response) =>
+            .success (response) ->
                 if response is "last90" or response is "last30" or response is "last7" or response is "yesterday"
                     $( ".date-range-button[data-range=" + response + "]" ).addClass "current"
                 else
@@ -110,7 +110,7 @@
             data: { action: "expana_ajax_report" }
             type: "POST"
             dataType: "json"
-        .success (response) =>
+        .success (response) ->
             $( "#expana_report .loading" ).hide()
             $.each response.data, (index, item) ->
                 $( "#report_content" ).append "<section><img src='#{item.thumbnail}' /><span>#{item.description}</span></section>"
@@ -121,17 +121,25 @@
             data: { action: "expana_ajax_visits_summary" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             # Define a list of series that will be included in the chart
             categories = ['nb_actions', 'nb_actions_per_visit', 'nb_uniq_visitors', 'nb_users', 'nb_visits', 'nb_visits_converted']
+
+            date = []
+            nb_actions = []
+            nb_actions_per_visit = []
+            nb_uniq_visitors = []
+            nb_users = []
+            nb_visits = []
+            nb_visits_converted = []
 
             $.each response, (i, day) ->
                 date.push(i)
                 $.each categories, (j, category) ->
                     if day[category]
-                        eval(category).push(day[category]);
+                        eval(category).push(day[category])
                     else
-                        eval(category).push(0);
+                        eval(category).push(0)
 
             $( "#visits_summary" ).highcharts
                 title:
@@ -201,13 +209,16 @@
             data: { action: "expana_ajax_live" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             $( "#live_visitor_counter" ).text(response[0].visitors)
             $( "#live_visits" ).text(response[0].visits)
             $( "#live_actions" ).text(response[0].actions)
             $( "#live_converted" ).text(response[0].visitsConverted)
             $( "#live" ).show()
             $( "#expana_live .loading" ).hide().removeClass('loading_redraw')
+
+        # Schedule a repeat
+        setTimeout(init_live, 1000 * 15) #15 seconds = 1000 ms * 10 seconds
 
     # Define Visits By Time widget initialization
     init_visits_by_time = ->
@@ -216,14 +227,19 @@
             data: { action: "expana_ajax_visits_by_time" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             if ( $.isEmptyObject response ) # Check if the response is empty
                 $('#expana_visits_by_time .loading').hide() # Hide the loading animation
                 $('#expana_visits_by_time .no_data').show()
-                return false; # Exit
+                return false # Exit
 
             # Define a list of series that will be included in the chart
-            categories = ['label', 'nb_actions', 'nb_visits', 'sum_daily_nb_uniq_visitors'];
+            categories = ['label', 'nb_actions', 'nb_visits', 'sum_daily_nb_uniq_visitors']
+
+            label = []
+            nb_actions = []
+            nb_visits = []
+            sum_daily_nb_uniq_visitors = []
 
             $.each response, (i, hour) ->
                 $.each categories, (i, category) ->
@@ -283,16 +299,19 @@
             data: { action: "expana_ajax_resolutions" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             if $.isEmptyObject response # Check if the response is empty
                 $('#expana_resolutions .loading').hide()
                 $('#expana_resolutions .no_data').show()
-                return false;
+                return false
 
+            data = []
             $.each response, (i, resolution) ->
                 if i > 15
-                    return false; # only output 15 most popular resolutions
-                entry.name = resolution.label;
+                    return false # only output 15 most popular resolutions
+
+                entry = {}
+                entry.name = resolution.label
 
                 if not resolution.nb_uniq_visitors
                     entry.y = resolution.sum_daily_nb_uniq_visitors
@@ -336,13 +355,17 @@
             data: { action: "expana_ajax_os" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             if $.isEmptyObject response
                 $('#expana_os .loading').hide()
                 $('#expana_os .no_data').show()
-                return false;
+                return false
 
-            knownBrands = [ 'Windows Phone', 'Windows', 'iOS', 'Mac', 'Android', 'Ubuntu', 'BlackBerry OS', 'Symbian OS', 'Chrome OS', 'PlayStation' ];
+            brands = {}
+            brandsData = []
+            versions = {}
+            drilldownSeries = []
+            knownBrands = [ 'Windows Phone', 'Windows', 'iOS', 'Mac', 'Android', 'Ubuntu', 'BlackBerry OS', 'Symbian OS', 'Chrome OS', 'PlayStation' ]
 
             $.each response, (i, os) -> # forEach OS entires returned by Piwik API
                     os.name = os.label.split(' -')[0] # Remove special edition notes
@@ -382,10 +405,10 @@
                 brandsData.push
                     name: name
                     y: y
-                    drilldown: versions[name] ? name : null
+                    drilldown: if versions[name] then name else null
                 ++i
                 if i >= 10 # Only output the first 10 brands to avoid data overlap
-                    return false;
+                    return false
 
             $.each versions, (key, value) ->
                 drilldownSeries.push
@@ -415,10 +438,11 @@
                 tooltip:
                     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                     pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
-                series:
+                series:[
                     name: 'Brands'
                     colorByPoint: true
                     data: brandsData
+                ]
                 drilldown:
                     series: drilldownSeries
 
@@ -431,12 +455,16 @@
             data: { action: "expana_ajax_browsers" },
             type: "POST",
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             if $.isEmptyObject response
                 $( "#expana_browsers .loading" ).hide()
                 $( "#expana_browsers .no_data" ).show()
                 return false
 
+            brands = {}
+            brandsData = []
+            versions = {}
+            drilldownSeries = []
             knownBrands = [ 'Chrome', 'Firefox', 'Opera', 'Safari' ]
 
             $.each response, (i, browser) -> # forEach browser entires returned by Piwik API
@@ -465,7 +493,7 @@
                         if browser.sum_daily_nb_uniq_visitors > 0
                             brands[browser.brand] += browser.sum_daily_nb_uniq_visitors
                         else
-                            brands[browser.brand] += browser.nb_uniq_visitors;
+                            brands[browser.brand] += browser.nb_uniq_visitors
 
                     if browser.version # Create the version data
                         if not versions[browser.brand]
@@ -478,7 +506,7 @@
                 brandsData.push
                     name: name
                     y: y
-                    drilldown: versions[name] ? name : null
+                    drilldown: if versions[name] then name else null
                 ++i
                 if i >= 10 # Only output the first 10 brands to avoid data overlap
                     return false
@@ -527,11 +555,13 @@
             data: { action: "expana_ajax_maps_us" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             if $.isEmptyObject response
                 $('#expana_map_us .loading').hide()
                 $('#expana_map_us .no_data').show()
                 return false
+
+            statesData = []
 
             $.each response, (i, item) ->
                 name = item.label.split(',')[0].trim()
@@ -556,7 +586,7 @@
                         floating: true
                         verticalAlign: 'top'
                     enableMouseWheelZoom: false
-                colorAxis: null
+                colorAxis: {}
                 series: [
                     data: statesData
                     mapData: mapData
@@ -579,11 +609,13 @@
                 data: { action: "expana_ajax_maps_world" }
                 type: "POST"
                 dataType: "JSON"
-            .success (response) =>
+            .success (response) ->
                 if $.isEmptyObject response
                     $('#expana_map_world .loading').hide()
                     $('#expana_map_world .no_data').show()
-                    return false;
+                    return false
+
+                countriesData = []
 
                 $.each response, (i, item) ->
                     name = item.label
@@ -610,7 +642,7 @@
                             floating: true
                             verticalAlign: 'top'
                         enableMouseWheelZoom: false
-                    colorAxis: null
+                    colorAxis: {}
                     series : [
                         data : countriesData
                         mapData: mapData
@@ -621,7 +653,7 @@
                                 color: '#A9FF96'
                         ]
 
-                $('#expana_map_world .loading').hide();
+                $('#expana_map_world .loading').hide()
 
     init_device_type = ->
         $.ajax
@@ -629,19 +661,21 @@
             data: { action: "expana_ajax_device_type" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             if $.isEmptyObject response 
                 $('#expana_device_type .loading').hide()
                 $('#expana_device_type .no_data').show()
                 return false
 
+            data = []
             $.each response, (i, type) ->
-                entry.name = type.label;
-                entry.y = type.nb_visits;
+                entry = {}
+                entry.name = type.label
+                entry.y = type.nb_visits
                 if i is 0
-                    entry.sliced = true;
-                    entry.selected = true;
-                data.push(entry);
+                    entry.sliced = true
+                    entry.selected = true
+                data.push(entry)
 
             $( "#device_type" ).highcharts
                 chart:
@@ -667,27 +701,27 @@
                     data: data
                 ]
 
-            $('#expana_device_type .loading').hide();
+            $('#expana_device_type .loading').hide()
 
     init_top_pages = ->
         $( "popular_pages" ).hide() # Hide the table
         $( "popular_pages table tbody" ).empty() # Empty exsiting entries
 
         $.ajax
-            url: "admin-ajax.php",
-            data: { action: "expana_ajax_top_pages" },
-            type: "POST",
+            url: "admin-ajax.php"
+            data: { action: "expana_ajax_top_pages" }
+            type: "POST"
             dataType: "JSON"
-        .success (response) =>
-            $.each response, (i, entry) ->
-                $( "popular_pages table > tbody:last" ).append('<tr><td>#{entry.label}<a href=#{site_url}/#{entry.label} target="_blank"><i class="fa fa-external-link"></i></a></td><td>#{entry.nb_hits}</td><td>#{entry.nb_visits}</td><td>#{entry.avg_time_on_page}s</td></tr>')
-                if i > 20
-                    return false
-
+        .success (response) ->
             if $.isEmptyObject response # Check if the response is empty
                 $( "#expana_top_pages .loading" ).hide()
                 $( "#expana_top_pages .no_data" ).show()
                 return false
+
+            $.each response, (i, entry) ->
+                $( "#popular_pages table > tbody:last" ).append "<tr><td>#{entry.label}<a href=#{site_url}/#{entry.label} target='_blank'> <i class='fa fa-external-link'></i></a></td><td>#{entry.nb_hits}</td><td>#{entry.nb_visits}</td><td>#{entry.avg_time_on_page}s</td></tr>"
+                if i > 20
+                    return false
 
             $( "#expana_top_pages .loading" ).hide()
             $( "popular_pages" ).show()
@@ -700,9 +734,9 @@
             data: { action: "expana_ajax_referrers" }
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             $.each response, (i, referrer) ->
-                $( "#referrers table > tbody:last" ).append('<tr><td>(#{referrer.referer_type}) #{referrer.label}</td><td>#{referrer.nb_visits}</td><td>#{referrer.nb_actions}</td></tr>')
+                $( "#referrers table > tbody:last" ).append "<tr><td>(#{referrer.referer_type}) #{referrer.label}</td><td>#{referrer.nb_visits}</td><td>#{referrer.nb_actions}</td></tr>"
                 if ( i > 20 )
                     return false
 
@@ -722,7 +756,7 @@
                 url: site_url
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             $('#expana_seo_rankings .loading').hide().removeClass('loading_redraw')
 
     custom_selector = ->
@@ -754,7 +788,7 @@
                 dates: dates
             type: "POST"
             dataType: "JSON"
-        .success (response) =>
+        .success (response) ->
             init_visits_by_time() # Redraw charts
             init_os()
             init_resolutions()
@@ -777,13 +811,25 @@
         return $.datepicker.formatDate('yy-mm-dd', from_date) + "," + $.datepicker.formatDate('yy-mm-dd', to_date)
 
     init_widgets = ->
-        # Schedule a repeat
-        setTimeout(init_live, 1000 * 15); #15 seconds = 1000 ms * 10 seconds
+        init_browsers()
+        init_device_type()
+        init_live()
+        init_os()
+        init_referrers()
+        init_report()
+        init_resolutions()
+        init_seo_rankings()
+        init_top_pages()
+        init_visits_by_time()
+        init_visits_map_us()
+        init_visits_map_world()
+        init_visits_summary()
 
     # Initialize
     load_elements()
     load_site_info()
     custom_selector()
     init_widgets()
+    return
 
 ) jQuery
