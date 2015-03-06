@@ -524,6 +524,57 @@ init_browsers = ->
 
         $('#expana_browsers .loading').hide()
 
+init_visits_map_us = ->
+    $.ajax
+        url: "admin-ajax.php"
+        data: { action: "expana_ajax_maps_us" }
+        type: "POST"
+        dataType: "JSON"
+    .success response ->
+        if $.isEmptyObject response
+            $('#expana_map_us .loading').hide()
+            $('#expana_map_us .no_data').show()
+            return false
+
+        $.each response (i, item) ->
+            name = item.label.split(',')[0].trim()
+            if name isnt 'Unknown'
+                statesData.push
+                    name: name
+                    value: item.sum_daily_nb_uniq_visitors
+
+        mapData = Highcharts.geojson(Highcharts.maps['countries/us/us-all'])
+        $( "#map_us" ).highcharts 'Map', { # Initiate the chart
+            title:
+                text : null
+            legend:
+                align: 'right'
+                floating: true
+                title:
+                    text: 'Unique Visitors'
+            mapNavigation:
+                enabled: true
+                buttonOptions:
+                    align: 'left'
+                    floating: true
+                    verticalAlign: 'top'
+                enableMouseWheelZoom: false
+            colorAxis:
+            series: [{
+                data: statesData
+                mapData: mapData
+                joinBy: ['name', 'name']
+                name: 'Unique Visitors'
+                states:
+                    hover:
+                        color: '#A9FF96'
+                dataLabels:
+                    enabled: true
+                    format: '{point.properties.postal-code}'
+                    color: '#ffffff'
+
+        $('#expana_map_us .loading').hide()
+
 custom_selector = ->
 $( 'date-range-filter' ).on 'click', (event) ->
     event.preventDefault()
