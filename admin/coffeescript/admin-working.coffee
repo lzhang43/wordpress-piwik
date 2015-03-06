@@ -13,8 +13,8 @@
                     <div class="no_data">
                         <div class="no_data_cross">
                             <span class="x_mark">
-                            <span class="line left"></span>
-                            <span class="line right"></span>
+                                <span class="line left"></span>
+                                <span class="line right"></span>
                             </span>
                         </div>
                         <h2>No Data Available</h2>
@@ -22,39 +22,25 @@
                     </div>
                     """
 
-        # Append loading animation and no-data div
-        $( '#expana_dashboard .inside' ).prepend(loading, no_data)
+        $( "#expana_dashboard .inside" ).prepend(loading, no_data) # Append loading animation and no-data div
+        $( ".date-range-inputs" ).hide() # hide everything that's not currently in use or is still loading
+        $( "#live" ).hide()
+        $( ".no_data" ).hide()
 
-        # hide everything that's not currently in use or is still loading
-        $( '.date-range-inputs' ).hide()
-        $( '#live' ).hide()
-        $( '.no_data' ).hide()
-
-        # handle onclick event for date range selectors
-        $( '.date-range-selectors button.date-range-button' ).on 'click', ->
-
-            # Disable all buttons
-            $( ".date-range-selectors button.date-range-button" ).prop 'disabled', true
-
-            # Remove "current" class from all buttons
-            $( '.date-range-selectors button.date-range-button' ).removeClass 'current'
-
-            # Add "current" class to the button being clicked
-            $(@).addClass 'current'
-
-            # Change #date_range information (only for display purposes)
-            $( '#date_range' ).text( $(@).text() )
-
-            # Check if the button being clicked is for "custom date range"
-            if $(@).data( 'range' ) is "custom"
-                # Dispaly custom date range input fields. Do nothing, waiting for query dates
-                $( '.date-range-inputs' ).show
-                # Also enable buttons in case the user want to go back
-                $( ".date-range-selectors button.date-range-button" ).prop 'disabled', false
+        $( ".date-range-selectors > button" ).on "click", -> # handle onclick event for date range selectors
+            $( ".date-range-selectors > button" ).removeClass("current").prop "disabled", true # Remove "current" class from all buttons and disable them
+            $( this ).addClass "current" # Add "current" class to the button being clicked
+            $( "#date_range" ).text($(this).text()) # Change #date_range information (only for display purposes)
+            if $(this).data("range") is "custom"  # Check if the button being clicked is for "custom date range"
+                $( ".date-range-inputs" ).show() # Dispaly custom date range input fields. Do nothing, waiting for query dates
+                $( ".date-range-selectors button.date-range-button" ).prop 'disabled', false  # Also enable buttons in case the user want to go back
             else
-                # Not custom date range, hide input fields and start changing date range
-                $( '.date-range-inputs' ).hide
-                changeDateRange $(this).data( 'range' )
+                $( ".date-range-inputs" ).hide() # Not custom date range, hide input fields and start changing date range
+                changeDateRange $(this).data("range")
+        
+        $( "#date-range-filter" ).on "click", (event) -> # handle onclick event for date range filter
+            event.preventDefault()
+            changeDateRange "custom"
 
     load_site_info = ->
         $.ajax
@@ -62,7 +48,7 @@
             data: { action: "expana_ajax_site_info" }
             type: "POST"
             dataType: "json"
-        .success (response) ->
+        .done (response) ->
             $( "#created_at" ).text response[0].ts_created
             $( ".time_zone" ).text response[0].timezone
             site_url = response[0].main_url
@@ -94,9 +80,9 @@
                 data: { action: "expana_ajax_get_date" }
                 type: "POST"
                 dataType: "json"
-            .success (response) ->
-                if response is "last90" or response is "last30" or response is "last7" or response is "yesterday"
-                    $( ".date-range-button[data-range=" + response + "]" ).addClass "current"
+            .done (response) ->
+                if response in ["last90", "last30", "last7", "yesterday"]
+                    $("#date_range").text( $( ".date-range-button[data-range=#{response}]" ).addClass("current").text() )
                 else
                     $( "#expana_custom" ).addClass "current"
                     $( ".date-range-inputs" ).show()
@@ -110,10 +96,13 @@
             data: { action: "expana_ajax_report" }
             type: "POST"
             dataType: "json"
-        .success (response) ->
+        .done (response) ->
             $( "#expana_report .loading" ).hide()
             $.each response.data, (index, item) ->
                 $( "#report_content" ).append "<section><img src='#{item.thumbnail}' /><span>#{item.description}</span></section>"
+        .done
+
+        .fail
 
     init_visits_summary = ->
         $.ajax
@@ -121,7 +110,7 @@
             data: { action: "expana_ajax_visits_summary" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             # Define a list of series that will be included in the chart
             categories = ['nb_actions', 'nb_actions_per_visit', 'nb_uniq_visitors', 'nb_users', 'nb_visits', 'nb_visits_converted']
 
@@ -209,7 +198,7 @@
             data: { action: "expana_ajax_live" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             $( "#live_visitor_counter" ).text(response[0].visitors)
             $( "#live_visits" ).text(response[0].visits)
             $( "#live_actions" ).text(response[0].actions)
@@ -227,7 +216,7 @@
             data: { action: "expana_ajax_visits_by_time" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if ( $.isEmptyObject response ) # Check if the response is empty
                 $('#expana_visits_by_time .loading').hide() # Hide the loading animation
                 $('#expana_visits_by_time .no_data').show()
@@ -299,7 +288,7 @@
             data: { action: "expana_ajax_resolutions" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if $.isEmptyObject response # Check if the response is empty
                 $('#expana_resolutions .loading').hide()
                 $('#expana_resolutions .no_data').show()
@@ -355,7 +344,7 @@
             data: { action: "expana_ajax_os" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if $.isEmptyObject response
                 $('#expana_os .loading').hide()
                 $('#expana_os .no_data').show()
@@ -436,7 +425,7 @@
                             enabled: true
                             format: '{point.y:.0f}'
                 tooltip:
-                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>'
                     pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
                 series:[
                     name: 'Brands'
@@ -451,11 +440,11 @@
     # Define Browsers widget initialization
     init_browsers = ->
         $.ajax
-            url: "admin-ajax.php",
-            data: { action: "expana_ajax_browsers" },
-            type: "POST",
+            url: "admin-ajax.php"
+            data: { action: "expana_ajax_browsers" }
+            type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if $.isEmptyObject response
                 $( "#expana_browsers .loading" ).hide()
                 $( "#expana_browsers .no_data" ).show()
@@ -537,7 +526,7 @@
                             enabled: true
                             format: '{point.y:.0f}'
                 tooltip:
-                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>'
                     pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.0f}</b><br/>'
                 series: [{
                     name: 'Brands'
@@ -555,7 +544,7 @@
             data: { action: "expana_ajax_maps_us" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if $.isEmptyObject response
                 $('#expana_map_us .loading').hide()
                 $('#expana_map_us .no_data').show()
@@ -609,7 +598,7 @@
                 data: { action: "expana_ajax_maps_world" }
                 type: "POST"
                 dataType: "JSON"
-            .success (response) ->
+            .done (response) ->
                 if $.isEmptyObject response
                     $('#expana_map_world .loading').hide()
                     $('#expana_map_world .no_data').show()
@@ -661,7 +650,7 @@
             data: { action: "expana_ajax_device_type" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if $.isEmptyObject response 
                 $('#expana_device_type .loading').hide()
                 $('#expana_device_type .no_data').show()
@@ -712,7 +701,7 @@
             data: { action: "expana_ajax_top_pages" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             if $.isEmptyObject response # Check if the response is empty
                 $( "#expana_top_pages .loading" ).hide()
                 $( "#expana_top_pages .no_data" ).show()
@@ -734,14 +723,14 @@
             data: { action: "expana_ajax_referrers" }
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             $.each response, (i, referrer) ->
                 $( "#referrers table > tbody:last" ).append "<tr><td>(#{referrer.referer_type}) #{referrer.label}</td><td>#{referrer.nb_visits}</td><td>#{referrer.nb_actions}</td></tr>"
-                if ( i > 20 )
+                if i > 20
                     return false
 
             if $.isEmptyObject response
-                $('#expana_referrers .loading').hide()
+                $('#expana_referrers .loading').hide().removeClass "loading_redraw"
                 $('#expana_referrers .no_data').show()
                 return false
 
@@ -752,11 +741,11 @@
         $.ajax
             url: "admin-ajax.php"
             data:
-                action: "expana_ajax_seo_rankings",
+                action: "expana_ajax_seo_rankings"
                 url: site_url
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             $( "#expana_seo_rankings #seo_rankings > h4" ).append " <span>#{site_url}</span>"
             $.each response, (i, entry) ->
                 if not entry.rank
@@ -773,11 +762,6 @@
                     else "angle-double-right"
                 $( "#expana_seo_rankings #seo_ranking_list" ).append "<ul id='seo_ranking_#{entry.id}'><i class='fa fa-#{icon}'></i><span class='seo_ranking_label'>#{entry.label}</span> <span class='seo_ranking'>#{entry.rank} #{entry.rank_suffix}</span>"
             $( "#expana_seo_rankings .loading" ).hide().removeClass "loading_redraw"
-
-    custom_selector = ->
-        $( "date-range-filter" ).on "click", (event) ->
-            event.preventDefault()
-            changeDateRange "custom"
 
     changeDateRange = (range) ->
         if range is "custom"
@@ -803,7 +787,7 @@
                 dates: dates
             type: "POST"
             dataType: "JSON"
-        .success (response) ->
+        .done (response) ->
             init_visits_by_time() # Redraw charts
             init_os()
             init_resolutions()
@@ -827,8 +811,18 @@
 
     maintainenceMode = ->
         notice =    """
-
+                    <div id="maintainence">
+                        <div class="no_data_cross maintainence_cross">
+                            <span class="x_mark">
+                                <span class="line left"></span>
+                                <span class="line right"></span>
+                            </span>
+                        </div>
+                        <h1>Opps... SUWI is currently offline</h1>
+                        <p>Please try again later</p>
+                    </div>
                     """
+        $( "#expana_dashboard" ).empty().append notice;
 
     init_widgets = ->
         init_browsers()
@@ -846,10 +840,12 @@
         init_visits_summary()
 
     # Initialize
-    custom_selector()
     load_elements()
-    load_site_info().success ->
+    load_site_info()
+    .done ->
         init_widgets() # Defer widgets initialization
+    .fail ->
+        maintainenceMode() # Failed to load site info from piwik
+    
     return
-
 ) jQuery

@@ -248,7 +248,11 @@ class Expressions_Analytics_Dashboard {
 	  */
 	 public function expana_ajax_site_info()
 	 {
-	 	wp_send_json($this->suwi->getSiteInformation());
+	 	$response = $this->suwi->getSiteInformation();
+
+	 	// @todo: check the boolean value of the $response
+
+	 	wp_send_json($response);
 	 }
 
 
