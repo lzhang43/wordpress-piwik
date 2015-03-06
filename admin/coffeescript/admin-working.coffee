@@ -757,7 +757,22 @@
             type: "POST"
             dataType: "JSON"
         .success (response) ->
-            $('#expana_seo_rankings .loading').hide().removeClass('loading_redraw')
+            $( "#expana_seo_rankings #seo_rankings > h4" ).append " <span>#{site_url}</span>"
+            $.each response, (i, entry) ->
+                if not entry.rank
+                    entry.rank = 0
+                if not entry.rank_suffix
+                    entry.rank_suffix = ""
+                icon = switch entry.id
+                    when "google-index", "pagerank" then "file-text-o"
+                    when "bing-index"               then "angle-double-right" # Sadly, font-awesome doesn't provide icon-bing
+                    when "alexa"                    then "angle-double-right"
+                    when "domain-age"               then "file"
+                    when "external-backlinks"       then "link"
+                    when "referrer-domains"         then "globe"
+                    else "angle-double-right"
+                $( "#expana_seo_rankings #seo_ranking_list" ).append "<ul id='seo_ranking_#{entry.id}'><i class='fa fa-#{icon}'></i><span class='seo_ranking_label'>#{entry.label}</span> <span class='seo_ranking'>#{entry.rank} #{entry.rank_suffix}</span>"
+            $( "#expana_seo_rankings .loading" ).hide().removeClass "loading_redraw"
 
     custom_selector = ->
         $( "date-range-filter" ).on "click", (event) ->
@@ -805,10 +820,15 @@
         to_date = $( "#expana-to-date" ).datepicker "getDate"
 
         if not from_date or not to_date
-            alert("Invalid dates")
+            alert "Invalid dates"
             return false
 
-        return $.datepicker.formatDate('yy-mm-dd', from_date) + "," + $.datepicker.formatDate('yy-mm-dd', to_date)
+        $.datepicker.formatDate('yy-mm-dd', from_date) + "," + $.datepicker.formatDate('yy-mm-dd', to_date)
+
+    maintainenceMode = ->
+        notice =    """
+
+                    """
 
     init_widgets = ->
         init_browsers()
@@ -826,10 +846,10 @@
         init_visits_summary()
 
     # Initialize
-    load_elements()
-    load_site_info()
     custom_selector()
-    init_widgets()
+    load_elements()
+    load_site_info().success ->
+        init_widgets() # Defer widgets initialization
     return
 
 ) jQuery
