@@ -49,6 +49,13 @@
             type: "POST"
             dataType: "json"
         .done (response) ->
+            if (response == false)
+                maintainenceMode() # Failed to load site info from piwik
+                return false
+
+            init_widgets() # Widgets initialization
+            setTimeout(init_live, 1000 * 15) # Schedule a repeat for the live widget
+
             $( "#created_at" ).text response[0].ts_created
             $( ".time_zone" ).text response[0].timezone
             site_url = response[0].main_url
@@ -205,9 +212,6 @@
             $( "#live_converted" ).text(response[0].visitsConverted)
             $( "#live" ).show()
             $( "#expana_live .loading" ).hide().removeClass('loading_redraw')
-
-        # Schedule a repeat
-        setTimeout(init_live, 1000 * 15) #15 seconds = 1000 ms * 10 seconds
 
     # Define Visits By Time widget initialization
     init_visits_by_time = ->
@@ -823,6 +827,7 @@
                     </div>
                     """
         $( "#expana_dashboard" ).empty().append notice;
+        $( "#screen-options-link-wrap" ).hide(); # Hide the screen options button to prevent user confusion
 
     init_widgets = ->
         init_browsers()
@@ -842,10 +847,6 @@
     # Initialize
     load_elements()
     load_site_info()
-    .done ->
-        init_widgets() # Defer widgets initialization
-    .fail ->
-        maintainenceMode() # Failed to load site info from piwik
     
     return
 ) jQuery

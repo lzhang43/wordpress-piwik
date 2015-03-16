@@ -9,8 +9,18 @@
     text-align: center;
 }
 
-#expana_dashboard .welcome-panel {
-	padding: 0 10px;
+#expana_dashboard {
+    #maintainence {
+        margin-top: 200px;
+
+        h1, p {
+            text-align: center;
+        }
+    }
+
+    .welcome-panel {
+        padding: 0 10px;
+    }
 }
 
 .welcome-panel-content {
