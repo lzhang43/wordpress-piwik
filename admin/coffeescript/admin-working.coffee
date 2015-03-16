@@ -697,8 +697,8 @@
             $('#expana_device_type .loading').hide()
 
     init_top_pages = ->
-        $( "popular_pages" ).hide() # Hide the table
-        $( "popular_pages table tbody" ).empty() # Empty exsiting entries
+        $( "#popular_pages" ).hide() # Hide the table
+        $( "#popular_pages table tbody" ).empty() # Empty exsiting entries
 
         $.ajax
             url: "admin-ajax.php"
@@ -709,6 +709,7 @@
             if $.isEmptyObject response # Check if the response is empty
                 $( "#expana_top_pages .loading" ).hide()
                 $( "#expana_top_pages .no_data" ).show()
+                $( "#popular_pages_list" ).hide()
                 return false
 
             $.each response, (i, entry) ->
@@ -717,26 +718,27 @@
                     return false
 
             $( "#expana_top_pages .loading" ).hide()
-            $( "popular_pages" ).show()
+            $( "#popular_pages_list" ).show()
+            $( "#popular_pages" ).show()
 
     init_referrers = ->
         $( "#referrers" ).hide() # Hide the table
-        $('#referrers table tbody').empty() # Empty exsiting entries
+        $( "#referrers table tbody" ).empty() # Empty exsiting entries
         $.ajax
             url: "admin-ajax.php"
             data: { action: "expana_ajax_referrers" }
             type: "POST"
             dataType: "JSON"
         .done (response) ->
-            $.each response, (i, referrer) ->
-                $( "#referrers table > tbody:last" ).append "<tr><td>(#{referrer.referer_type}) #{referrer.label}</td><td>#{referrer.nb_visits}</td><td>#{referrer.nb_actions}</td></tr>"
-                if i > 20
-                    return false
-
             if $.isEmptyObject response
                 $('#expana_referrers .loading').hide().removeClass "loading_redraw"
                 $('#expana_referrers .no_data').show()
                 return false
+
+            $.each response, (i, referrer) ->
+                $( "#referrers table > tbody:last" ).append "<tr><td>(#{referrer.referer_type}) #{referrer.label}</td><td>#{referrer.nb_visits}</td><td>#{referrer.nb_actions}</td></tr>"
+                if i > 20
+                    return false
 
             $('#expana_referrers .loading').hide()
             $('#referrers').show()
@@ -800,6 +802,7 @@
             init_visits_map_world()
             init_device_type()
             init_top_pages()
+            init_referrers()
 
             $( ".date-range-selectors button.date-range-button" ).prop "disabled", false #Enable buttons (loading animation will be hide by init_charts function upon completion)
 
