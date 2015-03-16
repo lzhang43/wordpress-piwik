@@ -179,6 +179,7 @@ class Expressions_Analytics {
 		// Register AJAX POST interfaces
 		$plugin_dashboard = new Expressions_Analytics_Dashboard( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_filter( 'contextual_help', $plugin_dashboard, 'expana_dashboard_help', 10, 3 );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_site_info', $plugin_dashboard, 'expana_ajax_site_info' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_report', $plugin_dashboard, 'expana_ajax_report' );
 		$this->loader->add_action( 'wp_ajax_expana_ajax_visits_summary', $plugin_dashboard, 'expana_ajax_visits_summary' );
