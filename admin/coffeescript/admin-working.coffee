@@ -53,12 +53,12 @@
                 maintainenceMode() # Failed to load site info from piwik
                 return false
 
-            init_widgets() # Widgets initialization
-            setTimeout(init_live, 1000 * 15) # Schedule a repeat for the live widget
-
             $( "#created_at" ).text response[0].ts_created
             $( ".time_zone" ).text response[0].timezone
             site_url = response[0].main_url
+
+            init_widgets() # Widgets initialization
+            setTimeout(init_live, 1000 * 15) # Schedule a repeat for the live widget
 
             # Initialize datepickers
             $( "#expana-from-date" ).datepicker
